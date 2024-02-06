@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -45,7 +44,7 @@ public class RouteService {
             routeRepo.delete(byId.get());
             return byId.get();
         }
-        throw (new NoSuchElementException());
+        throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No route with such id!"));
     }
 
     public Route addRoute(RouteDto route) {
