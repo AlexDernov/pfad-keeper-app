@@ -313,4 +313,25 @@ class RoutesControllerTest {
                             """))
                 .andReturn();
     }
+    @DirtiesContext
+    @Test
+    void deleteRoutesByNoExistingIdTest_shouldReturnNoObject() throws Exception {
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
+
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
+        List<Coords> coordsList = new ArrayList<>();
+        coordsList.add(coords1);
+        coordsList.add(coords2);
+        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        String nonExistingId = "nonExistingId";
+        //WHEN
+        mvc.perform(MockMvcRequestBuilders.delete("/api/routes/{id}", nonExistingId))
+
+                //THEN
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
 }
