@@ -1,30 +1,66 @@
 import styled from "styled-components";
-import {Route} from "../types/Route.tsx";
-import placeholderMap from "../../public/images/placeholderMap.jpg"
+import {MeineRoute} from "../types/MeineRoute.tsx";
+import map from "../../public/images/map.png"
+import {Link} from "react-router-dom";
 
 type DataRoute={
-    route: Route
+    route: MeineRoute
 }
-export default function RouteItem(props:DataRoute){
+export default function RouteItem(props:Readonly<DataRoute>){
     return(
-        <StyledLi>
-            <h2>{props.route.name}</h2>
-            <img src={placeholderMap} alt={"Placeholder Map"}/>
-            <p>{props.route.dataTime}</p>
-        </StyledLi>
+        <StyledLink to={`/books/${props.route.id}`}>
+            <StyledDiv>
+                <StyledH>{props.route.name}</StyledH><StylesDate>Datum: {new Date(props.route.dateTime).toLocaleDateString()}</StylesDate>
+                <StyledImg src={map} alt={"Placeholder Map"}/>
+
+            </StyledDiv>
+        </StyledLink>
     )
 }
-const StyledLi = styled.li`
+
+const StylesDate =styled.p`
+    margin: 1vw 0 0 0;
+    max-height: 8vh;
+    max-font-size: 1.8vw;
+    color: rgba(14, 16, 14, 0.84);
+    font-style: normal`;
+
+const StyledImg = styled.img`
+    margin: 1vw 0 1vw 0;
+    height: auto;
+    width: auto;
+    max-width: 99%;
+    object-fit: contain`;
+
+const StyledH = styled.h2`
+    margin: 1vw 0 0 0;
+    max-height: 10vh;
+    max-font-size: 2vw;
+    color: rgba(14, 16, 14, 0.84);
+    font-style: normal`;
+
+const StyledLink = styled(Link)`
+text-decoration: none;
+    padding:0;
+    cursor: pointer;
+    min-width: 30vw;
+    max-width: 90vw;
+    margin:0`;
+
+const StyledDiv = styled.div`
     display: flex;
-    position: relative;
     flex-direction: column;
     justify-content: space-around;
-    border: solid rgb(221 221 221) 1px;
+    align-items: center;
     box-shadow: 0 2px 4px 0 rgba(38, 59, 56, 0.10), 0 0 0 1.5px rgba(38, 50, 56, 0.10);
+    margin: 0.25vw 0 0.25vw 0;
+    
+    min-width: 30vw;
+    max-width: 500px;
     border-radius: 0.375rem;
-    padding: 1rem 2.25rem 2.25rem 2.25rem;
-    margin: 2vw 2vw 1vw 0;
-    height: auto;
-    width: 70vw;
+    border-color: rgb(221 221 221);
+    background-color: white;
+    padding: 0.25vw 0 0.25vw 0;
 `;
+
 

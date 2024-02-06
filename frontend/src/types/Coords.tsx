@@ -1,4 +1,4 @@
-export type Coords ={
+export type Coords = {
     id: string;
     dateTime: string;
     longitude: string;

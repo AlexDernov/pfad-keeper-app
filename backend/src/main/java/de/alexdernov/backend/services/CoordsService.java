@@ -2,10 +2,7 @@ package de.alexdernov.backend.services;
 
 import de.alexdernov.backend.models.Coords;
 import de.alexdernov.backend.models.CoordsDto;
-import de.alexdernov.backend.models.Route;
-import de.alexdernov.backend.models.RouteDto;
 import de.alexdernov.backend.repos.CoordsRepo;
-import de.alexdernov.backend.repos.RoutesRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

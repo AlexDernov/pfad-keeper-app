@@ -1,21 +1,34 @@
 import styled from "styled-components";
 import RouteItem from "./route-item.tsx";
-import {Route} from "../types/Route.tsx";
-type DataProps ={
-    routesData: Route[]
-}
-export default function RoutesList(props:DataProps){
+import {MeineRoute} from "../types/MeineRoute.tsx";
 
-    return(
+type DataProps = {
+    routesData: MeineRoute[]
+}
+export default function RoutesList(props: Readonly<DataProps>) {
+
+    return (
         <StyledDiv>
-            <h2>Meine Routen:</h2>
-            <ul>
+            <StyledH2>Meine Routen:</StyledH2>
+            <StyledDivList>
                 {props.routesData.map(item => (
                     <RouteItem key={item.id} route={item}/>
                 ))}
-            </ul>
+            </StyledDivList>
         </StyledDiv>
     )
 }
-const StyledDiv = styled.div`
+const StyledH2 = styled.h2`
 `;
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+`;
+const StyledDivList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    gap: 4rem`;
