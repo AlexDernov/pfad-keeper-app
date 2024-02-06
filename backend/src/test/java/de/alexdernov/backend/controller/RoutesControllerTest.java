@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.awt.print.Book;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +38,16 @@ class RoutesControllerTest {
     @Test
     void getRoutesTest_shouldReturnListWithOneObject_whenOneObjectWasSavedInRepository() throws Exception {
         // GIVEN
-        LocalDate date1 = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate date2 = LocalDate.of(2024, Month.MARCH, 30);
-        LocalDate date3 = LocalDate.of(2024, Month.APRIL, 4);
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
 
-        Coords coords1 = new Coords("9", date1, "284857", "325325");
-        Coords coords2 = new Coords("8", date2, "19842798", "2343587");
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", date3));
+        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
 
         // WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/api/routes"))
@@ -57,21 +58,22 @@ class RoutesControllerTest {
                         [{
                            "id": "test-id",
                            "coords": [
-                          {
-                          "id": "8",
-                          "date": "2024-03-30",
-                          "longitude": "19842798",
-                          "latitude": "2343587"
-                          },
-                           {
-                           "id": "9",
-                           "date":"2014-01-01",
-                           "longitude": "284857",
-                           "latitude": "325325"
-                           }],
-                           "name": "Berlin",
-                           "date": "2024-04-04"
-                         }]
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "Berlin",
+                                                  "dateTime": "2024-04-04T10:30:00"
+                                              }]
                         """))
                 .andReturn();
 
@@ -83,16 +85,16 @@ class RoutesControllerTest {
     @Test
     void getRouteByIdTest_shouldReturnObjectWithTheId() throws Exception {
         //GIVEN
-        LocalDate date1 = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate date2 = LocalDate.of(2024, Month.MARCH, 30);
-        LocalDate date3 = LocalDate.of(2024, Month.APRIL, 4);
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
 
-        Coords coords1 = new Coords("9", date1, "284857", "325325");
-        Coords coords2 = new Coords("8", date2, "19842798", "2343587");
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Route route = routesRepo.save(new Route("test-id", coordsList, "Berlin", date3));
+        Route route = routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
         String id = route.id();
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/api/routes/{id}", id))
@@ -102,21 +104,22 @@ class RoutesControllerTest {
                         {
                            "id": "test-id",
                            "coords": [
-                          {
-                          "id": "8",
-                          "date": "2024-03-30",
-                          "longitude": "19842798",
-                          "latitude": "2343587"
-                          },
-                           {
-                           "id": "9",
-                           "date":"2014-01-01",
-                           "longitude": "284857",
-                           "latitude": "325325"
-                           }],
-                           "name": "Berlin",
-                           "date": "2024-04-04"
-                         }
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "Berlin",
+                                                  "dateTime": "2024-04-04T10:30:00"
+                                              }
                         """))
                 .andReturn();
         Assertions.assertEquals(200, mvcResult.getResponse().getStatus());
@@ -127,16 +130,16 @@ class RoutesControllerTest {
     @Test
     void getRoutesByNoExistingIdTest_shouldReturnNoObject() throws Exception {
         //GIVEN
-        LocalDate date1 = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate date2 = LocalDate.of(2024, Month.MARCH, 30);
-        LocalDate date3 = LocalDate.of(2024, Month.APRIL, 4);
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
 
-        Coords coords1 = new Coords("9", date1, "284857", "325325");
-        Coords coords2 = new Coords("8", date2, "19842798", "2343587");
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Route route = routesRepo.save(new Route("test-id", coordsList, "Berlin", date3));
+        Route route = routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
         String nonExistingId = "nonExistingId";
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/api/routes/{id}", nonExistingId))
@@ -151,37 +154,38 @@ class RoutesControllerTest {
     @Test
     void addRouteTest_shouldReturnOneObject_whenObjectWasSavedInRepository() throws Exception {
         // GIVEN
-        LocalDate date1 = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate date2 = LocalDate.of(2024, Month.MARCH, 30);
-        LocalDate date3 = LocalDate.of(2024, Month.APRIL, 4);
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
 
-        Coords coords1 = new Coords("9", date1, "284857", "325325");
-        Coords coords2 = new Coords("8", date2, "19842798", "2343587");
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", date3));
+        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
         // WHEN
         mvc.perform(MockMvcRequestBuilders.post("/api/routes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                  {
-                                   "coords": [
-                                  {
-                                  "id": "8",
-                                  "date": "2024-03-30",
-                                  "longitude": "19842798",
-                                  "latitude": "2343587"
-                                  },
-                                   {
-                                   "id": "9",
-                                   "date":"2014-01-01",
-                                   "longitude": "284857",
-                                   "latitude": "325325"
-                                   }],
-                                   "name": "Berlin",
-                                   "date": "2024-04-04"
-                                 }
+                           "coords": [
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "Berlin",
+                                                  "dateTime": "2024-04-04T10:30:00"
+                                              }
                                 """)
                 )
                 // THEN
@@ -189,22 +193,23 @@ class RoutesControllerTest {
                 .andExpect(content().json("""
 
                           {
-                                   "coords": [
-                                  {
-                                  "id": "8",
-                                  "date": "2024-03-30",
-                                  "longitude": "19842798",
-                                  "latitude": "2343587"
-                                  },
-                                   {
-                                   "id": "9",
-                                   "date":"2014-01-01",
-                                   "longitude": "284857",
-                                   "latitude": "325325"
-                                   }],
-                                   "name": "Berlin",
-                                   "date": "2024-04-04"
-                                 }
+                           "coords": [
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "Berlin",
+                                                  "dateTime": "2024-04-04T10:30:00"
+                                              }
                         """))
 
 
@@ -216,63 +221,65 @@ class RoutesControllerTest {
     @Test
     void updateRouteTest_shouldReturnRouteWithUpdatedAuthor_whenRouteWithUpdatedAuthorSent() throws Exception {
         //GIVEN
-        LocalDate date1 = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate date2 = LocalDate.of(2024, Month.MARCH, 30);
-        LocalDate date3 = LocalDate.of(2024, Month.APRIL, 4);
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
 
-        Coords coords1 = new Coords("9", date1, "284857", "325325");
-        Coords coords2 = new Coords("8", date2, "19842798", "2343587");
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", date3));
+        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
 
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/api/routes/test-id")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                                                        
-                                           {
+                                         {
                            "id": "test-id",
                            "coords": [
-                          {
-                          "id": "8",
-                          "date": "2024-03-30",
-                          "longitude": "19842798",
-                          "latitude": "2343587"
-                          },
-                           {
-                           "id": "9",
-                           "date":"2014-01-01",
-                           "longitude": "284986",
-                           "latitude": "3248658"
-                           }],
-                           "name": "München",
-                           "date": "2024-04-04"
-                         }
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "München",
+                                                  "dateTime": "2020-05-04T10:00:00"
+                                              }
                                            """))
 
                 //THEN
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
-                        {
+                       {
                            "id": "test-id",
                            "coords": [
-                          {
-                          "id": "8",
-                          "date": "2024-03-30",
-                          "longitude": "19842798",
-                          "latitude": "2343587"
-                          },
-                           {
-                           "id": "9",
-                           "date":"2014-01-01",
-                           "longitude": "284986",
-                           "latitude": "3248658"
-                           }],
-                           "name": "München",
-                           "date": "2024-04-04"
-                         }
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "München",
+                                                  "dateTime": "2020-05-04T10:00:00"
+                                              }
                         """))
                 .andReturn();
 
@@ -283,16 +290,16 @@ class RoutesControllerTest {
     @Test
     void deleteRouteById_shouldReturnRoute_whenThisObjectWasDeletedFromRepository() throws Exception {
         //GIVEN
-        LocalDate date1 = LocalDate.of(2014, Month.JANUARY, 1);
-        LocalDate date2 = LocalDate.of(2024, Month.MARCH, 30);
-        LocalDate date3 = LocalDate.of(2024, Month.APRIL, 4);
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
 
-        Coords coords1 = new Coords("9", date1, "284857", "325325");
-        Coords coords2 = new Coords("8", date2, "19842798", "2343587");
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", date3));
+        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
 
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/api/routes/test-id"))
@@ -301,23 +308,24 @@ class RoutesControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                                {
-                          "id": "test-id",
-                          "coords": [
-                         {
-                         "id": "8",
-                         "date": "2024-03-30",
-                         "longitude": "19842798",
-                         "latitude": "2343587"
-                         },
-                          {
-                          "id": "9",
-                          "date":"2014-01-01",
-                          "longitude": "284857",
-                          "latitude": "325325"
-                          }],
-                          "name": "Berlin",
-                          "date": "2024-04-04"
-                        }
+                           "id": "test-id",
+                           "coords": [
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "name": "Berlin",
+                                                  "dateTime": "2024-04-04T10:30:00"
+                                              }
                                """))
                 .andReturn();
 

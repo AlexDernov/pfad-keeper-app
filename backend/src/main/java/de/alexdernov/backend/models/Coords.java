@@ -2,12 +2,14 @@ package de.alexdernov.backend.models;
 
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
 
 public record Coords(
         @Id
         String id,
-        LocalDate date,
+        LocalDateTime dateTime,
         String longitude,
         String latitude
 ) {

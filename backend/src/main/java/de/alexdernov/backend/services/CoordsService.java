@@ -36,7 +36,7 @@ public class CoordsService {
     public Coords getById(String id) {
         Optional<Coords> coordsById = coordsRepo.findById(id);
         if (coordsById.isPresent()) {
-            return new Coords(coordsById.get().id(), coordsById.get().date(), coordsById.get().longitude(), coordsById.get().latitude());
+            return new Coords(coordsById.get().id(), coordsById.get().dateTime(), coordsById.get().longitude(), coordsById.get().latitude());
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No coords with such id!"));
     }
@@ -53,6 +53,6 @@ public class CoordsService {
 
     public Coords addCoords(CoordsDto coords) {
         String id = idService.newId();
-        return coordsRepo.save(new Coords(id, coords.date(), coords.longitude(), coords.latitude()));
+        return coordsRepo.save(new Coords(id, coords.dateTime(), coords.longitude(), coords.latitude()));
     }
 }

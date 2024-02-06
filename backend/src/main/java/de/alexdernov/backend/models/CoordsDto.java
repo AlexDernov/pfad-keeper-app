@@ -1,9 +1,10 @@
 package de.alexdernov.backend.models;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 public record CoordsDto(
-        LocalDate date,
+        LocalDateTime dateTime,
         String longitude,
         String latitude
 ) {
