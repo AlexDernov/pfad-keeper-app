@@ -2,12 +2,11 @@ package de.alexdernov.backend.services;
 
 import de.alexdernov.backend.models.Route;
 import de.alexdernov.backend.models.RouteDto;
-import de.alexdernov.backend.repos.RoutesRepo;
+import de.alexdernov.backend.repos.RouteRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -15,24 +14,24 @@ import java.util.Optional;
 @Service
 public class RouteService {
 
-    private final RoutesRepo routesRepo;
+    private final RouteRepo routeRepo;
     private final IdService idService;
 
-    public RouteService(RoutesRepo booksRepo, IdService idService) {
-        this.routesRepo = booksRepo;
+    public RouteService(RouteRepo routeRepo, IdService idService) {
+        this.routeRepo = routeRepo;
         this.idService = idService;
     }
 
     public List<Route> getRoute() {
-        return routesRepo.findAll();
+        return routeRepo.findAll();
     }
 
     public Route updateRoute(Route route) {
-        return routesRepo.save(route);
+        return routeRepo.save(route);
     }
 
     public Route getById(String id) {
-        Optional<Route> routeById = routesRepo.findById(id);
+        Optional<Route> routeById = routeRepo.findById(id);
         if (routeById.isPresent()) {
             return new Route(routeById.get().id(), routeById.get().coords(), routeById.get().name(), routeById.get().dateTime());
         }
@@ -41,9 +40,9 @@ public class RouteService {
 
     public Route deleteRouteById(String id) {
 
-        Optional<Route> byId = routesRepo.findById(id);
+        Optional<Route> byId = routeRepo.findById(id);
         if (byId.isPresent()) {
-            routesRepo.delete(byId.get());
+            routeRepo.delete(byId.get());
             return byId.get();
         }
         throw (new NoSuchElementException());
@@ -52,6 +51,6 @@ public class RouteService {
     public Route addRoute(RouteDto route) {
         String id = idService.newId();
         Route routeNew = new Route(id, route.coords(), route.name(), route.dateTime());
-        return routesRepo.save(routeNew);
+        return routeRepo.save(routeNew);
     }
 }

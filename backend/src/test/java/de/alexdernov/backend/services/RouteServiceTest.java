@@ -1,16 +1,13 @@
 package de.alexdernov.backend.services;
 
 import de.alexdernov.backend.models.Coords;
-import de.alexdernov.backend.models.CoordsDto;
 import de.alexdernov.backend.models.Route;
 import de.alexdernov.backend.models.RouteDto;
-import de.alexdernov.backend.repos.RoutesRepo;
+import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.awt.print.Book;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -20,9 +17,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RouteServiceTest {
-    RoutesRepo routesRepo = Mockito.mock(RoutesRepo.class);
+    RouteRepo routeRepo = Mockito.mock(RouteRepo.class);
     IdService idService = Mockito.mock(IdService.class);
-    RouteService routeService = new RouteService(routesRepo,idService);
+    RouteService routeService = new RouteService(routeRepo,idService);
 
 
     @Test
@@ -36,7 +33,7 @@ class RouteServiceTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Mockito.when(routesRepo.findAll()).thenReturn(List.of(
+        Mockito.when(routeRepo.findAll()).thenReturn(List.of(
                 new Route("1", coordsList, "Berlin", dateTime3),
                 new Route("2", coordsList, "Berlin", dateTime2)
         ));
@@ -47,8 +44,8 @@ class RouteServiceTest {
                 new Route("1", coordsList, "Berlin", dateTime3),
                 new Route("2", coordsList, "Berlin", dateTime2)
         ),actual);
-        Mockito.verify(routesRepo, Mockito.times(1)).findAll();
-        Mockito.verifyNoMoreInteractions(routesRepo);
+        Mockito.verify(routeRepo, Mockito.times(1)).findAll();
+        Mockito.verifyNoMoreInteractions(routeRepo);
     }
 
     @Test
@@ -66,7 +63,7 @@ class RouteServiceTest {
 
         Route updatedRoute =   new Route("1", coordsList, "Berlin", dateTime3);
 
-        Mockito.when(routesRepo.save(Mockito.any())).thenReturn(updatedRoute);
+        Mockito.when(routeRepo.save(Mockito.any())).thenReturn(updatedRoute);
 
 
         //WHEN
@@ -75,8 +72,8 @@ class RouteServiceTest {
         //THEN
         assertEquals(updatedRoute, actual);
 
-        Mockito.verify(routesRepo, Mockito.times(1)).save(updatedRoute);
-        Mockito.verifyNoMoreInteractions(routesRepo);
+        Mockito.verify(routeRepo, Mockito.times(1)).save(updatedRoute);
+        Mockito.verifyNoMoreInteractions(routeRepo);
     }
 
     @Test
@@ -92,10 +89,10 @@ class RouteServiceTest {
         coordsList.add(coords1);
         coordsList.add(coords2);
         String expectedId = "1";
-        Mockito.when(routesRepo.findById(expectedId)).thenReturn(Optional.of(
+        Mockito.when(routeRepo.findById(expectedId)).thenReturn(Optional.of(
                 new Route("1", coordsList, "Berlin", dateTime3)
         ));
-        RouteService routeService = new RouteService(routesRepo,idService);
+        RouteService routeService = new RouteService(routeRepo,idService);
         //WHEN
         Route foundRoute = routeService.getById(expectedId);
         //THEN
@@ -115,12 +112,12 @@ class RouteServiceTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Mockito.when(routesRepo.findById(Mockito.any())).thenReturn(
+        Mockito.when(routeRepo.findById(Mockito.any())).thenReturn(
                 Optional.of(
                         new Route("1", coordsList, "Berlin", dateTime3)
                 ));
 
-        RouteService routeService = new RouteService(routesRepo,idService);
+        RouteService routeService = new RouteService(routeRepo,idService);
 
         //WHEN
         Route actual = routeService.deleteRouteById("1");
@@ -130,9 +127,9 @@ class RouteServiceTest {
                 new Route("1", coordsList, "Berlin", dateTime3)
                 , actual);
 
-        Mockito.verify(routesRepo, Mockito.times(1)).findById(Mockito.any());
-        Mockito.verify(routesRepo, Mockito.times(1)).delete(Mockito.any());
-        Mockito.verifyNoMoreInteractions(routesRepo);
+        Mockito.verify(routeRepo, Mockito.times(1)).findById(Mockito.any());
+        Mockito.verify(routeRepo, Mockito.times(1)).delete(Mockito.any());
+        Mockito.verifyNoMoreInteractions(routeRepo);
     }
 
     @Test
@@ -152,17 +149,17 @@ class RouteServiceTest {
 
 
         // GIVEN
-        Mockito.when(routesRepo.save(route)).thenReturn(route);
+        Mockito.when(routeRepo.save(route)).thenReturn(route);
         Mockito.when(idService.newId()).thenReturn("test-id");
 
-        RouteService bookService = new RouteService(routesRepo, idService);
+        RouteService bookService = new RouteService(routeRepo, idService);
 
 
         // WHEN
         Route actual = routeService.addRoute(routeDto);
 
         // THEN
-        Mockito.verify(routesRepo).save(route);
+        Mockito.verify(routeRepo).save(route);
         Mockito.verify(idService).newId();
 
         Route expected = new Route("test-id", coordsList, "Berlin", dateTime3);

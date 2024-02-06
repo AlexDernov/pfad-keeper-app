@@ -2,7 +2,7 @@ package de.alexdernov.backend.controller;
 
 import de.alexdernov.backend.models.Coords;
 import de.alexdernov.backend.models.Route;
-import de.alexdernov.backend.repos.RoutesRepo;
+import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.awt.print.Book;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ class RoutesControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    private RoutesRepo routesRepo;
+    private RouteRepo routeRepo;
 
     @DirtiesContext
     @Test
@@ -47,7 +45,7 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
 
         // WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/api/routes"))
@@ -94,7 +92,7 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Route route = routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        Route route = routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
         String id = route.id();
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/api/routes/{id}", id))
@@ -139,7 +137,7 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Route route = routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        Route route = routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
         String nonExistingId = "nonExistingId";
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/api/routes/{id}", nonExistingId))
@@ -163,7 +161,7 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
         // WHEN
         mvc.perform(MockMvcRequestBuilders.post("/api/routes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -230,7 +228,7 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
 
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/api/routes/test-id")
@@ -299,7 +297,7 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routesRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
 
         //WHEN
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/api/routes/test-id"))
