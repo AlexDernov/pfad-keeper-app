@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {MeineRoute} from "../types/MeineRoute.tsx";
-import map from "../../public/images/map.png"
+import map from "../images/map.png"
 import {Link} from "react-router-dom";
 
 type DataRoute={

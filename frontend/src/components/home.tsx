@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import placeholderMap from "../../public/images/placeholderMap.jpg"
+import placeholderMap from "../images/placeholderMap.jpg"
 
 export default function Home() {
     return (
