@@ -92,7 +92,7 @@ class RouteServiceTest {
         Mockito.when(routeRepo.findById(expectedId)).thenReturn(Optional.of(
                 new Route("1", coordsList, "Berlin", dateTime3)
         ));
-        RouteService routeService = new RouteService(routeRepo,idService);
+
         //WHEN
         Route foundRoute = routeService.getById(expectedId);
         //THEN
@@ -117,8 +117,6 @@ class RouteServiceTest {
                         new Route("1", coordsList, "Berlin", dateTime3)
                 ));
 
-        RouteService routeService = new RouteService(routeRepo,idService);
-
         //WHEN
         Route actual = routeService.deleteRouteById("1");
 
@@ -134,6 +132,7 @@ class RouteServiceTest {
 
     @Test
     void addRoute() {
+        // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
         LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
@@ -143,17 +142,12 @@ class RouteServiceTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        RouteDto routeDto = new RouteDto(coordsList, "Berlin", dateTime3);
 
+        RouteDto routeDto = new RouteDto(coordsList, "Berlin", dateTime3);
         Route route = new Route("test-id", coordsList, "Berlin", dateTime3);
 
-
-        // GIVEN
         Mockito.when(routeRepo.save(route)).thenReturn(route);
         Mockito.when(idService.newId()).thenReturn("test-id");
-
-        RouteService bookService = new RouteService(routeRepo, idService);
-
 
         // WHEN
         Route actual = routeService.addRoute(routeDto);
