@@ -31,8 +31,8 @@ public class RoutesController {
     }
 
     @PutMapping("/{id}")
-    public Route updateRoute(@RequestBody Route route) {
-        return routeService.updateRoute(route);
+    public Route updateRoute(@PathVariable String id, @RequestBody Route route) {
+        return routeService.updateRoute(route, id);
     }
 
     @DeleteMapping("/{id}")

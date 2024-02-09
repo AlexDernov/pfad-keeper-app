@@ -8,11 +8,10 @@ type DataRoute={
 }
 export default function RouteItem(props:Readonly<DataRoute>){
     return(
-        <StyledLink to={`/books/${props.route.id}`}>
+        <StyledLink to={`/routes/${props.route.id}`}>
             <StyledDiv>
                 <StyledH>{props.route.name}</StyledH><StylesDate>Datum: {new Date(props.route.dateTime).toLocaleDateString()}</StylesDate>
                 <StyledImg src={map} alt={"Placeholder Map"}/>
-
             </StyledDiv>
         </StyledLink>
     )
