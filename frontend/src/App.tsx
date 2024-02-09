@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import axios from "axios";
+import useSWR from "swr";
+import {Routes, Route} from "react-router-dom";
+import RoutesList from "./components/routes-list.tsx";
+import NavBar from "./components/NavBar.tsx";
+import styled from "styled-components";
+import Home from "./components/home.tsx";
+import NoPage from "./components/NoPage.tsx";
+
+const fetcher = async (url: string) => {
+    const response = await axios.get(url);
+    return response.data
+}
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const {data, error} = useSWR("/api/routes", fetcher)
+    console.log(data)
+    if (error) return <div>Error loading data</div>;
+    if (!data) return <div>Loading data...</div>;
+    return (
+        <><NavBar/>
+            <StyledDiv>
+                <Routes>
+                    <Route index element={<Home/>}/>
+                    <Route path={"/routes"} element={<RoutesList routesData={data}/>}/>
+                    <Route path={"/*"} element={<NoPage/>}/>
+                </Routes>
+            </StyledDiv>
+        </>
+    )
 }
+
+const StyledDiv = styled.div`
+    margin-top: 15vw;
+`;
 
 export default App
