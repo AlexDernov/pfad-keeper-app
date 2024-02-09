@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class RouteServiceTest {
     RouteRepo routeRepo = Mockito.mock(RouteRepo.class);
     IdService idService = Mockito.mock(IdService.class);
-    RouteService routeService = new RouteService(routeRepo,idService);
+    RouteService routeService = new RouteService(routeRepo, idService);
 
 
     @Test
-    void getRouteTest_returnListOfAllRouts() {
+    void getRouteTest_returnListOfAllRoutes() {
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
 
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
         Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
@@ -43,17 +43,17 @@ class RouteServiceTest {
         assertEquals(List.of(
                 new Route("1", coordsList, "Berlin", dateTime3),
                 new Route("2", coordsList, "Berlin", dateTime2)
-        ),actual);
+        ), actual);
         Mockito.verify(routeRepo, Mockito.times(1)).findAll();
         Mockito.verifyNoMoreInteractions(routeRepo);
     }
 
     @Test
-    void updateBookTest_returnUpdateRoute_whenRouteUpdatsSent() {
+    void updateRouteTest_returnUpdateRoute_whenRouteUpdatesSent() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
 
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
         Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
@@ -61,7 +61,7 @@ class RouteServiceTest {
         coordsList.add(coords1);
         coordsList.add(coords2);
 
-        Route updatedRoute =   new Route("1", coordsList, "Berlin", dateTime3);
+        Route updatedRoute = new Route("1", coordsList, "Berlin", dateTime3);
 
         Mockito.when(routeRepo.save(Mockito.any())).thenReturn(updatedRoute);
 
@@ -81,7 +81,7 @@ class RouteServiceTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
 
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
         Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
@@ -105,7 +105,7 @@ class RouteServiceTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
 
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
         Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
@@ -135,7 +135,7 @@ class RouteServiceTest {
         // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4,10, 30);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
 
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
         Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");

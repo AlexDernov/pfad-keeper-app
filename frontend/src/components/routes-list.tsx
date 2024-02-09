@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import RouteItem from "./route-item.tsx";
-import {MeineRoute} from "../types/MeineRoute.tsx";
+import {MyRoute} from "../types/MyRoute.tsx";
 
 type DataProps = {
-    routesData: MeineRoute[]
+    routesData: MyRoute[]
 }
 export default function RoutesList(props: Readonly<DataProps>) {
 

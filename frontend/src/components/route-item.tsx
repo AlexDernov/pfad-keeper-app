@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import {MeineRoute} from "../types/MeineRoute.tsx";
+import {MyRoute} from "../types/MyRoute.tsx";
 import map from "../images/map.png"
 import {Link} from "react-router-dom";
 
 type DataRoute={
-    route: MeineRoute
+    route: MyRoute
 }
 export default function RouteItem(props:Readonly<DataRoute>){
     return(
