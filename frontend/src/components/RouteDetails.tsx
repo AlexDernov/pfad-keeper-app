@@ -9,7 +9,7 @@ import {MyRouteDto} from "../types/MyRouteDto.tsx";
 
 type Props = {
     mutateF: KeyedMutator<any>,
-    onSubmit: (x: MyRouteDto) => void,
+    onSubmit: (route: MyRouteDto) => void,
 }
 export default function RouteDetails(props: Props) {
 
@@ -21,14 +21,14 @@ export default function RouteDetails(props: Props) {
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
 
-    async function handleEditRoute(x: MyRouteDto) {
+    async function handleEditRoute(route: MyRouteDto) {
         console.log(id);
         const response = await fetch(`/api/routes/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: x.name, dateTime: x.dateTime}),
+            body: JSON.stringify({name: route.name, dateTime: route.dateTime}),
         });
         if (response.ok) {
             await props.mutateF();

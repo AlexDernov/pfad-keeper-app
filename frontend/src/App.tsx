@@ -12,22 +12,22 @@ import RouteDetails from "./components/RouteDetails.tsx";
 import {MyRouteDto} from "./types/MyRouteDto.tsx";
 
 
-
 function App() {
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     console.log(data)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
 
-    async function handleSubmit(x:MyRouteDto) {
+    async function handleSubmit(route: MyRouteDto) {
         const response = await fetch("/api/routes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: x.name, dateTime:x.dateTime}),
+            body: JSON.stringify({name: route.name, dateTime: route.dateTime}),
         });
         if (response.ok) {
             alert(
@@ -44,7 +44,7 @@ function App() {
                 <Routes>
                     <Route index element={<Home/>}/>
                     <Route path={"/routes"} element={<RoutesList routesData={data}/>}/>
-                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={mutate} onSubmit={handleSubmit} />}/>
+                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={mutate} onSubmit={handleSubmit}/>}/>
                     <Route path={"/routes/add"} element={<NewRoute onSubmit={handleSubmit}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
                 </Routes>
