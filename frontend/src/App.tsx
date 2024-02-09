@@ -20,6 +20,7 @@ function App() {
     if (!data) return <div>Loading data...</div>;
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
+
     async function handleSubmit(x:MyRouteDto) {
         const response = await fetch("/api/routes", {
             method: "POST",
@@ -36,13 +37,14 @@ function App() {
             console.log("Not ok");
         }
     }
+
     return (
         <><NavBar/>
             <StyledDiv>
                 <Routes>
                     <Route index element={<Home/>}/>
                     <Route path={"/routes"} element={<RoutesList routesData={data}/>}/>
-                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={mutate} onSubmit={handleSubmit}/>}/>
+                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={mutate} onSubmit={handleSubmit} />}/>
                     <Route path={"/routes/add"} element={<NewRoute onSubmit={handleSubmit}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
                 </Routes>
