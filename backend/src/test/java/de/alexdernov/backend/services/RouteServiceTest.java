@@ -67,7 +67,7 @@ class RouteServiceTest {
 
 
         //WHEN
-        Route actual = routeService.updateRoute(updatedRoute);
+        Route actual = routeService.updateRoute(updatedRoute, "1");
 
         //THEN
         assertEquals(updatedRoute, actual);
