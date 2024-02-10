@@ -4,5 +4,5 @@ export type MyRoute = {
     id: string;
     coords: Coords[];
     name: string;
-    dateTime: string
+    dateTime: Date
 }

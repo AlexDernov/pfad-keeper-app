@@ -25,8 +25,8 @@ public class RouteService {
         return routeRepo.findAll();
     }
 
-    public Route updateRoute(Route route) {
-        return routeRepo.save(route);
+    public Route updateRoute(Route route, String id) {
+        return routeRepo.save(route.withId(id));
     }
 
     public Route getById(String id) {

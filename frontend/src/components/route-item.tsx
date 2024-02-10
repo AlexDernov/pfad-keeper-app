@@ -3,22 +3,21 @@ import {MyRoute} from "../types/MyRoute.tsx";
 import map from "../images/map.png"
 import {Link} from "react-router-dom";
 
-type DataRoute={
+type DataRoute = {
     route: MyRoute
 }
-export default function RouteItem(props:Readonly<DataRoute>){
-    return(
-        <StyledLink to={`/books/${props.route.id}`}>
+export default function RouteItem(props: Readonly<DataRoute>) {
+    return (
+        <StyledLink to={`/routes/${props.route.id}`}>
             <StyledDiv>
                 <StyledH>{props.route.name}</StyledH><StylesDate>Datum: {new Date(props.route.dateTime).toLocaleDateString()}</StylesDate>
                 <StyledImg src={map} alt={"Placeholder Map"}/>
-
             </StyledDiv>
         </StyledLink>
     )
 }
 
-const StylesDate =styled.p`
+const StylesDate = styled.p`
     margin: 1vw 0 0 0;
     max-height: 8vh;
     max-font-size: 1.8vw;
@@ -40,12 +39,12 @@ const StyledH = styled.h2`
     font-style: normal`;
 
 const StyledLink = styled(Link)`
-text-decoration: none;
-    padding:0;
+    text-decoration: none;
+    padding: 0;
     cursor: pointer;
     min-width: 30vw;
     max-width: 90vw;
-    margin:0`;
+    margin: 0`;
 
 const StyledDiv = styled.div`
     display: flex;
@@ -54,7 +53,7 @@ const StyledDiv = styled.div`
     align-items: center;
     box-shadow: 0 2px 4px 0 rgba(38, 59, 56, 0.10), 0 0 0 1.5px rgba(38, 50, 56, 0.10);
     margin: 0.25vw 0 0.25vw 0;
-    
+
     min-width: 30vw;
     max-width: 500px;
     border-radius: 0.375rem;

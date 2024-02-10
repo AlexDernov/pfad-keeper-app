@@ -82,7 +82,7 @@ jobs:
     needs: push-to-docker-hub
     environment:
       name: Library # Capstone Project name
-      url: https://home-library-xpy7.onrender.com # Link to deployment
+      url: https://pfad-keeper.onrender.com # Link to deployment
     steps:
       - name: Trigger Render.com Deployment
         run: |
