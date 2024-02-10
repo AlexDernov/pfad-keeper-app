@@ -17,12 +17,12 @@ export default function RouteDetails(props: Props) {
     const navigate = useNavigate()
     const {id} = useParams();
     const {data, error} = useSWR(`/api/routes/${id}`, fetcher)
-    console.log(data)
+
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
 
     async function handleEditRoute(route: MyRouteDto) {
-        console.log(id);
+
         const response = await fetch(`/api/routes/${id}`, {
             method: "PUT",
             headers: {

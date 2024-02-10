@@ -19,7 +19,6 @@ export default function RouteForm(props: PropsForm) {
 
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
-        console.log(JSON.stringify({name, dateTime}))
         props.onSubmit({name, dateTime});
         navigate("/routes")
 
