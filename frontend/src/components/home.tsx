@@ -1,7 +1,13 @@
 import styled from "styled-components";
-import placeholderMap from "../images/placeholderMap.jpg"
+import { MapContainer, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+//import LeafletControlGeocoder from "../LeafletControlGeocoder";
+import {LatLngExpression} from "leaflet";
+import Routing from "../Routing.tsx";
+
 
 export default function Home() {
+    const position:LatLngExpression | undefined = [51.505, -0.09];
     return (
         <StyledDiv>
             <h2>Willkommen auf unserer Webseite für die Planung, Speicherung und Bearbeitung von Wanderrouten!</h2>
@@ -17,15 +23,18 @@ export default function Home() {
 
                 Begib dich auf die Reise und entdecke die Natur auf eine ganz neue Art und Weise – mit unserer Webseite
                 für Wanderroutenplanung!</p>
-            <StyledImg src={placeholderMap} alt={"Placeholder Map"}/>
+            <MapContainer center={position} zoom={13} style={{ height: "50vh", color: "black"}} >
+                {/*<LeafletControlGeocoder />*/}
+                <Routing/>
+
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
+          </a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+            </MapContainer>
         </StyledDiv>
     )
 }
 const StyledDiv = styled.div`
 `;
-const StyledImg = styled.img`
-    margin: 1vw 0 1vw 0;
-    height: auto;
-    width: auto;
-    max-width: 99%;
-    object-fit: contain`;

@@ -12,7 +12,9 @@ import RouteDetails from "./components/RouteDetails.tsx";
 import {MyRouteDto} from "./types/MyRouteDto.tsx";
 
 
+
 function App() {
+
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     console.log(data)
     if (error) return <div>Error loading data</div>;
