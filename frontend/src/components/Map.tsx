@@ -1,13 +1,26 @@
 import L from "leaflet";
 import 'leaflet-routing-machine';
-import {useMap} from "react-leaflet";
-import "leaflet-control-geocoder/dist/Control.Geocoder.css";
-import "leaflet-control-geocoder/dist/Control.Geocoder.js";
-import {useEffect} from "react";
 
-export default function Routing() {
-    const map = useMap();
-    useEffect(() => {
+export default function Map() {
+    const baseLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?",{
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap</a> contributors'
+    });
+    <div id="map"></div>
+    const map = L.map(`map`,{
+        center:[52.509663, 13.376481],
+        zoom: 13,
+        zoomControl: false,
+        layers:[baseLayer],
+        contextmenu: true,
+        contextmenuItems: [{
+            text:`Start from here`,
+            callback: startHere
+        }, {
+            text:`Go to here`,
+            callback: goHere
+        }]
+    });
+
 
         const control = L.Routing.control({
             waypoints: [
@@ -49,12 +62,16 @@ export default function Routing() {
                 missingRouteTolerance: 0,
             },
 
-           geocoder: L.Control.Geocoder.nominatim(),
+            //geocoder: L.Control.Geocoder.nominatim(),
             routeWhileDragging: true,
         }).addTo(map);
+    function startHere (e){
+        control.spliceWaypoints(0,1,e.latlng)
+    }
+    function goHere(e){
+        control.spliceWaypoints(control.getWaypoints().length -1, 1, e.latlng);
+    }
         return ()=> {
             map.removeControl(control);
         }
-    }, [map]);
-    return null;
 }

@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 //import LeafletControlGeocoder from "../LeafletControlGeocoder";
 import {LatLngExpression} from "leaflet";
 import Routing from "../Routing.tsx";
+import LeafletControlGeocoder from "../LeafletControlGeocoder.tsx";
 
 
 export default function Home() {
@@ -23,9 +24,10 @@ export default function Home() {
 
                 Begib dich auf die Reise und entdecke die Natur auf eine ganz neue Art und Weise – mit unserer Webseite
                 für Wanderroutenplanung!</p>
-            <MapContainer center={position} zoom={13} style={{ height: "50vh", color: "black"}} >
-                {/*<LeafletControlGeocoder />*/}
-                <Routing/>
+
+              <MapContainer center={position} zoom={13} style={{ height: "50vh", color: "black"}} >
+                  {/* <LeafletControlGeocoder />**/}
+                  <Routing/>
 
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
