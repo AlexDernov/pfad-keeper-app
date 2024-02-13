@@ -1,11 +1,14 @@
-import L from "leaflet";
+import L, {Control} from "leaflet";
 import 'leaflet-routing-machine';
 import {useMap} from "react-leaflet";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.js";
-import {useEffect} from "react";
+import {Dispatch, SetStateAction, useEffect} from "react";
+type Props={
+    setter: Dispatch<SetStateAction<Control | undefined>>
+}
+export default function Routing(props:Props) {
 
-export default function Routing() {
     const map = useMap();
     useEffect(() => {
 
@@ -14,31 +17,6 @@ export default function Routing() {
                 L.latLng(52.509663, 13.376481),
                 L.latLng(52.521992, 13.413244)
             ],
-            /*createMarker: function (i:number, waypoints: L.Routing.Waypoint[] | L.LatLng[] | undefined, n:number){
-                const startEndIcon = L.icon({
-                    iconUrl: `./images/startIcon.svg`,
-                    className: "",
-                    iconSize: [25, 25],
-                    iconAnchor: [0, 25],
-                });
-                const betweenIcon = L.divIcon({
-                    iconUrl: `./images/betweenIcon.svg`,
-                    className: "",
-                    iconSize: [25, 25],
-                    iconAnchor: [0, 25],
-                });
-                if(i == 0){
-                   let marker_icon = startEndIcon
-                } else if (i > 0 && i< n-1){
-                   let marker_icon = startEndIcon
-                } else if (i == n-1){
-                   let marker_icon = betweenIcon
-                }
-                return L.marker(waypoints?.latLng, {
-                    draggable: true,
-                    icon: marker_icon
-                });
-            },*/
             showAlternatives: true,
             lineOptions: {
                 styles: [
@@ -48,13 +26,14 @@ export default function Routing() {
                 ], extendToWaypoints: true,
                 missingRouteTolerance: 0,
             },
-
-           geocoder: L.Control.Geocoder.nominatim(),
+            geocoder: L.Control.Geocoder.nominatim(),
             routeWhileDragging: true,
         }).addTo(map);
-        return ()=> {
+        props.setter(control);
+        return () => {
             map.removeControl(control);
         }
     }, [map]);
+
     return null;
 }
