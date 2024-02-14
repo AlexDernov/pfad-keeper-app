@@ -1,16 +1,30 @@
 import styled from "styled-components";
-import { MapContainer, TileLayer } from "react-leaflet";
+import {MapContainer, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 //import LeafletControlGeocoder from "../LeafletControlGeocoder";
-import {Control, LatLngExpression} from "leaflet";
+import {Control, Coords, LatLngExpression} from "leaflet";
 import Routing from "../Routing.tsx";
-import LeafletControlGeocoder from "../LeafletControlGeocoder.tsx";
 import {useState} from "react";
+
 
 
 export default function Home() {
     const [control, setControl] = useState<Control>()
-    const position:LatLngExpression | undefined = [51.505, -0.09];
+    const [coords, setCoords] = useState<Coords[]>([])
+    const position: LatLngExpression | undefined = [51.505, -0.09];
+
+    function getCoords() {
+        const waypoints = control?.getWaypoints();
+        if (waypoints) {
+            const extractedCoords = waypoints.map(coord => ({
+                latitude: coord.latLng.lat,
+                longitude: coord.latLng.lng
+            }));
+            setCoords(extractedCoords);
+            return extractedCoords
+        }
+        return []
+    }
 
     return (
         <StyledDiv>
@@ -28,17 +42,23 @@ export default function Home() {
                 Begib dich auf die Reise und entdecke die Natur auf eine ganz neue Art und Weise – mit unserer Webseite
                 für Wanderroutenplanung!</p>
 
-            <MapContainer center={position} zoom={13} style={{height: "50vh", color: "black"}}>
-                {/* <LeafletControlGeocoder />**/}
+            <MapContainer center={position} zoom={13} style={{height: "50vh", color: "black"}} contextmenu={true}
+            contextmenuItems={ [{
+            text:"Start from here",
+            //callback: startHere
+        }, {
+            text:`Go to here`,
+           // callback: goHere
+        }]}>
                 <Routing setter={setControl}/>
-
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
           </a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
             </MapContainer>
-            <button type="button" onClick={()=>{console.log(control?.getWaypoints())}}>Save</button>
+            <button type="button" onClick={()=>{console.log(getCoords())}}>Coords speichern</button>
+
         </StyledDiv>
     )
 }

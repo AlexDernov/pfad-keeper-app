@@ -29,7 +29,7 @@ function App() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: route.name, dateTime: route.dateTime}),
+            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords: route.coords}),
         });
         if (response.ok) {
             alert(
