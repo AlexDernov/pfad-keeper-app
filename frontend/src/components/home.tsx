@@ -11,7 +11,7 @@ import {useState} from "react";
 export default function Home() {
     const [control, setControl] = useState<Control>()
     const [coords, setCoords] = useState<Coords[]>([])
-    const position: LatLngExpression | undefined = [51.505, -0.09];
+    const position: LatLngExpression | undefined = [51.09, 10.27];
 
     function getCoords() {
         const waypoints = control?.getWaypoints();
@@ -42,7 +42,7 @@ export default function Home() {
                 Begib dich auf die Reise und entdecke die Natur auf eine ganz neue Art und Weise – mit unserer Webseite
                 für Wanderroutenplanung!</p>
 
-            <MapContainer center={position} zoom={13} style={{height: "50vh", color: "black"}} contextmenu={true}
+            <MapContainer center={position} zoom={5} style={{height: "50vh", color: "black"}} contextmenu={true}
             contextmenuItems={ [{
             text:"Start from here",
             //callback: startHere

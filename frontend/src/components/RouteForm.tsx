@@ -5,7 +5,6 @@ import React, {ChangeEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
 import {Control, Coords, LatLngExpression} from "leaflet";
-import StyledMap from "./MapContainer.tsx";
 import "leaflet/dist/leaflet.css";
 import {MapContainer, TileLayer} from "react-leaflet";
 import Routing from "../Routing.tsx";
@@ -22,7 +21,7 @@ export default function RouteForm(props: PropsForm) {
     const [dateTime, setDateTime] = useState<Date>(new Date());
     const [control, setControl] = useState<Control>()
     const [coords, setCoords] =useState<Coords[]>([])
-    const position: LatLngExpression | undefined = [51.505, -0.09];
+    const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
 
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
@@ -45,8 +44,8 @@ export default function RouteForm(props: PropsForm) {
 
     return (
         <>
-            <section>
-                <StyledMapContainer center={position} zoom={13} contextmenu={true}
+
+                <StyledMapContainer center={position} zoom={5} contextmenu={true}
                                     contextmenuItems={[{
                                         text: "Start from here",
                                         //callback: startHere
@@ -61,11 +60,11 @@ export default function RouteForm(props: PropsForm) {
                     />
                     <Routing setter={setControl}/>
                 </StyledMapContainer>
-                <button type="button" onClick={() => {
+                <StyledButton type="button" onClick={() => {
                     console.log(getCoords())
                 }}>Coords speichern
-                </button>
-            </section>
+                </StyledButton>
+
             <StyledForm onSubmit={handleSubmit}>
                 <legend>{props.isEdit ? "Edit die Route" : "Neue Route"}</legend>
 
@@ -83,7 +82,7 @@ export default function RouteForm(props: PropsForm) {
                                max="2080-01-01"/>
                         <span className="validity"/></label>
                 </StyledSection>
-                <button type={"submit"}>Speichern</button>
+                <StyledButton type={"submit"}>Route speichern</StyledButton>
             </StyledForm>
         </>
     )
@@ -101,11 +100,24 @@ const StyledSection = styled.section`
     align-items: start;
 `;
 
-const StyledImg = styled.img`
-    width: 70vw`;
-
 const StyledMapContainer = styled(MapContainer)`
     position: relative;
+    margin: 0;
     width: 100vw !important;
-    height: 60vh !important;
+    height: 70vh !important;
+`;
+const StyledButton = styled.button`
+    color: #ffffff;
+    background-color: #1c859c;
+    border-radius: 0.975rem;
+    padding: 1vw 1.5vw;
+    font-size: 1vw;
+    font-weight: 500;
+    margin: 0.5vw 1vw;
+    cursor: pointer;
+    &:hover{
+        padding: 0.5vw 1vw;
+        font-size: 1.6vw;
+        margin: 0.55vw 0.5vw;
+    }
 `;

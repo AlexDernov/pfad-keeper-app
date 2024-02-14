@@ -1,10 +1,15 @@
 import {fetcher} from "./fetcher.tsx";
 import useSWR, {KeyedMutator} from "swr";
 import {useNavigate, useParams} from "react-router-dom";
-import map from "../images/map.png"
+import "leaflet/dist/leaflet.css";
 import RouteForm from "./RouteForm.tsx";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
+import {MapContainer, TileLayer, useMap} from "react-leaflet";
+import L, {Control, Coords, LatLngExpression} from "leaflet";
+import Routing from "../Routing.tsx";
+import styled from "styled-components";
+import RouteLine from "./RouteLine.tsx";
 
 
 type Props = {
@@ -13,6 +18,7 @@ type Props = {
 }
 export default function RouteDetails(props: Props) {
 
+    const position: LatLngExpression | undefined = [51.09, 10.27];
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const {id} = useParams();
@@ -20,6 +26,8 @@ export default function RouteDetails(props: Props) {
 
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
+
+
 
     async function handleEditRoute(route: MyRouteDto) {
 
@@ -52,7 +60,23 @@ export default function RouteDetails(props: Props) {
 
     return (
         <>
-            <img src={map} alt={"map"}/>
+
+            <StyledMapContainer center={position} zoom={5} contextmenu={true}
+                                contextmenuItems={[{
+                                    text: "Start from here",
+                                    //callback: startHere
+                                }, {
+                                    text: `Go to here`,
+                                    // callback: goHere
+                                }]}>
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
+          </a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <RouteLine coords={data.coords}/>
+            </StyledMapContainer>
+
             <h2>Ort: {data.name}</h2>
             <p>Datum: {new Date(data.dateTime).toLocaleDateString()}</p>
             <div>
@@ -89,3 +113,9 @@ export default function RouteDetails(props: Props) {
         </>
     )
 }
+const StyledMapContainer = styled(MapContainer)`
+    position: relative;
+    margin: 0;
+    width: 100vw !important;
+    height: 70vh !important;
+`;
