@@ -1,7 +1,7 @@
-import {Coords} from "leaflet";
+import {MyCoords} from "./MyCoords.tsx";
 
 export type MyRouteDto = {
-    coords: Coords[]
+    coords: MyCoords[]
     name: string,
     dateTime: Date
 }

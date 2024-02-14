@@ -1,46 +1,50 @@
 import '../index.css'
 //import map from "../images/map.png"
 import styled from "styled-components";
-import React, {ChangeEvent, useState} from "react";
+import  {ChangeEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
-import {Control, Coords, LatLngExpression} from "leaflet";
+import {Control, LatLngExpression} from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {MapContainer, TileLayer} from "react-leaflet";
 import Routing from "../Routing.tsx";
+
+import {MyCoords} from "../types/MyCoords.tsx";
 
 
 type PropsForm = {
     name: string;
     date: string;
-    isEdit: boolean
+    coords: MyCoords[];
+    isEdit: boolean;
     onSubmit: (route: MyRouteDto) => void;
 }
 export default function RouteForm(props: PropsForm) {
-    const [name, setName] = useState<string>("");
-    const [dateTime, setDateTime] = useState<Date>(new Date());
+    const [name, setName] = useState<string>(props.name);
+    const [dateTime, setDateTime] = useState<Date>(new Date(props.date));
     const [control, setControl] = useState<Control>()
-    const [coords, setCoords] =useState<Coords[]>([])
+
     const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
 
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
-        props.onSubmit({name, dateTime, coords});
-        navigate("/routes")
-
-    }
-    function getCoords() {
-        const waypoints = control?.getWaypoints();
+        //@ts-expect-error Library
+        const waypoints:{latLng:L.LatLng}[] = control?.getWaypoints();
         if (waypoints) {
             const extractedCoords = waypoints.map(coord => ({
-                latitude: coord.latLng.lat,
-                longitude: coord.latLng.lng
+                latitude: coord.latLng.lat.toString(),
+                longitude: coord.latLng.lng.toString()
             }));
-            setCoords(extractedCoords);
-            return extractedCoords
-        } return []
+
+            props.onSubmit({name, dateTime, coords: extractedCoords});
+            navigate("/routes")
+            console.log(`RouteForm"${name}`);
+        } else{
+            alert("Eine Route soll ausgewählt sein!")
+        }
     }
+
 
     return (
         <>
@@ -58,10 +62,10 @@ export default function RouteForm(props: PropsForm) {
           </a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <Routing setter={setControl}/>
+                    <Routing setter={setControl} coords={props.coords}/>
+
                 </StyledMapContainer>
                 <StyledButton type="button" onClick={() => {
-                    console.log(getCoords())
                 }}>Coords speichern
                 </StyledButton>
 

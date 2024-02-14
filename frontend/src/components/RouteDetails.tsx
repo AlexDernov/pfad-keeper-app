@@ -22,7 +22,7 @@ export default function RouteDetails(props: Props) {
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const {id} = useParams();
-    const {data, error} = useSWR(`/api/routes/${id}`, fetcher)
+    const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
 
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
@@ -30,15 +30,16 @@ export default function RouteDetails(props: Props) {
 
 
     async function handleEditRoute(route: MyRouteDto) {
-
+console.log(`Route Details"${route.name}`);
         const response = await fetch(`/api/routes/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: route.name, dateTime: route.dateTime}),
+            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords:route.coords}),
         });
         if (response.ok) {
+            await mutate();
             await props.mutateF();
             setIsEditMode(false);
         }
@@ -60,7 +61,10 @@ export default function RouteDetails(props: Props) {
 
     return (
         <>
-
+        {isEditMode?
+            <RouteForm name={data.name} date={data.dateTime} isEdit={isEditMode} onSubmit={handleEditRoute} coords={data.coords}/>
+        :(
+            <>
             <StyledMapContainer center={position} zoom={5} contextmenu={true}
                                 contextmenuItems={[{
                                     text: "Start from here",
@@ -78,36 +82,31 @@ export default function RouteDetails(props: Props) {
             </StyledMapContainer>
 
             <h2>Ort: {data.name}</h2>
-            <p>Datum: {new Date(data.dateTime).toLocaleDateString()}</p>
-            <div>
-                {isEditMode && (
-                    <RouteForm name={data.name} date={data.dateTime} isEdit={isEditMode} onSubmit={handleEditRoute}/>
-                )}
-            </div>
+            <p>Datum: {new Date(data.dateTime).toLocaleDateString()}</p></>)}
 
             {!isEditMode ? (
-                <button
+                <StyledButton
                     type="button"
                     onClick={() => {
                         setIsEditMode(!isEditMode);
                     }}
                 >
                     Edit
-                </button>
+                </StyledButton>
             ) : null}
             {!isEditMode ? (
-                <button type="button" onClick={handleDeleteRoute}>
+                <StyledButton type="button" onClick={handleDeleteRoute}>
                     Delete
-                </button>
+                </StyledButton>
             ) : (
-                <button
+                <StyledButton
                     type="button"
                     onClick={() => {
                         setIsEditMode(!isEditMode);
                     }}
                 >
                     Cancel
-                </button>
+                </StyledButton>
             )}
 
         </>
@@ -118,4 +117,19 @@ const StyledMapContainer = styled(MapContainer)`
     margin: 0;
     width: 100vw !important;
     height: 70vh !important;
+`;
+const StyledButton = styled.button`
+    color: #ffffff;
+    background-color: #1c859c;
+    border-radius: 0.975rem;
+    padding: 1vw 1.5vw;
+    font-size: 1vw;
+    font-weight: 500;
+    margin: 0.5vw 1vw;
+    cursor: pointer;
+    &:hover{
+        padding: 0.5vw 1vw;
+        font-size: 1.6vw;
+        margin: 0.55vw 0.5vw;
+    }
 `;

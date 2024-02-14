@@ -6,9 +6,11 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import {Dispatch, SetStateAction, useEffect} from "react";
+import {MyCoords} from "./types/MyCoords.tsx";
 
 type Props = {
     setter: Dispatch<SetStateAction<Control | undefined>>
+coords:MyCoords[]
 }
 export default function Routing(props: Props) {
 
@@ -16,10 +18,9 @@ export default function Routing(props: Props) {
     useEffect(() => {
 
         const control = L.Routing.control({
-            waypoints: [
-                L.latLng(0, 0),
-                L.latLng(0, 0)
-            ],
+            waypoints: props.coords.map((coord) =>
+                L.latLng(parseFloat(coord.latitude), parseFloat(coord.longitude)))
+            ,
             showAlternatives: false,
             lineOptions: {
                 styles: [
