@@ -6,9 +6,8 @@ import RouteForm from "./RouteForm.tsx";
 import  {useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
 import {MapContainer, TileLayer} from "react-leaflet";
-import L, {LatLngExpression} from "leaflet";
+import {LatLngExpression} from "leaflet";
 import styled from "styled-components";
-
 import Routing from "../Routing.tsx";
 
 
@@ -18,8 +17,6 @@ type Props = {
 }
 export default function RouteDetails(props: Props) {
     const position: LatLngExpression | undefined = [51.09, 10.27];
-    //const emptyControl: React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>> = undefined;
-    const [control, setControl] = useState<L.Routing.Control>()
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const {id} = useParams();
@@ -78,7 +75,7 @@ export default function RouteDetails(props: Props) {
           </a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <Routing setter={setControl} coords={data.coords} planOn={false}/>
+                            <Routing setter={undefined} coords={data.coords} planOn={false}/>
                         </StyledMapContainer>
 
                         <StyledH2>{data.name}</StyledH2>

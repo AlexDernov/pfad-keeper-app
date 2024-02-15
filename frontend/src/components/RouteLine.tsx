@@ -37,6 +37,7 @@ export default function RouteLine(props: Props) {
             show: false,
             totalDistanceRoundingSensitivity: 1,
             routeWhileDragging: false,
+
         }).addTo(map);
         setControl(control);
         return () => {

@@ -10,7 +10,7 @@ import React, {useEffect, useState} from "react";
 import {MyCoords} from "./types/MyCoords.tsx";
 
 type Props = {
-    setter: React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>>;
+    setter: React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>> | undefined;
     coords: MyCoords[],
     planOn: boolean
 }
@@ -46,8 +46,11 @@ export default function Routing(props: Props) {
             geocoder: props.planOn ? L.Control.Geocoder.nominatim() : null,
             routeWhileDragging: props.planOn,
         }).addTo(map);
-        { props.planOn?
-        props.setter(control):setControl(control);}
+        if (props.setter) {
+            props.setter(control)
+        } else {
+            setControl(control);
+        }
         return () => {
             map.removeControl(control);
         }
