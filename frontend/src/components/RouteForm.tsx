@@ -61,7 +61,7 @@ export default function RouteForm(props: PropsForm) {
           </a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <StyledRouting setter={setControl} coords={props.coords}/>
+                <StyledRouting setter={setControl} coords={props.coords} planOn={true}/>
 
             </StyledMapContainer>
 

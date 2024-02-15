@@ -17,7 +17,9 @@ function App() {
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-
+async function handelMutate(){
+    await mutate();
+}
     async function handleSubmit(route: MyRouteDto) {
         const response = await fetch("/api/routes", {
             method: "POST",
@@ -41,7 +43,7 @@ function App() {
                 <Routes>
                     <Route index element={<Home/>}/>
                     <Route path={"/routes"} element={<RoutesList routesData={data}/>}/>
-                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={mutate} onSubmit={handleSubmit}/>}/>
+                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} onSubmit={handleSubmit}/>}/>
                     <Route path={"/routes/add"} element={<NewRoute onSubmit={handleSubmit}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
                 </Routes>

@@ -1,23 +1,25 @@
 import {fetcher} from "./fetcher.tsx";
-import useSWR, {KeyedMutator} from "swr";
+import useSWR from "swr";
 import {useNavigate, useParams} from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import RouteForm from "./RouteForm.tsx";
-import {useState} from "react";
+import  {useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
 import {MapContainer, TileLayer} from "react-leaflet";
-import {LatLngExpression} from "leaflet";
+import L, {LatLngExpression} from "leaflet";
 import styled from "styled-components";
-import RouteLine from "./RouteLine.tsx";
+
+import Routing from "../Routing.tsx";
 
 
 type Props = {
-    mutateF: KeyedMutator<any>,
+    mutateF: () => void,
     onSubmit: (route: MyRouteDto) => void,
 }
 export default function RouteDetails(props: Props) {
-
     const position: LatLngExpression | undefined = [51.09, 10.27];
+    //const emptyControl: React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>> = undefined;
+    const [control, setControl] = useState<L.Routing.Control>()
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const {id} = useParams();
@@ -37,7 +39,7 @@ export default function RouteDetails(props: Props) {
         });
         if (response.ok) {
             await mutate();
-            await props.mutateF();
+            props.mutateF();
             setIsEditMode(false);
         }
     }
@@ -51,7 +53,7 @@ export default function RouteDetails(props: Props) {
         }
 
         if (response.ok) {
-            await props.mutateF();
+            props.mutateF();
             navigate("/routes")
         }
     }
@@ -76,7 +78,7 @@ export default function RouteDetails(props: Props) {
           </a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <RouteLine coords={data.coords}/>
+                            <Routing setter={setControl} coords={data.coords} planOn={false}/>
                         </StyledMapContainer>
 
                         <StyledH2>{data.name}</StyledH2>
