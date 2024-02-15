@@ -12,16 +12,11 @@ import RouteDetails from "./components/RouteDetails.tsx";
 import {MyRouteDto} from "./types/MyRouteDto.tsx";
 
 
-
 function App() {
 
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
-    console.log(`Mutate: ${mutate}`)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-
 
     async function handleSubmit(route: MyRouteDto) {
         const response = await fetch("/api/routes", {

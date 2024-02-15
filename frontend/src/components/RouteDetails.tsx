@@ -28,7 +28,6 @@ export default function RouteDetails(props: Props) {
 
 
     async function handleEditRoute(route: MyRouteDto) {
-        console.log(`Route Details"${route.name}`);
         const response = await fetch(`/api/routes/${id}`, {
             method: "PUT",
             headers: {
@@ -115,18 +114,18 @@ const StyledH2 = styled.h2`
     font-size: 3vw;
     margin: 4vw 0 1vw 0;
 `;
-const StyledP =styled.p`
+const StyledP = styled.p`
     margin: 0 0 1vw 0;
     font-size: 2.5vw;
 `;
 
 const StyledDetails = styled.div`
-display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
 `;
-const StyledDiv =styled.div`
-`
+const StyledDiv = styled.div`
+    `
 ;
 const StyledMapContainer = styled(MapContainer)`
     position: relative;

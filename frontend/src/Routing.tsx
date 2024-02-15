@@ -10,8 +10,8 @@ import React, {useEffect} from "react";
 import {MyCoords} from "./types/MyCoords.tsx";
 
 type Props = {
-    setter:  React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>>
-coords:MyCoords[]
+    setter: React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>>
+    coords: MyCoords[]
 }
 export default function Routing(props: Props) {
 

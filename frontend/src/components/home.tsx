@@ -4,7 +4,6 @@ import "leaflet/dist/leaflet.css";
 import {LatLngExpression} from "leaflet";
 
 
-
 export default function Home() {
     const position: LatLngExpression | undefined = [51.09, 10.27];
 
@@ -25,13 +24,13 @@ export default function Home() {
                 für Wanderroutenplanung!</p>
 
             <MapContainer center={position} zoom={5} style={{height: "50vh", color: "black"}} contextmenu={true}
-            contextmenuItems={ [{
-            text:"Start from here",
-            //callback: startHere
-        }, {
-            text:`Go to here`,
-           // callback: goHere
-        }]}>
+                          contextmenuItems={[{
+                              text: "Start from here",
+                              //callback: startHere
+                          }, {
+                              text: `Go to here`,
+                              // callback: goHere
+                          }]}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
           </a> contributors'

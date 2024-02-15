@@ -8,13 +8,12 @@ type Props = {
     coords: MyCoords[]
 }
 export default function RouteLine(props: Props) {
-const [control, setControl]=useState<L.Routing.Control>();
+    const [control, setControl] = useState<L.Routing.Control>();
 
-useEffect(()=>{
-    control?.setWaypoints(props.coords.map((coord) =>
-        L.latLng(parseFloat(coord.latitude), parseFloat(coord.longitude))))
-    console.log(props.coords)
-}, [props.coords]);
+    useEffect(() => {
+        control?.setWaypoints(props.coords.map((coord) =>
+            L.latLng(parseFloat(coord.latitude), parseFloat(coord.longitude))))
+    }, [props.coords]);
 
 
     const map = useMap();
@@ -35,11 +34,11 @@ useEffect(()=>{
                 missingRouteTolerance: 1,
             },
             addWaypoints: false,
-            show:false,
+            show: false,
             totalDistanceRoundingSensitivity: 1,
             routeWhileDragging: false,
         }).addTo(map);
-setControl(control);
+        setControl(control);
         return () => {
             map.removeControl(control);
         }
