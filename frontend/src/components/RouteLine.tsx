@@ -1,13 +1,14 @@
 import {useMap} from "react-leaflet";
 import {useEffect, useState} from "react";
-import L, {Control} from "leaflet";
+import "../index.css";
+import L from "leaflet";
 import {MyCoords} from "../types/MyCoords.tsx";
 
 type Props = {
     coords: MyCoords[]
 }
 export default function RouteLine(props: Props) {
-const [control, setControl]=useState<Control>();
+const [control, setControl]=useState<L.Routing.Control>();
 
 useEffect(()=>{
     control?.setWaypoints(props.coords.map((coord) =>

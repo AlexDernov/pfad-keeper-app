@@ -1,15 +1,16 @@
-import L, {Control} from "leaflet";
+import L from "leaflet";
 import 'leaflet-routing-machine';
 import {useMap} from "react-leaflet";
+import './index.css'
 import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import {Dispatch, SetStateAction, useEffect} from "react";
+import React, {useEffect} from "react";
 import {MyCoords} from "./types/MyCoords.tsx";
 
 type Props = {
-    setter: Dispatch<SetStateAction<Control | undefined>>
+    setter:  React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>>
 coords:MyCoords[]
 }
 export default function Routing(props: Props) {
@@ -26,12 +27,13 @@ export default function Routing(props: Props) {
                 styles: [
                     {color: "black", opacity: 0.15, weight: 9},
                     {color: "white", opacity: 0.8, weight: 6},
-                    {color: "blue", opacity: 0.5, weight: 2},
+                    {color: "blue", opacity: 0.5, weight: 5},
                 ],
                 extendToWaypoints: true,
                 missingRouteTolerance: 1,
             },
             addWaypoints: true,
+            //@ts-expect-error Library
             geocoder: L.Control.Geocoder.nominatim(),
             routeWhileDragging: true,
         }).addTo(map);

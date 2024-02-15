@@ -1,30 +1,12 @@
 import styled from "styled-components";
 import {MapContainer, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-//import LeafletControlGeocoder from "../LeafletControlGeocoder";
-import {Control, Coords, LatLngExpression} from "leaflet";
-import Routing from "../Routing.tsx";
-import {useState} from "react";
+import {LatLngExpression} from "leaflet";
 
 
 
 export default function Home() {
-    const [control, setControl] = useState<Control>()
-    const [coords, setCoords] = useState<Coords[]>([])
     const position: LatLngExpression | undefined = [51.09, 10.27];
-
-    function getCoords() {
-        const waypoints = control?.getWaypoints();
-        if (waypoints) {
-            const extractedCoords = waypoints.map(coord => ({
-                latitude: coord.latLng.lat,
-                longitude: coord.latLng.lng
-            }));
-            setCoords(extractedCoords);
-            return extractedCoords
-        }
-        return []
-    }
 
     return (
         <StyledDiv>
@@ -50,14 +32,12 @@ export default function Home() {
             text:`Go to here`,
            // callback: goHere
         }]}>
-                <Routing setter={setControl}/>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
           </a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
             </MapContainer>
-            <button type="button" onClick={()=>{console.log(getCoords())}}>Coords speichern</button>
 
         </StyledDiv>
     )

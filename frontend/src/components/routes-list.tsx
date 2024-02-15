@@ -19,6 +19,7 @@ export default function RoutesList(props: Readonly<DataProps>) {
     )
 }
 const StyledH2 = styled.h2`
+    font-size: 3vw ;
 `;
 const StyledDiv = styled.div`
     display: flex;
@@ -31,4 +32,4 @@ const StyledDivList = styled.div`
     flex-wrap: wrap;
     justify-content: center;
     margin: 0;
-    gap: 4rem`;
+    gap: 2rem`;

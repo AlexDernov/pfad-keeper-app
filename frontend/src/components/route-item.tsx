@@ -10,7 +10,8 @@ export default function RouteItem(props: Readonly<DataRoute>) {
     return (
         <StyledLink to={`/routes/${props.route.id}`}>
             <StyledDiv>
-                <StyledH>{props.route.name}</StyledH><StylesDate>Datum: {new Date(props.route.dateTime).toLocaleDateString()}</StylesDate>
+                <StyledH>{props.route.name}</StyledH>
+                <StylesDate>Datum: <i>{new Date(props.route.dateTime).toLocaleDateString()}</i></StylesDate>
                 <StyledImg src={map} alt={"Placeholder Map"}/>
             </StyledDiv>
         </StyledLink>
@@ -18,9 +19,9 @@ export default function RouteItem(props: Readonly<DataRoute>) {
 }
 
 const StylesDate = styled.p`
-    margin: 1vw 0 0 0;
+    margin: 0.3vw 0 0 0;
     max-height: 8vh;
-    max-font-size: 1.8vw;
+    max-font-size: 2.5vw;
     color: rgba(14, 16, 14, 0.84);
     font-style: normal`;
 

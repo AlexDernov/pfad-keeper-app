@@ -3,11 +3,10 @@ import useSWR, {KeyedMutator} from "swr";
 import {useNavigate, useParams} from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import RouteForm from "./RouteForm.tsx";
-import React, {useEffect, useState} from "react";
+import {useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
-import {MapContainer, TileLayer, useMap} from "react-leaflet";
-import L, {Control, Coords, LatLngExpression} from "leaflet";
-import Routing from "../Routing.tsx";
+import {MapContainer, TileLayer} from "react-leaflet";
+import {LatLngExpression} from "leaflet";
 import styled from "styled-components";
 import RouteLine from "./RouteLine.tsx";
 
@@ -28,15 +27,14 @@ export default function RouteDetails(props: Props) {
     if (!data) return <div>Loading data...</div>;
 
 
-
     async function handleEditRoute(route: MyRouteDto) {
-console.log(`Route Details"${route.name}`);
+        console.log(`Route Details"${route.name}`);
         const response = await fetch(`/api/routes/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords:route.coords}),
+            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords: route.coords}),
         });
         if (response.ok) {
             await mutate();
@@ -60,58 +58,76 @@ console.log(`Route Details"${route.name}`);
     }
 
     return (
-        <>
-        {isEditMode?
-            <RouteForm name={data.name} date={data.dateTime} isEdit={isEditMode} onSubmit={handleEditRoute} coords={data.coords}/>
-        :(
-            <>
-            <StyledMapContainer center={position} zoom={5} contextmenu={true}
-                                contextmenuItems={[{
-                                    text: "Start from here",
-                                    //callback: startHere
-                                }, {
-                                    text: `Go to here`,
-                                    // callback: goHere
-                                }]}>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
+        <StyledDetails>
+            {isEditMode ?
+                <RouteForm name={data.name} date={data.dateTime} isEdit={isEditMode} onSubmit={handleEditRoute}
+                           coords={data.coords}/>
+                : (
+                    <>
+                        <StyledMapContainer center={position} zoom={5} contextmenu={true}
+                                            contextmenuItems={[{
+                                                text: "Start from here",
+                                                //callback: startHere
+                                            }, {
+                                                text: `Go to here`,
+                                                // callback: goHere
+                                            }]}>
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
           </a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <RouteLine coords={data.coords}/>
-            </StyledMapContainer>
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <RouteLine coords={data.coords}/>
+                        </StyledMapContainer>
 
-            <h2>Ort: {data.name}</h2>
-            <p>Datum: {new Date(data.dateTime).toLocaleDateString()}</p></>)}
-
-            {!isEditMode ? (
-                <StyledButton
-                    type="button"
-                    onClick={() => {
-                        setIsEditMode(!isEditMode);
-                    }}
-                >
-                    Edit
-                </StyledButton>
-            ) : null}
-            {!isEditMode ? (
-                <StyledButton type="button" onClick={handleDeleteRoute}>
-                    Delete
-                </StyledButton>
-            ) : (
-                <StyledButton
-                    type="button"
-                    onClick={() => {
-                        setIsEditMode(!isEditMode);
-                    }}
-                >
-                    Cancel
-                </StyledButton>
-            )}
-
-        </>
+                        <StyledH2>{data.name}</StyledH2>
+                        <StyledP>Datum: <i>{new Date(data.dateTime).toLocaleDateString()}</i></StyledP></>)}
+            <StyledDiv>
+                {!isEditMode ? (
+                    <StyledButton
+                        type="button"
+                        onClick={() => {
+                            setIsEditMode(!isEditMode);
+                        }}
+                    >
+                        Edit
+                    </StyledButton>
+                ) : null}
+                {!isEditMode ? (
+                    <StyledButton type="button" onClick={handleDeleteRoute}>
+                        Delete
+                    </StyledButton>
+                ) : (
+                    <StyledButton
+                        type="button"
+                        onClick={() => {
+                            setIsEditMode(!isEditMode);
+                        }}
+                    >
+                        Cancel
+                    </StyledButton>
+                )}
+            </StyledDiv>
+        </StyledDetails>
     )
 }
+const StyledH2 = styled.h2`
+    font-size: 3vw;
+    margin: 4vw 0 1vw 0;
+`;
+const StyledP =styled.p`
+    margin: 0 0 1vw 0;
+    font-size: 2.5vw;
+`;
+
+const StyledDetails = styled.div`
+display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+const StyledDiv =styled.div`
+`
+;
 const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
@@ -123,13 +139,14 @@ const StyledButton = styled.button`
     background-color: #1c859c;
     border-radius: 0.975rem;
     padding: 1vw 1.5vw;
-    font-size: 1vw;
+    font-size: 1.7vw;
     font-weight: 500;
     margin: 0.5vw 1vw;
     cursor: pointer;
-    &:hover{
+
+    &:hover {
         padding: 0.5vw 1vw;
-        font-size: 1.6vw;
+        font-size: 2vw;
         margin: 0.55vw 0.5vw;
     }
 `;
