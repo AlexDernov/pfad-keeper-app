@@ -5,8 +5,10 @@ import de.alexdernov.backend.models.ImagesDto;
 import de.alexdernov.backend.repos.ImagesRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +16,12 @@ import java.util.Optional;
 public class ImagesService {
     private final ImagesRepo imagesRepo;
     private final IdService idService;
+    private final CloudinaryService coloudinaryService;
 
-    public ImagesService(ImagesRepo imagesRepo, IdService idService) {
+    public ImagesService(ImagesRepo imagesRepo, IdService idService, CloudinaryService coloudinaryService) {
         this.imagesRepo = imagesRepo;
         this.idService = idService;
+        this.coloudinaryService = coloudinaryService;
     }
 
     public List<Images> getImages() {
@@ -26,7 +30,7 @@ public class ImagesService {
 
     public List<Images> getByRouteId(String id) {
         List<Images> imagesByRoutId = imagesRepo.findAllByRouteId(id);
-        if(imagesByRoutId.isEmpty()){
+        if (imagesByRoutId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No image with such route id!");
         }
         return imagesByRoutId;
@@ -39,9 +43,11 @@ public class ImagesService {
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No image with such id!"));
     }
+
     public Images updateImage(Images images, String id) {
         return imagesRepo.save(images.withId(id));
     }
+
     public Images deleteImageById(String id) {
 
         Optional<Images> imagebyId = imagesRepo.findById(id);
@@ -52,9 +58,10 @@ public class ImagesService {
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No image with such id!"));
     }
 
-    public Images addImage(ImagesDto image) {
+    public Images addImage(ImagesDto image, MultipartFile file) throws IOException {
+        String url = coloudinaryService.uploadFile(file);
         String id = idService.newId();
-        Images imageNew = new Images(id, image.coords(), image.url(), image.routeId());
+        Images imageNew = new Images(id, image.coords(), url, image.routeId());
         return imagesRepo.save(imageNew);
     }
 }

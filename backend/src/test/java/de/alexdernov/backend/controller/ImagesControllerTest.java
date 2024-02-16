@@ -1,15 +1,20 @@
 package de.alexdernov.backend.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Uploader;
 import de.alexdernov.backend.models.Coords;
 import de.alexdernov.backend.models.Images;
 import de.alexdernov.backend.models.Route;
 import de.alexdernov.backend.repos.ImagesRepo;
 import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,9 +24,13 @@ import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -32,6 +41,9 @@ class ImagesControllerTest {
 
     @Autowired
     private ImagesRepo imagesRepo;
+    @MockBean
+    private Cloudinary cloudinary;
+    private Uploader uploader = mock(Uploader.class);
 
     @DirtiesContext
     @Test
@@ -195,19 +207,14 @@ class ImagesControllerTest {
     @Test
     void addImageTest_shouldReturnOneObject_whenObjectWasSavedInRepository() throws Exception {
         // GIVEN
-        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
-        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
-        // WHEN
-        mvc.perform(MockMvcRequestBuilders.post("/api/images")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+        Map map =new HashMap();
+        map.put("secure_url", "url1");
+        Mockito.when(uploader.upload(any(),any())).thenReturn(map);
+        Mockito.when(cloudinary.uploader()).thenReturn(uploader);
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "Datei.jpg", MediaType.IMAGE_JPEG_VALUE, "Hello, World!".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile(
+                "data", "", MediaType.APPLICATION_JSON_VALUE, """
                                       {
                                 "coords": [
                                                            {
@@ -223,13 +230,27 @@ class ImagesControllerTest {
                                                                "latitude": "325325"
                                                            }
                                                        ],
-                                                       "url": "url1",
+                                                       
                                                        "routeId": "routeId1"
                                                    }
-                                     """)
+                                     """.getBytes());
+
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
+        List<Coords> coordsList = new ArrayList<>();
+        coordsList.add(coords1);
+        coordsList.add(coords2);
+        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        // WHEN
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/images")
+                        .file(file2)
+                        .file(file)
                 )
                 // THEN
-                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(content().json("""
 
                           {

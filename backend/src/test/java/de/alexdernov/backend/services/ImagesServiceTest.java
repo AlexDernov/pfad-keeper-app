@@ -6,6 +6,9 @@ import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -16,11 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 class ImagesServiceTest {
     ImagesRepo imagesRepo = Mockito.mock(ImagesRepo.class);
     IdService idService = Mockito.mock(IdService.class);
-    ImagesService imagesService = new ImagesService(imagesRepo, idService);
+    CloudinaryService cloudinaryService =Mockito.mock(CloudinaryService.class);
+    ImagesService imagesService = new ImagesService(imagesRepo, idService, cloudinaryService);
 
     @Test
     void getImagesTest_whenGetImages_returnListOfAllImages() {
@@ -61,7 +66,7 @@ class ImagesServiceTest {
 
         Images updatedImage = new Images("1", coordsList, "url1", "routeId1");
 
-        Mockito.when(imagesRepo.save(Mockito.any())).thenReturn(updatedImage);
+        Mockito.when(imagesRepo.save(any())).thenReturn(updatedImage);
 
         //WHEN
         Images actual = imagesService.updateImage(updatedImage, "1");
@@ -156,7 +161,7 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Mockito.when(imagesRepo.findById(Mockito.any())).thenReturn(
+        Mockito.when(imagesRepo.findById(any())).thenReturn(
                 Optional.of(
                         new Images("1", coordsList, "url1", "routeId1")
                 ));
@@ -169,13 +174,13 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
                 new Images("1", coordsList, "url1", "routeId1")
                 , actual);
 
-        Mockito.verify(imagesRepo, Mockito.times(1)).findById(Mockito.any());
-        Mockito.verify(imagesRepo, Mockito.times(1)).delete(Mockito.any());
+        Mockito.verify(imagesRepo, Mockito.times(1)).findById(any());
+        Mockito.verify(imagesRepo, Mockito.times(1)).delete(any());
         Mockito.verifyNoMoreInteractions(imagesRepo);
     }
 
     @Test
-    void addImageTest_whenNewRouteDto_thenAddTheRouteToRepo() {
+    void addImageTest_whenNewRouteDto_thenAddTheRouteToRepo() throws Exception{
         // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
@@ -186,19 +191,21 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
         coordsList.add(coords1);
         coordsList.add(coords2);
 
-        ImagesDto imagesDto = new ImagesDto(coordsList, "url1", "routeId1");
+        ImagesDto imagesDto = new ImagesDto(coordsList,  "routeId1");
         Images image = new Images("test-id", coordsList, "url1", "routeId1");
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "Datei.jpg", MediaType.IMAGE_JPEG_VALUE, "Hello, World!".getBytes());
 
         Mockito.when(imagesRepo.save(image)).thenReturn(image);
         Mockito.when(idService.newId()).thenReturn("test-id");
-
+        Mockito.when(cloudinaryService.uploadFile(any(MultipartFile.class))).thenReturn("url1");
         // WHEN
-        Images actual = imagesService.addImage(imagesDto);
+        Images actual = imagesService.addImage(imagesDto, file);
 
         // THEN
         Mockito.verify(imagesRepo).save(image);
         Mockito.verify(idService).newId();
-
+        Mockito.verify(cloudinaryService).uploadFile(any(MultipartFile.class));
         Images expected = new Images("test-id", coordsList, "url1", "routeId1");
         assertEquals(expected, actual);
     }
