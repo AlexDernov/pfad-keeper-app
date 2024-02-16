@@ -6,8 +6,6 @@ type PropsNewRoute = {
 }
 export default function NewRoute(props: PropsNewRoute) {
     return (
-        <>
-            <RouteForm onSubmit={props.onSubmit} name={""} date={""} isEdit={false}/>
-        </>
+            <RouteForm onSubmit={props.onSubmit} name={""} date={""} isEdit={false} coords={[]}/>
     )
 }

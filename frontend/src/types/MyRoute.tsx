@@ -1,8 +1,8 @@
-import {Coords} from "./Coords.tsx";
+import {MyCoords} from "./MyCoords.tsx";
 
 export type MyRoute = {
     id: string;
-    coords: Coords[];
+    coords: MyCoords[];
     name: string;
     dateTime: Date
 }

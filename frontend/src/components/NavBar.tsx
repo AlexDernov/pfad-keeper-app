@@ -53,6 +53,7 @@ const StyledNav = styled.nav`
     width: 100vw;
     margin:0;
     padding:1vw;
+    z-index: 1000000;
 `;
 
 const NavContainer = styled.div`
