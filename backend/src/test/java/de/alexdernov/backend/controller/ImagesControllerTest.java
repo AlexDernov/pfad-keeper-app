@@ -50,16 +50,8 @@ class ImagesControllerTest {
     void getImagesTest_shouldReturnListWithOneObject_whenOneObjectWasSavedInRepository() throws Exception {
         // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
 
         // WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images"))
@@ -69,23 +61,15 @@ class ImagesControllerTest {
                 .andExpect(content().json("""
                         [{
                            "id": "test-id",
-                           "coords": [
-                                                      {
-                                                          "id": "8",
-                                                          "dateTime": "2024-03-30T04:24:00",
-                                                          "longitude": "19842798",
-                                                          "latitude": "2343587"
-                                                      },
-                                                      {
-                                                          "id": "9",
-                                                          "dateTime": "2014-01-01T08:30:00",
-                                                          "longitude": "284857",
-                                                          "latitude": "325325"
-                                                      }
-                                                  ],
-                                                  "url": "url1",
-                                                  "routeId": "routeId1"
-                                              }]
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId1"
+                           }]
                         """))
                 .andReturn();
     }
@@ -94,14 +78,8 @@ class ImagesControllerTest {
     void getImageByIdTest_shouldReturnObjectWithTheId() throws Exception {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        Images image = imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        Images image = imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
         String id = image.id();
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images/{id}", id))
@@ -110,23 +88,15 @@ class ImagesControllerTest {
                 .andExpect(content().json("""
                         {
                            "id": "test-id",
-                           "coords": [
-                                                      {
-                                                          "id": "8",
-                                                          "dateTime": "2024-03-30T04:24:00",
-                                                          "longitude": "19842798",
-                                                          "latitude": "2343587"
-                                                      },
-                                                      {
-                                                          "id": "9",
-                                                          "dateTime": "2014-01-01T08:30:00",
-                                                          "longitude": "284857",
-                                                          "latitude": "325325"
-                                                      }
-                                                  ],
-                                                  "url": "url1",
-                                                  "routeId": "routeId1"
-                                              }
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId1"
+                           }
                         """))
                 .andReturn();
     }
@@ -135,14 +105,8 @@ class ImagesControllerTest {
     void getImageByNoExistingIdTest_whenIdNotFound_thenStatusNotFound() throws Exception {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
         String nonExistingId = "nonExistingId";
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images/{id}", nonExistingId))
@@ -155,14 +119,8 @@ class ImagesControllerTest {
     void getImagesByRouteIdTest_shouldReturnListOfImagesWithTheRouteId() throws Exception {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        Images image = imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        Images image = imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
         String routeId = image.routeId();
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images/route/{id}", routeId))
@@ -171,24 +129,15 @@ class ImagesControllerTest {
                 .andExpect(content().json("""
                         [{
                            "id": "test-id",
-                           "coords": [
-                                                      {
-                                                          "id": "8",
-                                                          "dateTime": "2024-03-30T04:24:00",
-                                                          "longitude": "19842798",
-                                                          "latitude": "2343587"
-                                                      },
-                                                      {
-                                                          "id": "9",
-                                                          "dateTime": "2014-01-01T08:30:00",
-                                                          "longitude": "284857",
-                                                          "latitude": "325325"
-                                                      }
-                                                  ],
-                                                  "url": "url1",
-                                                  "routeId": "routeId1"
-                                              }
-                                              ]
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId1"
+                           }]
                         """))
                 .andReturn();
     }
@@ -215,35 +164,20 @@ class ImagesControllerTest {
                 "file", "Datei.jpg", MediaType.IMAGE_JPEG_VALUE, "Hello, World!".getBytes());
         MockMultipartFile file2 = new MockMultipartFile(
                 "data", "", MediaType.APPLICATION_JSON_VALUE, """
-                                      {
-                                "coords": [
-                                                           {
-                                                               "id": "8",
-                                                               "dateTime": "2024-03-30T04:24:00",
-                                                               "longitude": "19842798",
-                                                               "latitude": "2343587"
-                                                           },
-                                                           {
-                                                               "id": "9",
-                                                               "dateTime": "2014-01-01T08:30:00",
-                                                               "longitude": "284857",
-                                                               "latitude": "325325"
-                                                           }
-                                                       ],
-                                                       
-                                                       "routeId": "routeId1"
-                                                   }
-                                     """.getBytes());
+                          {
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "routeId": "routeId1"
+                           }
+                          """.getBytes());
 
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
         // WHEN
         mvc.perform(MockMvcRequestBuilders.multipart("/api/images")
                         .file(file2)
@@ -253,24 +187,16 @@ class ImagesControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(content().json("""
 
-                          {
-                           "coords": [
-                                                      {
-                                                          "id": "8",
-                                                          "dateTime": "2024-03-30T04:24:00",
-                                                          "longitude": "19842798",
-                                                          "latitude": "2343587"
-                                                      },
-                                                      {
-                                                          "id": "9",
-                                                          "dateTime": "2014-01-01T08:30:00",
-                                                          "longitude": "284857",
-                                                          "latitude": "325325"
-                                                      }
-                                                  ],
-                                                  "url": "url1",
-                                                  "routeId": "routeId1"
-                                              }
+                         {
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId1"
+                           }
                         """))
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andReturn();
@@ -280,62 +206,40 @@ class ImagesControllerTest {
     void updateImageTest_shouldReturnImageWithUpdatedRouteId_whenImageWithUpdatedRouteIdSent() throws Exception {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
         //WHEN
         mvc.perform(MockMvcRequestBuilders.put("/api/images/test-id")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                                                             
-                                              {
-                                "id": "test-id",
-                                "coords": [
-                                                           {
-                                                               "id": "8",
-                                                               "dateTime": "2024-03-30T04:24:00",
-                                                               "longitude": "19842798",
-                                                               "latitude": "2343587"
-                                                           },
-                                                           {
-                                                               "id": "9",
-                                                               "dateTime": "2014-01-01T08:30:00",
-                                                               "longitude": "284857",
-                                                               "latitude": "325325"
-                                                           }
-                                                       ],
-                                                       "url": "url1",
-                                                       "routeId": "routeId3"
-                                                   }
-                                                """))
+                           {
+                           "id": "test-id",
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId3"
+                           }
+                           """))
 
                 //THEN
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                         {
-                            "id": "test-id",
-                            "coords": [
-                                                       {
-                                                           "id": "8",
-                                                           "dateTime": "2024-03-30T04:24:00",
-                                                           "longitude": "19842798",
-                                                           "latitude": "2343587"
-                                                       },
-                                                       {
-                                                           "id": "9",
-                                                           "dateTime": "2014-01-01T08:30:00",
-                                                           "longitude": "284857",
-                                                           "latitude": "325325"
-                                                       }
-                                                   ],
-                                                   "url": "url1",
-                                                   "routeId": "routeId3"
-                                               }
+                           "id": "test-id",
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId3"
+                           }
                          """))
                 .andReturn();
     }
@@ -344,14 +248,8 @@ class ImagesControllerTest {
     void deleteImageById_shouldReturnImage_whenThisObjectWasDeletedFromRepository() throws Exception {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
 
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/api/images/test-id"))
@@ -360,24 +258,16 @@ class ImagesControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                             {
-                        "id": "test-id",
-                        "coords": [
-                                                   {
-                                                       "id": "8",
-                                                       "dateTime": "2024-03-30T04:24:00",
-                                                       "longitude": "19842798",
-                                                       "latitude": "2343587"
-                                                   },
-                                                   {
-                                                       "id": "9",
-                                                       "dateTime": "2014-01-01T08:30:00",
-                                                       "longitude": "284857",
-                                                       "latitude": "325325"
-                                                   }
-                                               ],
-                                               "url": "url1",
-                                               "routeId": "routeId1"
-                                           }
+                           "id": "test-id",
+                           "coords": {
+                                  "id": "9",
+                                  "dateTime": "2014-01-01T08:30:00",
+                                  "longitude": "284857",
+                                  "latitude": "325325"
+                           },
+                           "url": "url1",
+                           "routeId": "routeId1"
+                           }
                             """))
                 .andReturn();
     }
@@ -385,14 +275,8 @@ class ImagesControllerTest {
     @Test
     void deleteRoutesByNoExistingIdTest_shouldReturnNoObject() throws Exception {
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-        imagesRepo.save(new Images("test-id", coordsList, "url1", "routeId1"));
+        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
         String nonExistingId = "nonExistingId";
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/api/images/{id}", nonExistingId))

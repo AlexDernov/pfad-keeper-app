@@ -50,10 +50,10 @@ public class ImagesService {
 
     public Images deleteImageById(String id) {
 
-        Optional<Images> imagebyId = imagesRepo.findById(id);
-        if (imagebyId.isPresent()) {
-            imagesRepo.delete(imagebyId.get());
-            return imagebyId.get();
+        Optional<Images> imageById = imagesRepo.findById(id);
+        if (imageById.isPresent()) {
+            imagesRepo.delete(imageById.get());
+            return imageById.get();
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No image with such id!"));
     }

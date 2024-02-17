@@ -6,6 +6,7 @@ import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,19 +35,16 @@ class ImagesServiceTest {
 
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
         Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
         Mockito.when(imagesRepo.findAll()).thenReturn(List.of(
-                new Images("1", coordsList, "url1", "routeId1"),
-                new Images("2", coordsList, "url2", "routeId2")
+                new Images("1", coords1, "url1", "routeId1"),
+                new Images("2", coords2, "url2", "routeId2")
         ));
         //WHEN
         List<Images> actual = imagesService.getImages();
         //THEN
         assertEquals(List.of(
-                new Images("1", coordsList, "url1", "routeId1"),
-                new Images("2", coordsList, "url2", "routeId2")
+                new Images("1", coords1, "url1", "routeId1"),
+                new Images("2", coords2, "url2", "routeId2")
         ), actual);
         Mockito.verify(imagesRepo, Mockito.times(1)).findAll();
         Mockito.verifyNoMoreInteractions(imagesRepo);
@@ -56,24 +54,13 @@ class ImagesServiceTest {
     void updateImageTest_whenImageUpdatesSent_returnUpdateImage() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-
-        Images updatedImage = new Images("1", coordsList, "url1", "routeId1");
-
+        Images updatedImage = new Images("1", coords1, "url1", "routeId1");
         Mockito.when(imagesRepo.save(any())).thenReturn(updatedImage);
-
         //WHEN
         Images actual = imagesService.updateImage(updatedImage, "1");
-
         //THEN
         assertEquals(updatedImage, actual);
-
         Mockito.verify(imagesRepo, Mockito.times(1)).save(updatedImage);
         Mockito.verifyNoMoreInteractions(imagesRepo);
     }
@@ -82,19 +69,11 @@ class ImagesServiceTest {
     void getImageByIdTest_whenId_thenReturnImageWithTheId() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
         String expectedId = "1";
-
         Mockito.when(imagesRepo.findById(expectedId)).thenReturn(Optional.of(
-                new Images("1", coordsList, "url1", "routeId1")
+                new Images("1", coords1, "url1", "routeId1")
         ));
-
         //WHEN
         Images foundImage = imagesService.getById(expectedId);
         //THEN
@@ -116,19 +95,14 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
     //GIVEN
     LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
     LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
     Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
     Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-    List<Coords> coordsList = new ArrayList<>();
-    coordsList.add(coords1);
-    coordsList.add(coords2);
     String expectedRouteId = "routeId1";
 
     Mockito.when(imagesRepo.findAllByRouteId(expectedRouteId)).thenReturn(List.of(
-            new Images("1", coordsList, "url1", "routeId1"),
-            new Images("3", coordsList, "url3", "routeId1")
+            new Images("1", coords1, "url1", "routeId1"),
+            new Images("3", coords2, "url3", "routeId1")
     ));
-
     //WHEN
     List<Images> foundImages = imagesService.getByRouteId(expectedRouteId);
     //THEN
@@ -142,36 +116,25 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
         String expectedRouteId = "nonExistentRouteId";
         Mockito.when(imagesRepo.findAllByRouteId(expectedRouteId)).thenReturn(Collections.emptyList());
 
-        // WHEN
-        List<Images> foundImages = imagesService.getByRouteId(expectedRouteId);
-
-        // THEN
-        Assertions.assertNotNull(foundImages);
-        Assertions.assertTrue(foundImages.isEmpty());
+        assertThrows(ResponseStatusException.class, () -> imagesService.getById(expectedRouteId));
     }
+
 
     @Test
     void deleteImageByIdTest_whenId_thenReturnRouteWithTheId() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
         Mockito.when(imagesRepo.findById(any())).thenReturn(
                 Optional.of(
-                        new Images("1", coordsList, "url1", "routeId1")
+                        new Images("1", coords1, "url1", "routeId1")
                 ));
-
         //WHEN
        Images actual = imagesService.deleteImageById("1");
 
         //THEN
         assertEquals(
-                new Images("1", coordsList, "url1", "routeId1")
+                new Images("1", coords1, "url1", "routeId1")
                 , actual);
 
         Mockito.verify(imagesRepo, Mockito.times(1)).findById(any());
@@ -183,16 +146,9 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
     void addImageTest_whenNewRouteDto_thenAddTheRouteToRepo() throws Exception{
         // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
-
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
-        List<Coords> coordsList = new ArrayList<>();
-        coordsList.add(coords1);
-        coordsList.add(coords2);
-
-        ImagesDto imagesDto = new ImagesDto(coordsList,  "routeId1");
-        Images image = new Images("test-id", coordsList, "url1", "routeId1");
+        ImagesDto imagesDto = new ImagesDto(coords1,  "routeId1");
+        Images image = new Images("test-id", coords1, "url1", "routeId1");
         MockMultipartFile file = new MockMultipartFile(
                 "file", "Datei.jpg", MediaType.IMAGE_JPEG_VALUE, "Hello, World!".getBytes());
 
@@ -206,7 +162,7 @@ void getImageByRouteIdTest_whenRouteId_thenReturnListOdImagesWithTheRouteId() {
         Mockito.verify(imagesRepo).save(image);
         Mockito.verify(idService).newId();
         Mockito.verify(cloudinaryService).uploadFile(any(MultipartFile.class));
-        Images expected = new Images("test-id", coordsList, "url1", "routeId1");
+        Images expected = new Images("test-id", coords1, "url1", "routeId1");
         assertEquals(expected, actual);
     }
 }
