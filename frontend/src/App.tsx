@@ -18,6 +18,11 @@ import axios from "axios";
 
 function App() {
     const [images, setImages] = useState<MyImages[]>([])
+    useEffect(() => {
+        axios.get("/api/images").then(response =>
+            setImages(response.data))
+    }, [images])
+
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
@@ -26,10 +31,6 @@ function App() {
         await mutate();
     }
 
-    useEffect(() => {
-        axios.get("/api/images").then(response =>
-            setImages(response.data))
-    }, [images])
 
     const deleteImage = (id: string) => {
         axios.delete(`/api/images/${id}`)

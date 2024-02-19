@@ -150,11 +150,6 @@ export default function Carousel(props:Props) {
 
 }
 
-
-/*
-const StyledCarousel = styled.div`
-    display: ${( imgUrls) => (!imgUrls ? "none" : "block")} !important;
-`;*/
 const StyledCarousel = styled.div<{ imgUrls: string[] }>`
     display: ${({ imgUrls }) => (imgUrls.length === 0 ? "none" : "block")} !important;
 `;
