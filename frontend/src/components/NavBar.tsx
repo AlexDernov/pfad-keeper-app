@@ -23,7 +23,6 @@ export default function NavBar() {
 const NavLinkHeading = styled(NavLink)`
     font-size: 6vw;
     color: #FFF;
-
     font-family: Copperplate;
     font-style: normal;
     text-align: left;

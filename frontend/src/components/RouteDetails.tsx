@@ -11,10 +11,14 @@ import styled from "styled-components";
 import Routing from "../Routing.tsx";
 import axios from "axios";
 import Carousel from "./Carousel.tsx";
+import {MyImages} from "../types/MyImages.tsx";
+import ImagesList from "./images-list.tsx";
 
 type Props = {
     mutateF: () => void,
     onSubmit: (route: MyRouteDto) => void,
+    dataImages: MyImages[],
+    handleImgDelete: (id: string) => void
 }
 export default function RouteDetails(props: Readonly<Props>) {
     const [file, setFile] = useState<File | null>(null);
@@ -27,14 +31,12 @@ export default function RouteDetails(props: Readonly<Props>) {
     const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-
     // eslint-disable-next-line react-hooks/rules-of-hooks
-
 
     function uploadFile(file: File) {
         const formData = new FormData();
         formData.append("file", file)
-        formData.append("data", new Blob([JSON.stringify({"routeId": id})], {type:"application/json"}))
+        formData.append("data", new Blob([JSON.stringify({"routeId": id})], {type: "application/json"}))
         return axios.post("/api/images", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -71,6 +73,7 @@ export default function RouteDetails(props: Readonly<Props>) {
             navigate("/routes")
         }
     }
+
     function handleChangeFile(event: ChangeEvent<HTMLInputElement>) {
         if (!event.target.files) {
             return;
@@ -78,6 +81,7 @@ export default function RouteDetails(props: Readonly<Props>) {
             setFile(event.target.files[0])
         }
     }
+
     function handleSaveImg() {
         if (!file) {
             return;
@@ -120,7 +124,7 @@ export default function RouteDetails(props: Readonly<Props>) {
 
                         <StyledH2>{data.name}</StyledH2>
                         <StyledP>Datum: <i>{new Date(data.dateTime).toLocaleDateString()}</i></StyledP></>)}
-            <Carousel routeId={id}/>
+            {isEditMode ? null : <Carousel dataImages={props.dataImages} routeId={id}/>}
             <StyledDiv>
                 {!isEditMode ? (
                     <StyledButton
@@ -145,12 +149,17 @@ export default function RouteDetails(props: Readonly<Props>) {
                     >
                         Cancel
                     </StyledButton>
+
+
                 )}
-
+                <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
+                <div>
                     <input type="file" onChange={handleChangeFile}/>
-                    {file && !imgSaved? <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
-                    {file && !imgSaved? <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
-
+                    {file && !imgSaved ?
+                        <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
+                    {file && !imgSaved ?
+                        <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
+                </div>
             </StyledDiv>
 
 
@@ -173,8 +182,8 @@ const StyledDetails = styled.div`
     align-items: center;
 `;
 const StyledDiv = styled.div`
-    display:flex;
-    flex-direction: column;
+            display: flex;
+            flex-direction: column;
     `
 ;
 const StyledMapContainer = styled(MapContainer)`

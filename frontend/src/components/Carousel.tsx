@@ -3,22 +3,23 @@ import "../index.css";
 import {AnimatePresence, motion} from "framer-motion";
 import styled from "styled-components";
 import {MyImages} from "../types/MyImages.tsx";
-import axios from "axios";
+
 
 type Props={
-    routeId:string| undefined;
+    dataImages:MyImages[],
+    routeId:string | undefined,
 }
 export default function Carousel(props:Props) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState("");
-    const [images, setImages] = useState<MyImages[]>([])
-    useEffect(() => {
-        axios.get("/api/images").then(response =>
-            setImages(response.data))
-    }, [])
+    const [imgUrls, setImgUrls] = useState<string[]>([]);
 
-    const imgUrls: string[] = images?.filter((img: MyImages) => img.routeId === props.routeId)
-        .map((img: MyImages) => img.url);
+    useEffect(() => {
+        const filteredUrls = props.dataImages
+            .filter((img: MyImages) => img.routeId === props.routeId)
+            .map((img: MyImages) => img.url);
+        setImgUrls(filteredUrls);
+    }, [props.dataImages, props.routeId]);
 
     const slideVariants = {
         hiddenRight: {
@@ -86,7 +87,7 @@ export default function Carousel(props:Props) {
     };
 
     return (
-        <StyledCarousel className="carousel">
+        <StyledCarousel className="carousel" imgUrls={imgUrls}>
             <div className="carousel-images">
                 <AnimatePresence>
                     <motion.img
@@ -148,6 +149,12 @@ export default function Carousel(props:Props) {
     );
 
 }
+
+
+/*
 const StyledCarousel = styled.div`
     display: ${( imgUrls) => (!imgUrls ? "none" : "block")} !important;
+`;*/
+const StyledCarousel = styled.div<{ imgUrls: string[] }>`
+    display: ${({ imgUrls }) => (imgUrls.length === 0 ? "none" : "block")} !important;
 `;
