@@ -9,8 +9,9 @@ export default function Home() {
 
     return (
         <StyledDiv>
-            <h2>Willkommen auf unserer Webseite für die Planung, Speicherung und Bearbeitung von Wanderrouten!</h2>
-            <p>
+
+            <h3>Willkommen auf unserer Webseite für die Planung, Speicherung und Bearbeitung von Wanderrouten!</h3>
+            <p><i>
                 Hier kannst du deine Abenteuer im Freien noch besser organisieren und deine Lieblingsrouten mit
                 Leichtigkeit erkunden. Egal, ob du bereits geplante Routen auf einer Karte mit Markern festlegen
                 möchtest oder deine Wanderungen spontan aufzeichnen und speichern möchtest – wir haben alles, was du
@@ -21,7 +22,7 @@ export default function Home() {
                 unvergessliche Erinnerungen zu schaffen.
 
                 Begib dich auf die Reise und entdecke die Natur auf eine ganz neue Art und Weise – mit unserer Webseite
-                für Wanderroutenplanung!</p>
+                für Wanderroutenplanung!</i></p>
 
             <MapContainer center={position} zoom={5} style={{height: "50vh", color: "black"}} contextmenu={true}
                           contextmenuItems={[{
@@ -42,4 +43,5 @@ export default function Home() {
     )
 }
 const StyledDiv = styled.div`
+    padding:2vw
 `;

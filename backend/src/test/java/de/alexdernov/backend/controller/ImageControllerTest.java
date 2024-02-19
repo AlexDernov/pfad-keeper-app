@@ -3,10 +3,8 @@ package de.alexdernov.backend.controller;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import de.alexdernov.backend.models.Coords;
-import de.alexdernov.backend.models.Images;
-import de.alexdernov.backend.models.Route;
-import de.alexdernov.backend.repos.ImagesRepo;
-import de.alexdernov.backend.repos.RouteRepo;
+import de.alexdernov.backend.models.Image;
+import de.alexdernov.backend.repos.ImageRepo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +18,23 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ImagesControllerTest {
+class ImageControllerTest {
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private ImagesRepo imagesRepo;
+    private ImageRepo imageRepo;
     @MockBean
     private Cloudinary cloudinary;
     private Uploader uploader = mock(Uploader.class);
@@ -51,7 +45,7 @@ class ImagesControllerTest {
         // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
 
         // WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images"))
@@ -79,7 +73,7 @@ class ImagesControllerTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Images image = imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        Image image = imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
         String id = image.id();
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images/{id}", id))
@@ -106,7 +100,7 @@ class ImagesControllerTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
         String nonExistingId = "nonExistingId";
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images/{id}", nonExistingId))
@@ -120,7 +114,7 @@ class ImagesControllerTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        Images image = imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        Image image = imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
         String routeId = image.routeId();
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/images/route/{id}", routeId))
@@ -177,7 +171,7 @@ class ImagesControllerTest {
 
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
         // WHEN
         mvc.perform(MockMvcRequestBuilders.multipart("/api/images")
                         .file(file2)
@@ -207,7 +201,7 @@ class ImagesControllerTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
         //WHEN
         mvc.perform(MockMvcRequestBuilders.put("/api/images/test-id")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -249,7 +243,7 @@ class ImagesControllerTest {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
 
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/api/images/test-id"))
@@ -276,7 +270,7 @@ class ImagesControllerTest {
     void deleteRoutesByNoExistingIdTest_shouldReturnNoObject() throws Exception {
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
-        imagesRepo.save(new Images("test-id", coords1, "url1", "routeId1"));
+        imageRepo.save(new Image("test-id", coords1, "url1", "routeId1"));
         String nonExistingId = "nonExistingId";
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/api/images/{id}", nonExistingId))

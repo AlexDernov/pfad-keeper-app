@@ -4,7 +4,7 @@ import lombok.With;
 import org.springframework.data.annotation.Id;
 
 @With
-public record Images(
+public record Image(
         @Id
         String id,
         Coords coords,
