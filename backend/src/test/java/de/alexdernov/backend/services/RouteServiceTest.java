@@ -1,8 +1,6 @@
 package de.alexdernov.backend.services;
 
-import de.alexdernov.backend.models.Coords;
-import de.alexdernov.backend.models.Route;
-import de.alexdernov.backend.models.RouteDto;
+import de.alexdernov.backend.models.*;
 import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,16 +31,22 @@ class RouteServiceTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
+
+        UserDto userDto1 = new UserDto("1", "Email", "Name");
+        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
         Mockito.when(routeRepo.findAll()).thenReturn(List.of(
-                new Route("1", coordsList, "Berlin", dateTime3),
-                new Route("2", coordsList, "Berlin", dateTime2)
+                new Route("1", coordsList, userIds, "Berlin", dateTime3),
+                new Route("2", coordsList, userIds, "Berlin", dateTime2)
         ));
         //WHEN
         List<Route> actual = routeService.getRoute();
         //THEN
         assertEquals(List.of(
-                new Route("1", coordsList, "Berlin", dateTime3),
-                new Route("2", coordsList, "Berlin", dateTime2)
+                new Route("1", coordsList, userIds, "Berlin", dateTime3),
+                new Route("2", coordsList, userIds, "Berlin", dateTime2)
         ), actual);
         Mockito.verify(routeRepo, Mockito.times(1)).findAll();
         Mockito.verifyNoMoreInteractions(routeRepo);
@@ -61,7 +65,12 @@ class RouteServiceTest {
         coordsList.add(coords1);
         coordsList.add(coords2);
 
-        Route updatedRoute = new Route("1", coordsList, "Berlin", dateTime3);
+        UserDto userDto1 = new UserDto("1", "Email", "Name");
+        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        Route updatedRoute = new Route("1", coordsList,userIds, "Berlin", dateTime3);
 
         Mockito.when(routeRepo.save(Mockito.any())).thenReturn(updatedRoute);
 
@@ -88,9 +97,14 @@ class RouteServiceTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
+        UserDto userDto1 = new UserDto("1", "Email", "Name");
+        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
         String expectedId = "1";
         Mockito.when(routeRepo.findById(expectedId)).thenReturn(Optional.of(
-                new Route("1", coordsList, "Berlin", dateTime3)
+                new Route("1", coordsList,userIds, "Berlin", dateTime3)
         ));
 
         //WHEN
@@ -112,9 +126,14 @@ class RouteServiceTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
+        UserDto userDto1 = new UserDto("1", "Email", "Name");
+        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
         Mockito.when(routeRepo.findById(Mockito.any())).thenReturn(
                 Optional.of(
-                        new Route("1", coordsList, "Berlin", dateTime3)
+                        new Route("1", coordsList, userIds,"Berlin", dateTime3)
                 ));
 
         //WHEN
@@ -122,7 +141,7 @@ class RouteServiceTest {
 
         //THEN
         assertEquals(
-                new Route("1", coordsList, "Berlin", dateTime3)
+                new Route("1", coordsList, userIds,"Berlin", dateTime3)
                 , actual);
 
         Mockito.verify(routeRepo, Mockito.times(1)).findById(Mockito.any());
@@ -143,8 +162,13 @@ class RouteServiceTest {
         coordsList.add(coords1);
         coordsList.add(coords2);
 
-        RouteDto routeDto = new RouteDto(coordsList, "Berlin", dateTime3);
-        Route route = new Route("test-id", coordsList, "Berlin", dateTime3);
+        UserDto userDto1 = new UserDto("1", "Email", "Name");
+        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        RouteDto routeDto = new RouteDto(coordsList, userIds,"Berlin", dateTime3);
+        Route route = new Route("test-id", coordsList,userIds, "Berlin", dateTime3);
 
         Mockito.when(routeRepo.save(route)).thenReturn(route);
         Mockito.when(idService.newId()).thenReturn("test-id");
@@ -156,7 +180,7 @@ class RouteServiceTest {
         Mockito.verify(routeRepo).save(route);
         Mockito.verify(idService).newId();
 
-        Route expected = new Route("test-id", coordsList, "Berlin", dateTime3);
+        Route expected = new Route("test-id", coordsList,userIds, "Berlin", dateTime3);
         assertEquals(expected, actual);
     }
 }

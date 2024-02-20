@@ -10,6 +10,7 @@ public record Route(
         @Id
         String id,
         List<Coords> coords,
+        List<UserDto> userIds,
         String name,
         LocalDateTime dateTime
 ) {

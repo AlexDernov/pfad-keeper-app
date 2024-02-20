@@ -32,7 +32,7 @@ public class RouteService {
     public Route getById(String id) {
         Optional<Route> routeById = routeRepo.findById(id);
         if (routeById.isPresent()) {
-            return new Route(routeById.get().id(), routeById.get().coords(), routeById.get().name(), routeById.get().dateTime());
+            return new Route(routeById.get().id(), routeById.get().coords(), routeById.get().userIds(),routeById.get().name(), routeById.get().dateTime());
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No route with such id!"));
     }
@@ -49,7 +49,7 @@ public class RouteService {
 
     public Route addRoute(RouteDto route) {
         String id = idService.newId();
-        Route routeNew = new Route(id, route.coords(), route.name(), route.dateTime());
+        Route routeNew = new Route(id, route.coords(), route.userIds(), route.name(), route.dateTime());
         return routeRepo.save(routeNew);
     }
 }
