@@ -36,17 +36,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/images/*").authenticated()
+
                         .requestMatchers(HttpMethod.POST, "/api/images").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/routes").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/routes").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/routes").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/images").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/routes").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/images").authenticated()
                         .anyRequest().permitAll())
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .oauth2Login(oauth2 -> {
                     try {
                         oauth2.init(http);
@@ -79,7 +78,7 @@ public class SecurityConfig {
                 return user;
             }
 
-            return null;
+            return user;
         };
     }
 }

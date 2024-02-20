@@ -13,16 +13,33 @@ import {MyRouteDto} from "./types/MyRouteDto.tsx";
 import {useEffect, useState} from "react";
 import {MyImages} from "./types/MyImages.tsx";
 import axios from "axios";
+import {MyUser} from "./types/MyUsers.tsx";
 
 
 
 function App() {
+    const [user, setUser] = useState<MyUser>(null);
     const [images, setImages] = useState<MyImages[]>([])
+
     useEffect(() => {
         axios.get("/api/images").then(response =>
             setImages(response.data))
-    }, [images])
+    }, [])
 
+   const getCurrentUser = () => {
+        axios.get<MyUser>("/api/users/me").then((response) => {
+            setUser(response.data);
+        });
+    };
+
+    useEffect(() => {
+        getCurrentUser();
+    }, []);
+
+
+    const logout = () => {
+        axios.post("/api/users/logout").then(() => getCurrentUser());
+    };
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
@@ -57,7 +74,7 @@ function App() {
     }
 
     return (
-        <><NavBar/>
+        <><NavBar user={user} logout={logout}/>
             <StyledDiv>
                 <Routes>
                     <Route index element={<Home routeData={data}/>}/>

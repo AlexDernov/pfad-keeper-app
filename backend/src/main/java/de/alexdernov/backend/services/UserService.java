@@ -1,16 +1,18 @@
 package de.alexdernov.backend.services;
 
-import de.alexdernov.backend.exceptions.GoogleEmailNotFoundException;
 import de.alexdernov.backend.models.User;
-import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.repos.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import java.util.NoSuchElementException;
+import org.springframework.web.server.ResponseStatusException;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,37 +21,42 @@ public class UserService {
     private final UserRepo userRepo;
 
 
-    public void save(User user) {
-        userRepo.save(user);
+
+ public User getUserByEmail(String userEmail) {
+     Optional<User> user= userRepo.getUserByEmail(userEmail);
+     if (user.isEmpty()) {
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!");
+     }
+     return new User(user.get().id(),user.get().email(), user.get().routeIds(),user.get().name(), user.get().authProvider());
+ }
+    public User getUserByName(String name) {
+        Optional<User> user= userRepo.getUserByName(name);
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such name!");
+        }
+        return new User(user.get().id(),user.get().email(), user.get().routeIds(),user.get().name(), user.get().authProvider());
     }
 
-    public User getLoggedInUser(OAuth2User user) {
-        if (user == null) {
-            return null;
+    public User updateRouteIds(String email, String routeId) {
+        Optional<User> optionalUser = userRepo.getUserByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            List<String> updatedRouteIds = new ArrayList<>(user.routeIds());
+            if (updatedRouteIds.contains(routeId)) {
+                updatedRouteIds.remove(routeId);
+            } else {
+                updatedRouteIds.add(routeId);
+            }
+            User updatedUser = user.withRouteIds(updatedRouteIds);
+            userRepo.save(updatedUser);
+            return updatedUser;
         }
-
-        String userEmail = user.getAttribute("email");
-
-        if (userEmail == null || userEmail.isEmpty()) {
-            throw new GoogleEmailNotFoundException("Email must be present to proceed.");
-        }
-
-        userEmail = userEmail.trim();
-
-        return userRepo.getUserByEmail(userEmail);
+        throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!"));
     }
-
-    public UserDto getLoggedInUserAsUserResponse(OAuth2User user) {
-        User loggedInUser = getLoggedInUser(user);
-        if (loggedInUser == null) {
-            return null;
-        }
-        return new UserDto(loggedInUser);
-    }
-
 
     public boolean saveNewUser(OAuth2User oAuth2User) {
         String userEmail = oAuth2User.getAttribute("email");
+        String userName = "";
 
         if (userEmail == null || userEmail.isEmpty()) {
             return false;
@@ -58,21 +65,11 @@ public class UserService {
         boolean isReturningUser = userRepo.existsByEmail(userEmail.trim());
 
         if (!isReturningUser) {
-            User newUser = new User(userEmail.trim());
+            User newUser = new User(userEmail.trim(), userName);
             userRepo.save(newUser);
         }
 
         return true;
     }
 
-    public List<String> getAllRoutes(String userId) {
-        return userRepo.findById(userId).orElseThrow(NoSuchElementException::new).routeIds();
-    }
-
-    public User removeRoute(User user, String routeId) {
-        List<String> updatedRouteIds = new ArrayList<>(user.routeIds());
-        updatedRouteIds.remove(routeId);
-        User updatedUser = user.withRouteIds(updatedRouteIds);
-        return userRepo.save(updatedUser);
-    }
 }

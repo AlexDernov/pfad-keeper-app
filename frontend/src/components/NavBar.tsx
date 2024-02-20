@@ -1,25 +1,79 @@
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
+import {MyUser} from "../types/MyUsers.tsx";
 
 
-export default function NavBar() {
+type NavBarProps = {
+    user: MyUser;
+    logout: () => void;
+};
+
+
+export default function NavBar(props: NavBarProps) {
+    function login() {
+        const host =
+            window.location.host === "localhost:5173"
+                ? "http://localhost:8080"
+                : window.location.origin;
+
+        window.open(host + "/oauth2/authorization/google", "_self");
+    }
 
     return (
 
-            <StyledNav>
-                <NavContainer>
-                    <NavLinkHeading to="/">Pfad Keeper</NavLinkHeading>
-                    <FlexContainer>
+        <StyledNav>
+            <NavContainer>
+                <NavLinkHeading to="/">Pfad Keeper</NavLinkHeading>
+                <FlexContainer>
 
-                        <NavLinkAdd to="/routes/add"> + New Route</NavLinkAdd>
-                        <NavLinks to="/routes">Meine Routen</NavLinks>
+                    <NavLinkAdd to="/routes/add"> + New Route</NavLinkAdd>
+                    <NavLinks to="/routes">Meine Routen</NavLinks>
 
-                    </FlexContainer>
-                </NavContainer>
-            </StyledNav>
+                </FlexContainer>
+
+                {!props.user && (
+                    <StyledButton
+                        onClick={login}
+                    >
+                        Login
+                    </StyledButton>
+                )}
+                {!!props.user && (
+                    <StyledButton
+                        onClick={props.logout}
+                    >
+                        Logout
+                    </StyledButton>)}
+            </NavContainer>
+        </StyledNav>
 
     )
 }
+const StyledButton = styled.button`
+    position: fixed;
+    top: 3px;
+    right: 3px;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    border-radius: 12px;
+    border: transparent none;
+    background-color: transparent;
+    padding: 8px 16px;
+    font-weight: 300;
+    color: white;
+
+    &:hover {
+        color: #01a3c6; /* Textfarbe beim Hover-Zustand ändern */
+    }
+
+    &:focus-visible {
+        outline: none;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Hervorhebungsfarbe ändern */
+    }
+`;
+
 const NavLinkHeading = styled(NavLink)`
     font-size: 6vw;
     color: #FFF;
@@ -44,14 +98,14 @@ const NavLinkHeading = styled(NavLink)`
 
 const StyledNav = styled.nav`
     position: fixed;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     right: 0;
-    background-color: RGB(129,113,87);
+    background-color: RGB(129, 113, 87);
     height: auto;
     width: 100vw;
-    margin:0;
-    padding:1vw;
+    margin: 0;
+    padding: 1vw;
     z-index: 1000000;
 `;
 
@@ -76,7 +130,7 @@ const FlexContainer = styled.div`
 
 const NavLinks = styled(NavLink)`
     color: #ffffff;
-    background-color: RGB(129,113,87);
+    background-color: RGB(129, 113, 87);
     width: auto;
     height: auto;
     text-decoration: none;
@@ -86,7 +140,8 @@ const NavLinks = styled(NavLink)`
     font-weight: 500;
     margin: 0.5vw;
     cursor: pointer;
-    &:hover{
+
+    &:hover {
         padding: 0.5vw 0 0.5vw 1.1vw;
         font-size: 2vw;
         margin: 0;
@@ -101,7 +156,8 @@ const NavLinkAdd = styled(NavLinks)`
     font-weight: 500;
     margin: 0.5vw 1vw;
     cursor: pointer;
-    &:hover{
+
+    &:hover {
         padding: 0.5vw 1vw;
         font-size: 2.3vw;
         margin: 0.55vw 0.5vw;

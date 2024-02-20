@@ -4,9 +4,13 @@ import de.alexdernov.backend.models.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+
 @Repository
 public interface UserRepo extends MongoRepository<User, String> {
     Boolean existsByEmail(String email);
+    Optional<User> getUserByEmail(String email);
+    Optional<User> getUserByName(String name);
 
-    User getUserByEmail(String email);
 }
