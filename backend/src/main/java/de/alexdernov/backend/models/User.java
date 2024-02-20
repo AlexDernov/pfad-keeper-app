@@ -21,6 +21,6 @@ public record User(
     }
 
     public User withRouteIds(List<String> updatedRouteIds) {
-        return new User(this.id(), this.email(), updatedRouteIds,this.name(), this.authProvider());
+        return new User(this.id(), this.email(), updatedRouteIds, this.name(), this.authProvider());
     }
 }

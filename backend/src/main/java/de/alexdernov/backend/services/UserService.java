@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,20 +20,20 @@ public class UserService {
     private final UserRepo userRepo;
 
 
+    public User getUserByEmail(String userEmail) {
+        Optional<User> user = userRepo.getUserByEmail(userEmail);
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!");
+        }
+        return new User(user.get().id(), user.get().email(), user.get().routeIds(), user.get().name(), user.get().authProvider());
+    }
 
- public User getUserByEmail(String userEmail) {
-     Optional<User> user= userRepo.getUserByEmail(userEmail);
-     if (user.isEmpty()) {
-         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!");
-     }
-     return new User(user.get().id(),user.get().email(), user.get().routeIds(),user.get().name(), user.get().authProvider());
- }
     public User getUserByName(String name) {
-        Optional<User> user= userRepo.getUserByName(name);
+        Optional<User> user = userRepo.getUserByName(name);
         if (user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such name!");
         }
-        return new User(user.get().id(),user.get().email(), user.get().routeIds(),user.get().name(), user.get().authProvider());
+        return new User(user.get().id(), user.get().email(), user.get().routeIds(), user.get().name(), user.get().authProvider());
     }
 
     public User updateRouteIds(String email, String routeId) {
@@ -56,8 +55,7 @@ public class UserService {
 
     public boolean saveNewUser(OAuth2User oAuth2User) {
         String userEmail = oAuth2User.getAttribute("email");
-        String userName = "";
-
+        String name = "";
         if (userEmail == null || userEmail.isEmpty()) {
             return false;
         }
@@ -65,7 +63,7 @@ public class UserService {
         boolean isReturningUser = userRepo.existsByEmail(userEmail.trim());
 
         if (!isReturningUser) {
-            User newUser = new User(userEmail.trim(), userName);
+            User newUser = new User(userEmail.trim(), name);
             userRepo.save(newUser);
         }
 
