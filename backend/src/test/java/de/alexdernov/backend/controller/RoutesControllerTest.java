@@ -205,7 +205,7 @@ class RoutesControllerTest {
 
     @DirtiesContext
     @Test
-    void updateRouteTest_shouldReturnRouteWithUpdatedAuthor_whenRouteWithUpdatedAuthorSent() throws Exception {
+    void updateRouteTest_shouldReturnRouteWithUpdatedName_whenRouteWithUpdatedNameSent() throws Exception {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);

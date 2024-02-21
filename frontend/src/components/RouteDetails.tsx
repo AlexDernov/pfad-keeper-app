@@ -3,30 +3,49 @@ import useSWR from "swr";
 import {useNavigate, useParams} from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import RouteForm from "./RouteForm.tsx";
-import  {useState} from "react";
+import {ChangeEvent, useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
 import {MapContainer, TileLayer} from "react-leaflet";
 import {LatLngExpression} from "leaflet";
 import styled from "styled-components";
 import Routing from "../Routing.tsx";
-
+import axios from "axios";
+import Carousel from "./Carousel.tsx";
+import {MyImages} from "../types/MyImages.tsx";
+import ImagesList from "./images-list.tsx";
 
 type Props = {
     mutateF: () => void,
     onSubmit: (route: MyRouteDto) => void,
+    dataImages: MyImages[],
+    handleImgDelete: (id: string) => void
 }
-export default function RouteDetails(props: Props) {
+export default function RouteDetails(props: Readonly<Props>) {
+    const [file, setFile] = useState<File | null>(null);
     const position: LatLngExpression | undefined = [51.09, 10.27];
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
+    const [imgSaved, setImgSaved] = useState(false);
+
     const {id} = useParams();
     const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
-
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
 
+    function uploadFile(file: File) {
+        const formData = new FormData();
+        formData.append("file", file)
+        formData.append("data", new Blob([JSON.stringify({"routeId": id})], {type: "application/json"}))
+        return axios.post("/api/images", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
+    }
 
     async function handleEditRoute(route: MyRouteDto) {
+
         const response = await fetch(`/api/routes/${id}`, {
             method: "PUT",
             headers: {
@@ -55,6 +74,31 @@ export default function RouteDetails(props: Props) {
         }
     }
 
+    function handleChangeFile(event: ChangeEvent<HTMLInputElement>) {
+        if (!event.target.files) {
+            return;
+        } else {
+            setFile(event.target.files[0])
+        }
+    }
+
+    function handleSaveImg() {
+        if (!file) {
+            return;
+        }
+        uploadFile(file)
+            .then(response => {
+                // Handle response if needed
+                console.log(response);
+                setImgSaved(true);
+            })
+            .catch(error => {
+                // Handle error if needed
+                console.error(error);
+            });
+        setImgSaved(false);
+    }
+
     return (
         <StyledDetails>
             {isEditMode ?
@@ -80,6 +124,7 @@ export default function RouteDetails(props: Props) {
 
                         <StyledH2>{data.name}</StyledH2>
                         <StyledP>Datum: <i>{new Date(data.dateTime).toLocaleDateString()}</i></StyledP></>)}
+            {isEditMode ? null : <Carousel dataImages={props.dataImages} routeId={id}/>}
             <StyledDiv>
                 {!isEditMode ? (
                     <StyledButton
@@ -104,11 +149,24 @@ export default function RouteDetails(props: Props) {
                     >
                         Cancel
                     </StyledButton>
+
+
                 )}
+                <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
+                <div>
+                    <input type="file" onChange={handleChangeFile}/>
+                    {file && !imgSaved ?
+                        <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
+                    {file && !imgSaved ?
+                        <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
+                </div>
             </StyledDiv>
+
+
         </StyledDetails>
     )
 }
+
 const StyledH2 = styled.h2`
     font-size: 3vw;
     margin: 4vw 0 1vw 0;
@@ -124,6 +182,8 @@ const StyledDetails = styled.div`
     align-items: center;
 `;
 const StyledDiv = styled.div`
+            display: flex;
+            flex-direction: column;
     `
 ;
 const StyledMapContainer = styled(MapContainer)`

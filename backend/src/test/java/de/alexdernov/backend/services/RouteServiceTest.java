@@ -23,7 +23,7 @@ class RouteServiceTest {
 
 
     @Test
-    void getRouteTest_returnListOfAllRoutes() {
+    void getRouteTest_whenGetRoute_thenReturnListOfAllRoutes() {
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
         LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
@@ -49,7 +49,7 @@ class RouteServiceTest {
     }
 
     @Test
-    void updateRouteTest_returnUpdateRoute_whenRouteUpdatesSent() {
+    void updateRouteTest_whenRouteUpdatesSent_thenReturnUpdateRoute() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
@@ -77,7 +77,7 @@ class RouteServiceTest {
     }
 
     @Test
-    void getById() {
+    void getRouteByIdTest_whenId_thenReturnRouteWithTheId() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
@@ -101,7 +101,7 @@ class RouteServiceTest {
     }
 
     @Test
-    void deleteRouteById() {
+    void deleteRouteByIdTest_whenId_thenReturnRouteWithTheId() {
         //GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
@@ -131,7 +131,7 @@ class RouteServiceTest {
     }
 
     @Test
-    void addRoute() {
+    void addRouteTest_whenNewRouteDto_thenAddTheRouteToRepo() {
         // GIVEN
         LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);

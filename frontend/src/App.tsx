@@ -10,16 +10,36 @@ import NewRoute from "./components/NewRoute.tsx";
 import {fetcher} from "./components/fetcher.tsx";
 import RouteDetails from "./components/RouteDetails.tsx";
 import {MyRouteDto} from "./types/MyRouteDto.tsx";
+import {useEffect, useState} from "react";
+import {MyImages} from "./types/MyImages.tsx";
+import axios from "axios";
+
 
 
 function App() {
+    const [images, setImages] = useState<MyImages[]>([])
+    useEffect(() => {
+        axios.get("/api/images").then(response =>
+            setImages(response.data))
+    }, [images])
 
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-async function handelMutate(){
-    await mutate();
-}
+
+    async function handelMutate() {
+        await mutate();
+    }
+
+
+
+    const deleteImage = (id: string) => {
+        axios.delete(`/api/images/${id}`)
+            .then(() => {
+                setImages([...images.filter(image => id !== image.id)]);
+            })
+    }
+
     async function handleSubmit(route: MyRouteDto) {
         const response = await fetch("/api/routes", {
             method: "POST",
@@ -41,9 +61,10 @@ async function handelMutate(){
         <><NavBar/>
             <StyledDiv>
                 <Routes>
-                    <Route index element={<Home/>}/>
+                    <Route index element={<Home routeData={data}/>}/>
                     <Route path={"/routes"} element={<RoutesList routesData={data}/>}/>
-                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} onSubmit={handleSubmit}/>}/>
+                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} dataImages={images}
+                                                                       onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>
                     <Route path={"/routes/add"} element={<NewRoute onSubmit={handleSubmit}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
                 </Routes>
