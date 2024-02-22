@@ -109,7 +109,7 @@ export default function RouteDetails(props: Readonly<Props>) {
             });
         setImgSaved(false);
     }
-    function filterUsersByRouteId(users: MyUser[], routeId: string) {
+    function filterUsersByRouteId(users: MyUser[], routeId: string ) {
         return users.filter((user) => user?.routeIds.includes(routeId));
     }
     const filteredUsers = filterUsersByRouteId(usersAll, id);

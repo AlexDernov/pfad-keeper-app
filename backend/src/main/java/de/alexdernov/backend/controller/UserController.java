@@ -46,4 +46,9 @@ public class UserController {
         return userService.updateUsersRouteIdsList( email, routeId);
     }
 
+    @DeleteMapping("/{routeId}")
+    public User updateRouteIdsList( @PathVariable String routeId, @RequestBody String email) {
+        return userService.updateUsersRouteIdsList( email, routeId);
+    }
+
 }

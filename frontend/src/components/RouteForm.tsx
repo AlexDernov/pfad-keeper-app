@@ -11,21 +11,18 @@ import Routing from "../Routing.tsx";
 import {MyCoords} from "../types/MyCoords.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
-import useSWR from "swr";
-import {fetcher} from "./fetcher.tsx";
-import axios from "axios";
-import {MyRoute} from "../types/MyRoute.tsx";
+
 
 
 type PropsForm = {
     name: string;
     date: string;
-    hostUser:MyUser;
-    routeId: string| undefined;
-    usersOfRoute: MyUsersDto[];
+    hostUser: MyUser;
+    routeId: string | undefined;
+    usersOfRoute: MyUsersDto[] | [];
     coords: MyCoords[];
     isEdit: boolean;
-    allUsers:MyUser[];
+    allUsers: MyUser[];
     onSubmit: (route: MyRouteDto) => void;
 }
 export default function RouteForm(props: PropsForm) {
@@ -33,13 +30,12 @@ export default function RouteForm(props: PropsForm) {
     const [dateTime, setDateTime] = useState<Date>(new Date(props.date));
     const [control, setControl] = useState<L.Routing.Control>()
     const [searchTerm, setSearchTerm] = useState('');
-    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>(props.usersOfRoute);
+    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>(props.usersOfRoute || []);
     const [searchResult, setSearchResult] = useState<MyUser>();
     const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
-    const [route, setRoute]=useState<MyRoute>()
-
-
+    const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUser[]>([])
+console.log(usersNotInRoute);
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
         //@ts-expect-error Library
@@ -49,27 +45,39 @@ export default function RouteForm(props: PropsForm) {
                 latitude: coord.latLng.lat.toString(),
                 longitude: coord.latLng.lng.toString()
             }));
-            {!props.isEdit ? props.onSubmit({name, dateTime, coords: extractedCoords, members: [{email: props.hostUser?.email, name: props.hostUser?.name}]}):
-            props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});}
-            {props.isEdit? navigate(`/routes/${props.routeId}`): navigate("/routes")}
+            {
+                !props.isEdit ? props.onSubmit({
+                        name,
+                        dateTime,
+                        coords: extractedCoords,
+                        members: [{email: props.hostUser?.email, name: props.hostUser?.name}]
+                    }) :
+                    props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});
+            }
+            {
+                props.isEdit ? navigate(`/routes/${props.routeId}`) : navigate("/routes")
+            }
             console.log(`RouteForm"${name}`);
         } else
             alert("Eine Route soll ausgewählt sein!")
     }
+
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const search = event.target.value.toLowerCase();
         setSearchTerm(search);
-        axios.get("/api/routes/"+props.routeId).then(r=> setRoute(r.data))
-
-        const membersInRoute=route?.members
-        const usersNotInRoute = props.allUsers.filter(user=>membersInRoute?.map(member=> user?.email !== member?.email))
-const result = usersNotInRoute.find(item =>
-           item?.email?.toLowerCase().includes(search)
+        //axios.get("/api/routes/" + props.routeId).then(r => setRoute(r.data))
+        //const membersInRoute = route?.members
+        SetUsersNotInRoute(props.allUsers.filter(user => !usersOfRoute?.some(
+            member => user?.email === member?.email)))
+        const result = usersNotInRoute.find(item =>
+            item?.email?.toLowerCase().includes(searchTerm) ||
+            item?.name?.toLowerCase().includes(searchTerm)
         );
-            setSearchResult(result);
+        setSearchResult(result);
     };
-    async function handleMembersAdd(){
-        if(searchResult) {
+
+    async function handleMembersAdd() {
+        if (searchResult) {
             await fetch(`/api/users/${props.routeId}`, {
                 method: "POST",
                 headers: {
@@ -78,26 +86,27 @@ const result = usersNotInRoute.find(item =>
                 body: searchResult?.email,
             });
             setUsersOfRoute([...usersOfRoute, searchResult]);
-            props.isEdit= true;
-        }else {
+            props.isEdit = true;
+        } else {
             alert("No user with such email or name!")
         }
     }
-    async function handleMembersDelete(){
-        if(searchResult) {
-            await fetch(`/api/users/${props.routeId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: searchResult?.email,
-            });
-            const updatedUsersOfRoute = usersOfRoute.filter(user => user?.email !== searchResult.email);
-            setUsersOfRoute(updatedUsersOfRoute);
-            props.isEdit= true;
-        }else {
-            alert("No user with such email or name!")
-        }
+
+    async function handleMembersDelete(email:string | undefined) {
+       if(email) {
+           await fetch(`/api/users/${props.routeId}`, {
+               method: "POST",
+               headers: {
+                   "Content-Type": "application/json",
+               },
+               body: email
+           });
+           const updatedUsersOfRoute = usersOfRoute.filter(
+               user => user?.email !== email)
+           setUsersOfRoute(updatedUsersOfRoute);
+           props.isEdit = true;
+       }
+
     }
 
     return (
@@ -140,16 +149,18 @@ const result = usersNotInRoute.find(item =>
                         <StyledInput type="text" placeholder="Search by Google-email or name"
                                      value={searchTerm}
                                      onChange={handleSearch} list="searchSuggestions"
-                        /></StyledLabel><button type="button" onClick={handleMembersAdd}>Add</button>
+                        /></StyledLabel>
+                    <button type="button" onClick={handleMembersAdd}>Add</button>
                     <datalist id="searchSuggestions">
-                        {props.allUsers.map(result => (
+                        {usersNotInRoute.map(result => (
                             <option key={result?.email} value={result?.name}/>
                         ))}
                     </datalist>
                     <ul>
                         {usersOfRoute?.map(user => (<>
-                            <li key={user?.email}>{user?.name ? user?.name : user?.email}</li> <button type="button" onClick={handleMembersDelete}> Delete</button>
-                </>))}
+                            <li key={user?.email}>{user?.name ? user?.name : user?.email}</li>
+                            <button type="button" onClick={()=>handleMembersDelete(user?.email)}> Delete</button>
+                        </>))}
                     </ul>
                 </StyledSection>
 
@@ -162,7 +173,7 @@ const result = usersNotInRoute.find(item =>
 const StyledDiv = styled.div`
     display: flex;
     flex-direction: column;
-align-items: center`;
+    align-items: center`;
 
 const StyledP = styled.p`
     margin-top: 0;
