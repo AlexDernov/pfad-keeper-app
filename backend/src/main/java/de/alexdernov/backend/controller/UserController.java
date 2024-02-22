@@ -1,15 +1,17 @@
 package de.alexdernov.backend.controller;
 
 
+import de.alexdernov.backend.models.User;
 import de.alexdernov.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,12 +20,30 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public String getMe(@AuthenticationPrincipal OAuth2User oAuth2User) {
+    public User getMe(@AuthenticationPrincipal OAuth2User oAuth2User) {
 
         if (oAuth2User == null) {
             return null;
         }
-        return oAuth2User.getAttribute("email");
+        return userService.getUserByEmail(oAuth2User.getAttribute("email"));
+    }
+    @GetMapping
+    public List<User> getAllUsers(){
+        return userService.getAllUsers();
+    }
+
+    @PostMapping("/me")
+    public User updateMyName(@AuthenticationPrincipal OAuth2User oAuth2User, @RequestBody String encodedName) {
+        String name = URLDecoder.decode(encodedName, StandardCharsets.UTF_8);
+        if (oAuth2User == null) {
+            return null;
+        }
+        return userService.updateUserName(oAuth2User.getAttribute("email"), name);
+    }
+
+    @PostMapping("/{routeId}")
+    public User updateRouteIdsList( @PathVariable String routeId, @RequestBody String email) {
+        return userService.updateUsersRouteIdsList( email, routeId);
     }
 
 }

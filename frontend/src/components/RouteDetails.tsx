@@ -3,7 +3,7 @@ import useSWR from "swr";
 import {useNavigate, useParams} from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import RouteForm from "./RouteForm.tsx";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
 import {MapContainer, TileLayer} from "react-leaflet";
 import {LatLngExpression} from "leaflet";
@@ -13,12 +13,14 @@ import axios from "axios";
 import Carousel from "./Carousel.tsx";
 import {MyImages} from "../types/MyImages.tsx";
 import ImagesList from "./images-list.tsx";
+import {MyUser} from "../types/MyUsers.tsx";
 
 type Props = {
     mutateF: () => void,
     onSubmit: (route: MyRouteDto) => void,
     dataImages: MyImages[],
     handleImgDelete: (id: string) => void
+    hostUser: MyUser;
 }
 export default function RouteDetails(props: Readonly<Props>) {
     const [file, setFile] = useState<File | null>(null);
@@ -26,11 +28,20 @@ export default function RouteDetails(props: Readonly<Props>) {
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const [imgSaved, setImgSaved] = useState(false);
+    const [usersAll, setUsersAll] = useState<MyUser[]>([])
 
-    const {id} = useParams();
+    useEffect(() => {
+        axios.get("/api/users").then(response =>
+            setUsersAll(response.data))
+    }, [])
+
+
+    const {id } = useParams<string>();
     const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
+    if (!id) return <div>Loading</div>;
+    if(!usersAll) return <div>Loading</div>
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
     function uploadFile(file: File) {
@@ -51,7 +62,7 @@ export default function RouteDetails(props: Readonly<Props>) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords: route.coords}),
+            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords: route.coords, userIds: route.members}),
         });
         if (response.ok) {
             await mutate();
@@ -98,11 +109,15 @@ export default function RouteDetails(props: Readonly<Props>) {
             });
         setImgSaved(false);
     }
+    function filterUsersByRouteId(users: MyUser[], routeId: string) {
+        return users.filter((user) => user?.routeIds.includes(routeId));
+    }
+    const filteredUsers = filterUsersByRouteId(usersAll, id);
 
     return (
         <StyledDetails>
             {isEditMode ?
-                <RouteForm name={data.name} date={data.dateTime} isEdit={isEditMode} onSubmit={handleEditRoute}
+                <RouteForm name={data.name} usersOfRoute={filteredUsers} routeId={id} allUsers={usersAll} date={data.dateTime} hostUser={props.hostUser} isEdit={isEditMode} onSubmit={handleEditRoute}
                            coords={data.coords}/>
                 : (
                     <>
@@ -152,6 +167,7 @@ export default function RouteDetails(props: Readonly<Props>) {
 
 
                 )}
+                {isEditMode?<>
                 <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
                 <div>
                     <input type="file" onChange={handleChangeFile}/>
@@ -159,7 +175,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                         <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
                     {file && !imgSaved ?
                         <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
-                </div>
+                </div></>: null}
             </StyledDiv>
 
 

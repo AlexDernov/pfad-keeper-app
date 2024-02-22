@@ -1,5 +1,4 @@
 import '../index.css'
-//import map from "../images/map.png"
 import styled from "styled-components";
 import {ChangeEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
@@ -10,22 +9,36 @@ import {MapContainer, TileLayer} from "react-leaflet";
 import Routing from "../Routing.tsx";
 
 import {MyCoords} from "../types/MyCoords.tsx";
+import {MyUsersDto} from "../types/MyUsersDto.tsx";
+import {MyUser} from "../types/MyUsers.tsx";
+import useSWR from "swr";
+import {fetcher} from "./fetcher.tsx";
+import axios from "axios";
+import {MyRoute} from "../types/MyRoute.tsx";
 
 
 type PropsForm = {
     name: string;
     date: string;
+    hostUser:MyUser;
+    routeId: string| undefined;
+    usersOfRoute: MyUsersDto[];
     coords: MyCoords[];
     isEdit: boolean;
+    allUsers:MyUser[];
     onSubmit: (route: MyRouteDto) => void;
 }
 export default function RouteForm(props: PropsForm) {
     const [name, setName] = useState<string>(props.name);
     const [dateTime, setDateTime] = useState<Date>(new Date(props.date));
     const [control, setControl] = useState<L.Routing.Control>()
-
+    const [searchTerm, setSearchTerm] = useState('');
+    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>(props.usersOfRoute);
+    const [searchResult, setSearchResult] = useState<MyUser>();
     const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
+    const [route, setRoute]=useState<MyRoute>()
+
 
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -36,14 +49,56 @@ export default function RouteForm(props: PropsForm) {
                 latitude: coord.latLng.lat.toString(),
                 longitude: coord.latLng.lng.toString()
             }));
-
-            props.onSubmit({name, dateTime, coords: extractedCoords});
-            navigate("/routes")
+            {!props.isEdit ? props.onSubmit({name, dateTime, coords: extractedCoords, members: [{email: props.hostUser?.email, name: props.hostUser?.name}]}):
+            props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});}
+            {props.isEdit? navigate(`/routes/${props.routeId}`): navigate("/routes")}
             console.log(`RouteForm"${name}`);
         } else
             alert("Eine Route soll ausgewählt sein!")
     }
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        const search = event.target.value.toLowerCase();
+        setSearchTerm(search);
+        axios.get("/api/routes/"+props.routeId).then(r=> setRoute(r.data))
 
+        const membersInRoute=route?.members
+        const usersNotInRoute = props.allUsers.filter(user=>membersInRoute?.map(member=> user?.email !== member?.email))
+const result = usersNotInRoute.find(item =>
+           item?.email?.toLowerCase().includes(search)
+        );
+            setSearchResult(result);
+    };
+    async function handleMembersAdd(){
+        if(searchResult) {
+            await fetch(`/api/users/${props.routeId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: searchResult?.email,
+            });
+            setUsersOfRoute([...usersOfRoute, searchResult]);
+            props.isEdit= true;
+        }else {
+            alert("No user with such email or name!")
+        }
+    }
+    async function handleMembersDelete(){
+        if(searchResult) {
+            await fetch(`/api/users/${props.routeId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: searchResult?.email,
+            });
+            const updatedUsersOfRoute = usersOfRoute.filter(user => user?.email !== searchResult.email);
+            setUsersOfRoute(updatedUsersOfRoute);
+            props.isEdit= true;
+        }else {
+            alert("No user with such email or name!")
+        }
+    }
 
     return (
         <StyledDiv>
@@ -73,7 +128,7 @@ export default function RouteForm(props: PropsForm) {
                     <StyledLabel htmlFor={"name"}>Wo:
                         <StyledInput type={"text"} id={"name"} onChange={(e) => setName(e.target.value)}
                                      defaultValue={props.name}
-                                     pattern="[0-9A-Za-zß-üА-Яа-яЁё?\s]+"/></StyledLabel>
+                        /></StyledLabel>
                     <StyledLabel htmlFor={"dateTime"}>Wann:
                         <StyledInput2 type={"datetime-local"} name="date" id={"dateTime"}
                                       onChange={(e) => setDateTime(new Date(e.target.value))} defaultValue={props.date}
@@ -81,6 +136,21 @@ export default function RouteForm(props: PropsForm) {
                                       pattern="\d{4}-\d{2}-\d{2}" min="2023-01-01"
                                       max="2080-01-01"/>
                         <span className="validity"/></StyledLabel>
+                    <StyledLabel htmlFor={"members"}>Teilnehmer:
+                        <StyledInput type="text" placeholder="Search by Google-email or name"
+                                     value={searchTerm}
+                                     onChange={handleSearch} list="searchSuggestions"
+                        /></StyledLabel><button type="button" onClick={handleMembersAdd}>Add</button>
+                    <datalist id="searchSuggestions">
+                        {props.allUsers.map(result => (
+                            <option key={result?.email} value={result?.name}/>
+                        ))}
+                    </datalist>
+                    <ul>
+                        {usersOfRoute?.map(user => (<>
+                            <li key={user?.email}>{user?.name ? user?.name : user?.email}</li> <button type="button" onClick={handleMembersDelete}> Delete</button>
+                </>))}
+                    </ul>
                 </StyledSection>
 
                 <StyledButton type={"submit"}>Route speichern</StyledButton>
@@ -89,9 +159,9 @@ export default function RouteForm(props: PropsForm) {
     )
 }
 
-const StyledDiv =styled.div`
-display: flex;
-flex-direction: column;
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
 align-items: center`;
 
 const StyledP = styled.p`

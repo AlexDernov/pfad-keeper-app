@@ -1,8 +1,6 @@
 package de.alexdernov.backend.services;
 
 import de.alexdernov.backend.models.AuthProvider;
-import de.alexdernov.backend.models.Coords;
-import de.alexdernov.backend.models.Image;
 import de.alexdernov.backend.models.User;
 import de.alexdernov.backend.repos.UserRepo;
 import org.junit.jupiter.api.Assertions;
@@ -12,8 +10,6 @@ import org.mockito.Mockito;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +88,7 @@ class UserServiceTest {
 
         UserService userService = new UserService(userRepo);
         //WHEN
-        User actual = userService.updateRouteIds(userToUpdate.email(), routeId);
+        User actual = userService.updateUsersRouteIdsList(userToUpdate.email(), routeId);
 
         //THEN
         assertEquals(userToUpdate, actual);
@@ -109,7 +105,7 @@ class UserServiceTest {
 
         UserService userService = new UserService(userRepo);
         //WHEN
-        User actual = userService.updateRouteIds(userToUpdate.email(), existingBookId);
+        User actual = userService.updateUsersRouteIdsList(userToUpdate.email(), existingBookId);
 
         //THEN
         assertFalse(actual.routeIds().contains(existingBookId));

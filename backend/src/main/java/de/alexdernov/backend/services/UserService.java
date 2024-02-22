@@ -19,6 +19,9 @@ import java.util.Optional;
 public class UserService {
     private final UserRepo userRepo;
 
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
+    }
 
     public User getUserByEmail(String userEmail) {
         Optional<User> user = userRepo.getUserByEmail(userEmail);
@@ -36,7 +39,7 @@ public class UserService {
         return new User(user.get().id(), user.get().email(), user.get().routeIds(), user.get().name(), user.get().authProvider());
     }
 
-    public User updateRouteIds(String email, String routeId) {
+    public User updateUsersRouteIdsList(String email, String routeId) {
         Optional<User> optionalUser = userRepo.getUserByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -47,8 +50,15 @@ public class UserService {
                 updatedRouteIds.add(routeId);
             }
             User updatedUser = user.withRouteIds(updatedRouteIds);
-            userRepo.save(updatedUser);
-            return updatedUser;
+            return userRepo.save(updatedUser);
+        }
+        throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!"));
+    }
+    public User updateUserName(String email, String userName) {
+        Optional<User> optionalUser = userRepo.getUserByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return userRepo.save(user.withName(userName));
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!"));
     }
@@ -69,5 +79,6 @@ public class UserService {
 
         return true;
     }
+
 
 }

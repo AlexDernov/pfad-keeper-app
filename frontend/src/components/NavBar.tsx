@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 import {MyUser} from "../types/MyUsers.tsx";
 
 
+
 type NavBarProps = {
     user: MyUser;
     logout: () => void;
@@ -10,6 +11,7 @@ type NavBarProps = {
 
 
 export default function NavBar(props: NavBarProps) {
+
     function login() {
         const host =
             window.location.host === "localhost:5173"
@@ -38,12 +40,14 @@ export default function NavBar(props: NavBarProps) {
                         Login
                     </StyledButton>
                 )}
-                {!!props.user && (
+                {!!props.user && (<>
                     <StyledButton
                         onClick={props.logout}
                     >
                         Logout
-                    </StyledButton>)}
+                    </StyledButton>
+                    <NavLink to="/user">Profil</NavLink>
+                </>)}
             </NavContainer>
         </StyledNav>
 
