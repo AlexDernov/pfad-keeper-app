@@ -44,8 +44,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);
@@ -73,12 +73,12 @@ class RoutesControllerTest {
                                                           "latitude": "325325"
                                                       }
                                                   ],
-                                                  "userIds": [
-                                                  {"id":"1",
+                                                  "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -103,8 +103,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);
@@ -131,12 +131,12 @@ class RoutesControllerTest {
                                                           "latitude": "325325"
                                                       }
                                                   ],
-                                                  "userIds": [
-                                                  {"id":"1",
+                                                  "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -161,8 +161,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);
@@ -188,8 +188,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);
@@ -213,12 +213,12 @@ class RoutesControllerTest {
                                                                "latitude": "325325"
                                                            }
                                                        ],
-                                                       "userIds": [
-                                                  {"id":"1",
+                                                       "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -250,12 +250,12 @@ class RoutesControllerTest {
                                                           "latitude": "325325"
                                                       }
                                                   ],
-                                                  "userIds": [
-                                                  {"id":"1",
+                                                  "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -281,8 +281,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);
@@ -309,12 +309,12 @@ class RoutesControllerTest {
                                                                "latitude": "325325"
                                                            }
                                                        ],
-                                                       "userIds": [
-                                                  {"id":"1",
+                                                       "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -343,12 +343,12 @@ class RoutesControllerTest {
                                                            "latitude": "325325"
                                                        }
                                                    ],
-                                                   "userIds": [
-                                                  {"id":"1",
+                                                   "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -373,8 +373,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);
@@ -402,12 +402,12 @@ class RoutesControllerTest {
                                                        "latitude": "325325"
                                                    }
                                                ],
-                                               "userIds": [
-                                                  {"id":"1",
+                                               "members": [
+                                                  {
                                                   "email":"Email",
                                                   "name":"Name"
                                                   },
-                                                  {"id":"2",
+                                                  {
                                                   "email":"Email2",
                                                   "name":"Name2"
                                                   }
@@ -430,8 +430,8 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        UserDto userDto1 = new UserDto("1", "Email", "Name");
-        UserDto userDto2 = new UserDto("2", "Email2", "Name2");
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
         List<UserDto> userIds = new ArrayList<>();
         userIds.add(userDto1);
         userIds.add(userDto2);

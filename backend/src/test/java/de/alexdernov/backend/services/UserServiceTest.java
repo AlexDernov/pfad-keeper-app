@@ -1,6 +1,5 @@
 package de.alexdernov.backend.services;
 
-import de.alexdernov.backend.models.AuthProvider;
 import de.alexdernov.backend.models.User;
 import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.repos.UserRepo;
@@ -11,8 +10,6 @@ import org.mockito.Mockito;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +30,7 @@ class UserServiceTest {
     void getUserByEmailTest_whenEmail_thenReturnUserWithTheEmail() {
         //GIVEN
         String expectedEmail = "Email";
-        Mockito.when(userRepo.getUserByEmail(expectedEmail)).thenReturn((Optional<UserDto>) Optional.of(new UserDto("Email", "Name")));
+        Mockito.when(userRepo.getUserByEmail(expectedEmail)).thenReturn(Optional.of(new User("Email", "Name")));
 
         UserService userService = new UserService(userRepo);
         //WHEN
@@ -55,8 +52,6 @@ class UserServiceTest {
     }
 
 
-
-
     @Test
     void saveNewUserTest_whenUserNotExists_thenSaveNewUser() {
         // GIVEN
@@ -76,6 +71,7 @@ class UserServiceTest {
         verify(userRepo).save(any(User.class));
         verifyNoMoreInteractions(userRepo);
     }
+
     @Test
     void saveNewUserTest_whenUserExists_thenReturnTrue() {
         // GIVEN

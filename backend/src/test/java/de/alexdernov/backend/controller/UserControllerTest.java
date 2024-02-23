@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,6 +31,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
     }
+
     @Test
     void getCurrentUserTest_whenUserLogin() throws Exception {
         userRepo.save(new User("1", "Email", new ArrayList<>(List.of("1", "2")), "Name", AuthProvider.GOOGLE));
@@ -40,7 +40,12 @@ class UserControllerTest {
                                 .userInfoToken(token ->
                                         token.claim("email", "Email"))))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Email"));
+                .andExpect(content().json("""
+                        {
+                        "email":"Email",
+                        "name":"Name"
+                        }
+                        """));
     }
 
 }
