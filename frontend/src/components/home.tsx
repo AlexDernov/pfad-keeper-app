@@ -31,19 +31,13 @@ export default function Home(props: Props) {
     return (
         <StyledDiv>
 
-            <h3>Willkommen auf unserer Webseite für die Planung, Speicherung und Bearbeitung von Wanderrouten!</h3>
+            <h3>Willkommen auf unserer Webseite für die Planung, Speicherung und Bearbeitung von Reisen!</h3>
             <p><i>
-                Hier kannst du deine Abenteuer im Freien noch besser organisieren und deine Lieblingsrouten mit
-                Leichtigkeit erkunden. Egal, ob du bereits geplante Routen auf einer Karte mit Markern festlegen
-                möchtest oder deine Wanderungen spontan aufzeichnen und speichern möchtest – wir haben alles, was du
-                brauchst.
-                Mit unserer benutzerfreundlichen Plattform kannst du nicht nur Routen planen und speichern, sondern auch
+                Hier kannst du deine Abenteuer noch besser organisieren und deine Lieblingsrouten mit
+                Leichtigkeit erkunden. Hier kannst du nicht nur Routen planen und speichern, sondern auch
                 zusätzliche Informationen und Bilder zu jeder Route hinzufügen. Egal, ob du alleine unterwegs bist oder
-                deine Abenteuer mit Freunden teilst, wir helfen dir dabei, deine Wandererlebnisse zu dokumentieren und
-                unvergessliche Erinnerungen zu schaffen.
-
-                Begib dich auf die Reise und entdecke die Natur auf eine ganz neue Art und Weise – mit unserer Webseite
-                für Wanderroutenplanung!</i></p>
+                deine Abenteuer mit Freunden teilst, wir helfen dir dabei, deine Erlebnisse zu dokumentieren.
+            </i></p>
 
             <MapContainer center={position} zoom={5} style={{height: "50vh", color: "black"}} contextmenu={true}
                           contextmenuItems={[{

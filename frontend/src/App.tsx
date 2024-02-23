@@ -80,7 +80,7 @@ function App() {
             <StyledDiv>
                 <Routes>
                     <Route index element={<Home routeData={data}/>}/>
-                    <Route path={"/routes"} element={<RoutesList routesData={data} logInUser={userOnLogin}/>}/>
+                    <Route path={"/routes"} element={<RoutesList routesData={data} routImages={images} logInUser={userOnLogin}/>}/>
                     <Route path={"/user"} element={<ProfilPage userName={userOnLogin?.name} userEmail={userOnLogin?.email}/>}/>
                     <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin}
                                                                        onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>
@@ -93,7 +93,7 @@ function App() {
 }
 
 const StyledDiv = styled.div`
-    margin-top: 15vw;
+    margin-top: 3.5rem;
 `;
 
 export default App

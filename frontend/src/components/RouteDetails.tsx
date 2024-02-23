@@ -154,7 +154,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                         </div>
                             <div><StyledP2>{new Date(data.dateTime).toLocaleDateString()}</StyledP2>
                                 <StyledUl>
-                                {data?.members.map(userSaved => (<StyledLiDiv>
+                                {data?.members.map((userSaved:MyUsersDto) => (<StyledLiDiv>
                                         <StyledLi
                                             key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
                                     </StyledLiDiv>

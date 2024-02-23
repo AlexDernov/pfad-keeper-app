@@ -1,18 +1,22 @@
 import styled from "styled-components";
 import {MyRoute} from "../types/MyRoute.tsx";
-import map from "../images/map.png"
+import map from "../assets/images/map.png"
 import {Link} from "react-router-dom";
+import {MyImages} from "../types/MyImages.tsx";
 
 type DataRoute = {
-    route: MyRoute
+    route: MyRoute,
+    routImages:MyImages[]
 }
 export default function RouteItem(props: Readonly<DataRoute>) {
+    const listOfImagesOfTheRoute = props.routImages.filter(image=> image.routeId === props.route.id)
+    const randomImage = listOfImagesOfTheRoute.length > 0 ? listOfImagesOfTheRoute[Math.floor(Math.random() * listOfImagesOfTheRoute.length)].url : null;
     return (
         <StyledLink to={`/routes/${props.route.id}`}>
             <StyledDiv>
                 <StyledH>{props.route.name}</StyledH>
                 <StylesDate>Datum: <i>{new Date(props.route.dateTime).toLocaleDateString()}</i></StylesDate>
-                <StyledImg src={map} alt={"Placeholder Map"}/>
+                <StyledImg src={randomImage || map} alt={"Placeholder Map"}/>
             </StyledDiv>
         </StyledLink>
     )
@@ -27,10 +31,11 @@ const StylesDate = styled.p`
 
 const StyledImg = styled.img`
     margin: 1vw 0 1vw 0;
-    height: auto;
     width: auto;
     max-width: 99%;
-    object-fit: contain`;
+    height: 100%;
+    overflow: hidden;
+    object-fit: cover`;
 
 const StyledH = styled.h2`
     margin: 1vw 0 0 0;
@@ -54,13 +59,14 @@ const StyledDiv = styled.div`
     align-items: center;
     box-shadow: 0 2px 4px 0 rgba(38, 59, 56, 0.10), 0 0 0 1.5px rgba(38, 50, 56, 0.10);
     margin: 0.25vw 0 0.25vw 0;
-
     min-width: 30vw;
     max-width: 500px;
     border-radius: 0.375rem;
     border-color: rgb(221 221 221);
     background-color: white;
     padding: 0.25vw 0 0.25vw 0;
+    height: 100%;
+    overflow: hidden;
 `;
 
 
