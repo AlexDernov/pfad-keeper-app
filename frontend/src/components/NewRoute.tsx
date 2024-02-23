@@ -1,14 +1,14 @@
 import RouteForm from "./RouteForm.tsx";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
-import {MyUser} from "../types/MyUsers.tsx";
+import {MyUsersDto} from "../types/MyUsersDto.tsx";
 
 
 type PropsNewRoute = {
     onSubmit: (route: MyRouteDto) => void;
-    hostUser:MyUser;
+    logInUser:MyUsersDto;
 }
-export default function NewRoute(props: PropsNewRoute) {
+export default function NewRoute(props: Readonly<PropsNewRoute>) {
     return (
-            <RouteForm onSubmit={props.onSubmit} name={""} date={""} isEdit={false} coords={[]} hostUser={props.hostUser} routeId={""} usersOfRoute={[]} allUsers={[]}/>
+            <RouteForm onSubmit={props.onSubmit} name={""} date={""} isEdit={false} coords={[]} logInUser={props.logInUser} routeId={""} usersOfRoute={[]} allUsers={[]}/>
     )
 }

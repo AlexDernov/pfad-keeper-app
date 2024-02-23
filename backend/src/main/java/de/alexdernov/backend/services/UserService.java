@@ -1,6 +1,7 @@
 package de.alexdernov.backend.services;
 
 import de.alexdernov.backend.models.User;
+import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.repos.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,42 +24,21 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public User getUserByEmail(String userEmail) {
+    public UserDto getUserByEmail(String userEmail) {
         Optional<User> user = userRepo.getUserByEmail(userEmail);
         if (user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!");
         }
-        return new User(user.get().id(), user.get().email(), user.get().routeIds(), user.get().name(), user.get().authProvider());
+        return new UserDto(user.get().email(), user.get().name());
     }
 
-    public User getUserByName(String name) {
-        Optional<User> user = userRepo.getUserByName(name);
-        if (user.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such name!");
-        }
-        return new User(user.get().id(), user.get().email(), user.get().routeIds(), user.get().name(), user.get().authProvider());
-    }
 
-    public User updateUsersRouteIdsList(String email, String routeId) {
+    public UserDto updateUserName(String email, String userName) {
         Optional<User> optionalUser = userRepo.getUserByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            List<String> updatedRouteIds = new ArrayList<>(user.routeIds());
-            if (updatedRouteIds.contains(routeId)) {
-                updatedRouteIds.remove(routeId);
-            } else {
-                updatedRouteIds.add(routeId);
-            }
-            User updatedUser = user.withRouteIds(updatedRouteIds);
-            return userRepo.save(updatedUser);
-        }
-        throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!"));
-    }
-    public User updateUserName(String email, String userName) {
-        Optional<User> optionalUser = userRepo.getUserByEmail(email);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return userRepo.save(user.withName(userName));
+            User user1 = userRepo.save(user.withName(userName));
+            return new UserDto(user1.email(),user1.name());
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!"));
     }

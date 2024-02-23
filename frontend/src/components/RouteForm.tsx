@@ -7,7 +7,6 @@ import L, {LatLngExpression} from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {MapContainer, TileLayer} from "react-leaflet";
 import Routing from "../Routing.tsx";
-
 import {MyCoords} from "../types/MyCoords.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
@@ -17,25 +16,27 @@ import {MyUser} from "../types/MyUsers.tsx";
 type PropsForm = {
     name: string;
     date: string;
-    hostUser: MyUser;
+    logInUser: MyUsersDto;
     routeId: string | undefined;
     usersOfRoute: MyUsersDto[] | [];
     coords: MyCoords[];
     isEdit: boolean;
     allUsers: MyUser[];
     onSubmit: (route: MyRouteDto) => void;
+    onDeleteMembers:(userToDelete:MyUsersDto)=>void;
 }
 export default function RouteForm(props: PropsForm) {
     const [name, setName] = useState<string>(props.name);
     const [dateTime, setDateTime] = useState<Date>(new Date(props.date));
     const [control, setControl] = useState<L.Routing.Control>()
     const [searchTerm, setSearchTerm] = useState('');
-    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>(props.usersOfRoute || []);
-    const [searchResult, setSearchResult] = useState<MyUser>();
+    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>( []);
+    const [searchResult, setSearchResult] = useState<MyUsersDto>();
     const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
-    const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUser[]>([])
-console.log(usersNotInRoute);
+    const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUsersDto[]>([])
+
+
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
         //@ts-expect-error Library
@@ -46,18 +47,18 @@ console.log(usersNotInRoute);
                 longitude: coord.latLng.lng.toString()
             }));
             {
-                !props.isEdit ? props.onSubmit({
+                !props.isEdit ?
+                    props.onSubmit({
                         name,
                         dateTime,
                         coords: extractedCoords,
-                        members: [{email: props.hostUser?.email, name: props.hostUser?.name}]
+                        members: [...usersOfRoute,{email: props.logInUser.email, name: props.logInUser?.name}]
                     }) :
                     props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});
             }
             {
                 props.isEdit ? navigate(`/routes/${props.routeId}`) : navigate("/routes")
             }
-            console.log(`RouteForm"${name}`);
         } else
             alert("Eine Route soll ausgewählt sein!")
     }
@@ -68,46 +69,15 @@ console.log(usersNotInRoute);
         //axios.get("/api/routes/" + props.routeId).then(r => setRoute(r.data))
         //const membersInRoute = route?.members
         SetUsersNotInRoute(props.allUsers.filter(user => !usersOfRoute?.some(
+            member => user?.email === member?.email)).filter(user => !props.usersOfRoute?.some(
             member => user?.email === member?.email)))
+
         const result = usersNotInRoute.find(item =>
             item?.email?.toLowerCase().includes(searchTerm) ||
             item?.name?.toLowerCase().includes(searchTerm)
         );
         setSearchResult(result);
     };
-
-    async function handleMembersAdd() {
-        if (searchResult) {
-            await fetch(`/api/users/${props.routeId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: searchResult?.email,
-            });
-            setUsersOfRoute([...usersOfRoute, searchResult]);
-            props.isEdit = true;
-        } else {
-            alert("No user with such email or name!")
-        }
-    }
-
-    async function handleMembersDelete(email:string | undefined) {
-       if(email) {
-           await fetch(`/api/users/${props.routeId}`, {
-               method: "POST",
-               headers: {
-                   "Content-Type": "application/json",
-               },
-               body: email
-           });
-           const updatedUsersOfRoute = usersOfRoute.filter(
-               user => user?.email !== email)
-           setUsersOfRoute(updatedUsersOfRoute);
-           props.isEdit = true;
-       }
-
-    }
 
     return (
         <StyledDiv>
@@ -139,29 +109,46 @@ console.log(usersNotInRoute);
                                      defaultValue={props.name}
                         /></StyledLabel>
                     <StyledLabel htmlFor={"dateTime"}>Wann:
-                        <StyledInput2 type={"datetime-local"} name="date" id={"dateTime"}
+                       <InputDiv> <StyledInput2 type={"datetime-local"} name="date" id={"dateTime"}
                                       onChange={(e) => setDateTime(new Date(e.target.value))} defaultValue={props.date}
                                       required
                                       pattern="\d{4}-\d{2}-\d{2}" min="2023-01-01"
                                       max="2080-01-01"/>
-                        <span className="validity"/></StyledLabel>
-                    <StyledLabel htmlFor={"members"}>Teilnehmer:
-                        <StyledInput type="text" placeholder="Search by Google-email or name"
+                        <span className="validity"/></InputDiv></StyledLabel>
+                    <StyledMemberDiv> <StyledLabel htmlFor={"members"}>Teilnehmer:
+                        <InputDiv>
+                        <StyledInput2 type="text" placeholder="Search by Google-email or name"
                                      value={searchTerm}
                                      onChange={handleSearch} list="searchSuggestions"
-                        /></StyledLabel>
-                    <button type="button" onClick={handleMembersAdd}>Add</button>
+                        /> <StyledAddButton type="button" title="ADD" onClick={() => searchResult ? setUsersOfRoute([...usersOfRoute, {
+                            email: searchResult.email,
+                            name: searchResult?.name
+                        }]):null}>✚
+                        </StyledAddButton></InputDiv></StyledLabel>
+
+
                     <datalist id="searchSuggestions">
                         {usersNotInRoute.map(result => (
                             <option key={result?.email} value={result?.name}/>
                         ))}
                     </datalist>
-                    <ul>
-                        {usersOfRoute?.map(user => (<>
-                            <li key={user?.email}>{user?.name ? user?.name : user?.email}</li>
-                            <button type="button" onClick={()=>handleMembersDelete(user?.email)}> Delete</button>
-                        </>))}
-                    </ul>
+                        </StyledMemberDiv>
+                    <StyledUl>
+                        {usersOfRoute?.map(user => (<StyledLiDiv>
+                            <StyledLi key={user?.email}>{user?.name ? user?.name : user?.email}</StyledLi>
+                            <StyledDeleteButton type="button" title="DELETE"
+                                    onClick={() => setUsersOfRoute([...usersOfRoute.filter(userToStayInList => userToStayInList?.email !== user?.email)])}> ✘
+                            </StyledDeleteButton>
+                        </StyledLiDiv>))}
+                    </StyledUl>
+                    <StyledUl>
+                        {props.usersOfRoute?.map(userSaved => (<StyledLiDiv>
+                            <StyledLi key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
+                            <StyledDeleteButton type="button" title="DELETE"
+                                    onClick={() => props.onDeleteMembers(userSaved)}> ✘
+                            </StyledDeleteButton></StyledLiDiv>
+                        ))}
+                    </StyledUl>
                 </StyledSection>
 
                 <StyledButton type={"submit"}>Route speichern</StyledButton>
@@ -169,6 +156,44 @@ console.log(usersNotInRoute);
         </StyledDiv>
     )
 }
+const InputDiv =styled.div`
+width:100%`;
+const StyledMemberDiv = styled.div`
+    width: 100%;
+    display: flex`;
+
+const StyledUl =styled.ul`
+    margin:0 0 0 -0.5vw;
+    width:40vw;
+`;
+const StyledLiDiv =styled.div`
+    width: 100%;
+    display: flex;
+`;
+const StyledLi =styled.li`
+    list-style-type: disc;
+    list-style-position: inherit;
+    width: 60%;
+    font-size: 2vw;
+    padding: 1vw;
+    &::marker{
+        color: #1c859c;}
+`;
+
+const StyledDeleteButton = styled.button`
+    color: #1c859c;
+    border: transparent none;
+    cursor: pointer;
+    font-size: 2.5vw;
+    background-color: transparent`;
+
+const StyledAddButton =styled.button`
+    color: #1c859c;
+    margin: 0.5vw;
+    border: transparent none;
+    cursor: pointer;
+    font-size: 2.5vw;
+    background-color: transparent`;
 
 const StyledDiv = styled.div`
     display: flex;
@@ -198,7 +223,7 @@ const StyledInput = styled.input`
     border: rgba(162, 160, 160, 0.92) solid;
 `;
 const StyledInput2 = styled.input`
-    width: 83%;
+    width: 75%;
     font-size: 2vw;
     padding: 1vw;
     border-radius: 0.8vw;
@@ -206,7 +231,7 @@ const StyledInput2 = styled.input`
 `;
 const StyledForm = styled.form`
     display: flex;
-    width: 35%;
+    width: 75%;
     flex-direction: column;
     align-items: center;
     justify-content: space-around`;

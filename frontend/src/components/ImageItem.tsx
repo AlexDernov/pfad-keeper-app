@@ -14,11 +14,18 @@ function handleImageDelete(){
         <StyledContaner>
         <StyledDiv>
             <StyledImg src={props.imgData.url} alt="image"/>
-            <button onClick={handleImageDelete}>X</button>
+            <StyledDeleteButton title="DELETE" onClick={handleImageDelete}>X</StyledDeleteButton>
         </StyledDiv>
         </StyledContaner>
     )
 }
+const StyledDeleteButton = styled.button`
+    color: #1c859c;
+    border: transparent none;
+    cursor: pointer;
+    font-size: 2.5vw;
+    background-color: transparent`;
+
 const StyledImg = styled.img`
     margin: 1vw 0 1vw 0;
     height: auto;

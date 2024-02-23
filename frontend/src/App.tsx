@@ -13,15 +13,13 @@ import {MyRouteDto} from "./types/MyRouteDto.tsx";
 import {useEffect, useState} from "react";
 import {MyImages} from "./types/MyImages.tsx";
 import axios from "axios";
-import {MyUser} from "./types/MyUsers.tsx";
 import ProfilPage from "./components/profil-page.tsx";
-
+import {MyUsersDto} from "./types/MyUsersDto.tsx";
 
 
 
 function App() {
-    const [user, setUser] = useState<MyUser>(null);
-    console.log(`User ${user}`);
+    const [userOnLogin, setUserOnLogin] = useState<MyUsersDto>(null);
     const [images, setImages] = useState<MyImages[]>([])
 
     useEffect(() => {
@@ -30,8 +28,8 @@ function App() {
     }, [])
 
    const getCurrentUser = () => {
-        axios.get<MyUser>("/api/users/me").then((response) => {
-            setUser(response.data);
+        axios.get<MyUsersDto>("/api/users/me").then((response) => {
+            setUserOnLogin(response.data);
         });
     };
     useEffect(() => {
@@ -47,7 +45,8 @@ function App() {
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-    //if(!user) return <div>Loading data...</div>;
+
+
 
     async function handelMutate() {
         await mutate();
@@ -73,21 +72,19 @@ function App() {
             alert(
                 "Your route has been successfully saved."
             )
-        } else {
-            console.log("Not ok");
         }
     }
 
     return (
-        <><NavBar user={user} logout={logout}/>
+        <><NavBar logInUser={userOnLogin} logout={logout}/>
             <StyledDiv>
                 <Routes>
                     <Route index element={<Home routeData={data}/>}/>
-                    <Route path={"/routes"} element={<RoutesList routesData={data}/>}/>
-                    <Route path={"/user"} element={<ProfilPage userName={user?.name} userEmail={user?.email} userRoutes={user?.routeIds}/>}/>
-                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} dataImages={images} hostUser={user}
+                    <Route path={"/routes"} element={<RoutesList routesData={data} logInUser={userOnLogin}/>}/>
+                    <Route path={"/user"} element={<ProfilPage userName={userOnLogin?.name} userEmail={userOnLogin?.email}/>}/>
+                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin}
                                                                        onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>
-                    <Route path={"/routes/add"} element={<NewRoute hostUser={user} onSubmit={handleSubmit}/>}/>
+                    <Route path={"/routes/add"} element={<NewRoute logInUser={userOnLogin} onSubmit={handleSubmit}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
                 </Routes>
             </StyledDiv>

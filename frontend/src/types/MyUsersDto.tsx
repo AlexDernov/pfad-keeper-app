@@ -1,4 +1,4 @@
 export type MyUsersDto = {
-    email: string |undefined;
+    email: string;
     name: string |undefined
-} | null;
+};

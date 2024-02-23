@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 type Props={
     userName:string | undefined,
     userEmail:string | undefined;
-    userRoutes:string[] | undefined
+
 }
 export default function ProfilPage(props:Props){
 
@@ -14,7 +14,7 @@ export default function ProfilPage(props:Props){
     const navigate = useNavigate()
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
-        const encodedName = encodeURIComponent(name);
+        const encodedName = encodeURIComponent(name!);
         axios.post(`/api/users/me`, encodedName)
             .then((response) => {
                 setName(response.data.name)

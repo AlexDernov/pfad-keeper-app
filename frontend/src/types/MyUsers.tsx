@@ -1,6 +1,6 @@
 export type MyUser = {
     id: string;
-    email: string |undefined;
+    email: string;
     name: string | undefined;
     routeIds: string[]
-} | null;
+};

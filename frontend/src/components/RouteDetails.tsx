@@ -14,13 +14,14 @@ import Carousel from "./Carousel.tsx";
 import {MyImages} from "../types/MyImages.tsx";
 import ImagesList from "./images-list.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
+import {MyUsersDto} from "../types/MyUsersDto.tsx";
 
 type Props = {
     mutateF: () => void,
     onSubmit: (route: MyRouteDto) => void,
     dataImages: MyImages[],
     handleImgDelete: (id: string) => void
-    hostUser: MyUser;
+    logInUser: MyUsersDto;
 }
 export default function RouteDetails(props: Readonly<Props>) {
     const [file, setFile] = useState<File | null>(null);
@@ -30,19 +31,31 @@ export default function RouteDetails(props: Readonly<Props>) {
     const [imgSaved, setImgSaved] = useState(false);
     const [usersAll, setUsersAll] = useState<MyUser[]>([])
 
+
     useEffect(() => {
         axios.get("/api/users").then(response =>
             setUsersAll(response.data))
     }, [])
 
 
-    const {id } = useParams<string>();
+    const {id} = useParams<string>();
     const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
+    const [membersOfRoute, setMembersOfRoute] = useState<MyUsersDto[]>(data?.members)
+    useEffect(() => {
+        setMembersOfRoute(data?.members);
+    }, [data]);
+
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
     if (!id) return <div>Loading</div>;
-    if(!usersAll) return <div>Loading</div>
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    if (!usersAll) return <div>Loading</div>
+
+
+    function deleteMemberFromTheRouteList(userToDelete: MyUsersDto) {
+        axios.put(`/api/routes/membersList/${id}`, userToDelete).then(response => {
+            setMembersOfRoute(response.data)
+        })
+    }
 
     function uploadFile(file: File) {
         const formData = new FormData();
@@ -62,7 +75,12 @@ export default function RouteDetails(props: Readonly<Props>) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords: route.coords, userIds: route.members}),
+            body: JSON.stringify({
+                name: route.name,
+                dateTime: route.dateTime,
+                coords: route.coords,
+                members: route.members
+            }),
         });
         if (response.ok) {
             await mutate();
@@ -99,35 +117,29 @@ export default function RouteDetails(props: Readonly<Props>) {
         }
         uploadFile(file)
             .then(response => {
-                // Handle response if needed
                 console.log(response);
                 setImgSaved(true);
             })
             .catch(error => {
-                // Handle error if needed
                 console.error(error);
             });
         setImgSaved(false);
     }
-    function filterUsersByRouteId(users: MyUser[], routeId: string ) {
-        return users.filter((user) => user?.routeIds.includes(routeId));
-    }
-    const filteredUsers = filterUsersByRouteId(usersAll, id);
 
     return (
         <StyledDetails>
             {isEditMode ?
-                <RouteForm name={data.name} usersOfRoute={filteredUsers} routeId={id} allUsers={usersAll} date={data.dateTime} hostUser={props.hostUser} isEdit={isEditMode} onSubmit={handleEditRoute}
+                <RouteForm name={data.name} usersOfRoute={membersOfRoute} routeId={id} allUsers={usersAll}
+                           date={data.dateTime} logInUser={props.logInUser} isEdit={isEditMode}
+                           onSubmit={handleEditRoute} onDeleteMembers={deleteMemberFromTheRouteList}
                            coords={data.coords}/>
                 : (
                     <>
                         <StyledMapContainer center={position} zoom={5} contextmenu={true}
                                             contextmenuItems={[{
                                                 text: "Start from here",
-                                                //callback: startHere
                                             }, {
                                                 text: `Go to here`,
-                                                // callback: goHere
                                             }]}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
@@ -136,9 +148,22 @@ export default function RouteDetails(props: Readonly<Props>) {
                             />
                             <Routing setter={undefined} coords={data.coords} planOn={false}/>
                         </StyledMapContainer>
+                        <StyledInfoBlock><div>
+                                <StyledH2>{data.name}</StyledH2>
+                                <StyledP>Teilnehmer: </StyledP>
+                        </div>
+                            <div><StyledP2>{new Date(data.dateTime).toLocaleDateString()}</StyledP2>
+                                <StyledUl>
+                                {data?.members.map(userSaved => (<StyledLiDiv>
+                                        <StyledLi
+                                            key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
+                                    </StyledLiDiv>
+                                ))}
+                            </StyledUl></div>
+                        </StyledInfoBlock>
+                    </>)
+            }
 
-                        <StyledH2>{data.name}</StyledH2>
-                        <StyledP>Datum: <i>{new Date(data.dateTime).toLocaleDateString()}</i></StyledP></>)}
             {isEditMode ? null : <Carousel dataImages={props.dataImages} routeId={id}/>}
             <StyledDiv>
                 {!isEditMode ? (
@@ -164,18 +189,17 @@ export default function RouteDetails(props: Readonly<Props>) {
                     >
                         Cancel
                     </StyledButton>
-
-
                 )}
-                {isEditMode?<>
-                <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
-                <div>
-                    <input type="file" onChange={handleChangeFile}/>
-                    {file && !imgSaved ?
-                        <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
-                    {file && !imgSaved ?
-                        <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
-                </div></>: null}
+                {isEditMode ? <>
+                    <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
+                    <div>
+                        <input type="file" onChange={handleChangeFile}/>
+                        {file && !imgSaved ?
+                            <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
+                        {file && !imgSaved ?
+                            <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
+                    </div>
+                </> : null}
             </StyledDiv>
 
 
@@ -183,30 +207,64 @@ export default function RouteDetails(props: Readonly<Props>) {
     )
 }
 
+const StyledInfoBlock = styled.div`
+    display: flex;
+    gap:20vw;
+    flex-direction: row;
+    align-content: space-between;
+    margin: 0 0 2vw 15vw;
+`;
 const StyledH2 = styled.h2`
     font-size: 3vw;
-    margin: 4vw 0 1vw 0;
+    padding:0.5vw;
+    margin: 2vw 0 1vw 0;
 `;
 const StyledP = styled.p`
-    margin: 0 0 1vw 0;
-    font-size: 2.5vw;
+    font-size: 3vw;
+    margin:0;
+    padding:0.5vw
 `;
+const StyledP2 = styled.p`
+    font-size: 2.5vw;
+    margin: 2.6vw 0 1vw 0;
+    padding:0.5vw
+`;
+const StyledLiDiv = styled.div`
+    width: 100%;
+    display: flex;
+`;
+const StyledLi = styled.li`
+    list-style-type: disc;
+    list-style-position: inherit;
+    width: 60%;
+    font-size: 2.5vw;
+    padding: 1vw;
 
+    &::marker {
+        color: #1c859c;
+    }
+`;
 const StyledDetails = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
 `;
 const StyledDiv = styled.div`
-            display: flex;
-            flex-direction: column;
-    `
-;
+    display: flex;
+    flex-direction: column`;
+
+const StyledUl = styled.ul`
+    margin: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding-inline-start: 0;
+    width: 40vw;
+`;
 const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
     width: 100vw !important;
-    height: 70vh !important;
+    height: 30vh !important;
 `;
 const StyledButton = styled.button`
     color: #ffffff;

@@ -1,11 +1,14 @@
 package de.alexdernov.backend.models;
 
+import lombok.With;
+
 public record UserDto(
-        String id,
+
         String email,
+        @With
         String name
 ) {
     public UserDto(User user) {
-        this(user.id(), user.email(), user.name());
+        this(user.email(), user.name());
     }
 }

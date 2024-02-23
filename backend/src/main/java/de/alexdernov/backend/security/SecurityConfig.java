@@ -28,6 +28,8 @@ public class SecurityConfig {
     private String environment;
 
     private final UserService userService;
+    private String apiImg = "/api/images";
+    private String apiRoutes = "/api/routes";
 
     public SecurityConfig(UserService userService) {
         this.userService = userService;
@@ -39,12 +41,12 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests(authorize -> authorize
 
-                        .requestMatchers(HttpMethod.POST, "/api/images").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/routes").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/routes").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/images").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/routes").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/images").authenticated()
+                        .requestMatchers(HttpMethod.POST, apiImg).authenticated()
+                        .requestMatchers(HttpMethod.POST, apiRoutes).authenticated()
+                        .requestMatchers(HttpMethod.DELETE, apiRoutes).authenticated()
+                        .requestMatchers(HttpMethod.DELETE, apiImg).authenticated()
+                        .requestMatchers(HttpMethod.PUT, apiRoutes).authenticated()
+                        .requestMatchers(HttpMethod.PUT, apiImg).authenticated()
                         .anyRequest().permitAll())
                 .oauth2Login(oauth2 -> {
                     try {

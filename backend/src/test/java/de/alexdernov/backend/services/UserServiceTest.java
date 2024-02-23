@@ -2,6 +2,7 @@ package de.alexdernov.backend.services;
 
 import de.alexdernov.backend.models.AuthProvider;
 import de.alexdernov.backend.models.User;
+import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.repos.UserRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,11 +33,11 @@ class UserServiceTest {
     void getUserByEmailTest_whenEmail_thenReturnUserWithTheEmail() {
         //GIVEN
         String expectedEmail = "Email";
-        Mockito.when(userRepo.getUserByEmail(expectedEmail)).thenReturn(Optional.of(new User("1", "Email", new ArrayList<>(List.of("1", "2")), "Name", AuthProvider.GOOGLE)));
+        Mockito.when(userRepo.getUserByEmail(expectedEmail)).thenReturn((Optional<UserDto>) Optional.of(new UserDto("Email", "Name")));
 
         UserService userService = new UserService(userRepo);
         //WHEN
-        User actual = userService.getUserByEmail(expectedEmail);
+        UserDto actual = userService.getUserByEmail(expectedEmail);
 
         //THEN
         Assertions.assertNotNull(actual);
@@ -53,64 +54,8 @@ class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> userService.getUserByEmail(expectedEmail));
     }
 
-    @Test
-    void getUserByNameTest_whenNameExists_thenReturnUserWithTheName() {
-        //GIVEN
-        String expectedName = "Name";
-        Mockito.when(userRepo.getUserByName(expectedName)).thenReturn(Optional.of(new User("1", "Email", new ArrayList<>(List.of("1", "2")), "Name", AuthProvider.GOOGLE)));
 
-        UserService userService = new UserService(userRepo);
-        //WHEN
-        User actual = userService.getUserByName(expectedName);
 
-        //THEN
-        Assertions.assertNotNull(actual);
-        Assertions.assertEquals(expectedName, actual.name());
-    }
-
-    @Test
-    void getUserByNameTest_whenIdNotFound_thenThrowResponseStatusException() {
-        // GIVEN
-        String expectedName = "nonExistentName";
-        Mockito.when(userRepo.getUserByName(expectedName)).thenReturn(Optional.empty());
-
-        // WHEN & THEN
-        assertThrows(ResponseStatusException.class, () -> userService.getUserByName(expectedName));
-    }
-
-    @Test
-    void updateRouteIdsTest_whenRouteIdNew_returnUpdatedList() {
-        //GIVEN
-        String routeId = "3";
-        Mockito.when(userRepo.getUserByEmail("Email")).thenReturn(Optional.of(new User("1", "Email", new ArrayList<>(List.of("1", "2")), "Name", AuthProvider.GOOGLE)));
-        User userToUpdate = (new User("1", "Email", new ArrayList<>(List.of("1", "2", routeId)), "Name", AuthProvider.GOOGLE));
-        Mockito.when((userRepo.save(Mockito.any()))).thenReturn(userToUpdate);
-
-        UserService userService = new UserService(userRepo);
-        //WHEN
-        User actual = userService.updateUsersRouteIdsList(userToUpdate.email(), routeId);
-
-        //THEN
-        assertEquals(userToUpdate, actual);
-        Mockito.verify(userRepo, Mockito.times(1)).save(userToUpdate);
-    }
-
-    @Test
-    void updateRouteIdsTest_whenRouteIdAlreadyExists_RemoveFromList() {
-        //GIVEN
-        String existingBookId = "2";
-        Mockito.when(userRepo.getUserByEmail("Email")).thenReturn(Optional.of(new User("1", "Email", new ArrayList<>(List.of("1", "2")), "Name", AuthProvider.GOOGLE)));
-        User userToUpdate = (new User("1", "Email", new ArrayList<>(List.of("1", "2", existingBookId)), "Name", AuthProvider.GOOGLE));
-        Mockito.when((userRepo.save(Mockito.any()))).thenReturn(userToUpdate);
-
-        UserService userService = new UserService(userRepo);
-        //WHEN
-        User actual = userService.updateUsersRouteIdsList(userToUpdate.email(), existingBookId);
-
-        //THEN
-        assertFalse(actual.routeIds().contains(existingBookId));
-        Mockito.verify(userRepo, Mockito.times(1)).save(actual);
-    }
 
     @Test
     void saveNewUserTest_whenUserNotExists_thenSaveNewUser() {

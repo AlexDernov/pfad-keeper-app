@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
-import {MyUser} from "../types/MyUsers.tsx";
+import {MyUsersDto} from "../types/MyUsersDto.tsx";
 
 
 
 type NavBarProps = {
-    user: MyUser;
+    logInUser: MyUsersDto;
     logout: () => void;
 };
 
@@ -33,14 +33,14 @@ export default function NavBar(props: NavBarProps) {
 
                 </FlexContainer>
 
-                {!props.user && (
+                {!props.logInUser && (
                     <StyledButton
                         onClick={login}
                     >
                         Login
                     </StyledButton>
                 )}
-                {!!props.user && (<>
+                {!!props.logInUser && (<>
                     <StyledButton
                         onClick={props.logout}
                     >
