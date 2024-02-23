@@ -53,6 +53,7 @@ function App() {
     }
 
 
+
     const deleteImage = (id: string) => {
         axios.delete(`/api/images/${id}`)
             .then(() => {
