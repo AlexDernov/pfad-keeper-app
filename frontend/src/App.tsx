@@ -15,11 +15,10 @@ import {MyImages} from "./types/MyImages.tsx";
 import axios from "axios";
 import ProfilPage from "./components/profil-page.tsx";
 import {MyUsersDto} from "./types/MyUsersDto.tsx";
-
-
+import ProtectedRoutes from "./ProtectedRoutes.tsx";
 
 function App() {
-    const [userOnLogin, setUserOnLogin] = useState<MyUsersDto>(null);
+    const [userOnLogin, setUserOnLogin] = useState<MyUsersDto | undefined | null>(undefined);
     const [images, setImages] = useState<MyImages[]>([])
 
     useEffect(() => {
@@ -27,7 +26,7 @@ function App() {
             setImages(response.data))
     }, [])
 
-   const getCurrentUser = () => {
+    const getCurrentUser = () => {
         axios.get<MyUsersDto>("/api/users/me").then((response) => {
             setUserOnLogin(response.data);
         });
@@ -38,20 +37,18 @@ function App() {
     }, []);
 
 
-
     const logout = () => {
         axios.post("/api/users/logout").then(() => getCurrentUser());
     };
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-
+    if (userOnLogin === undefined || null) return <div>Loading data...</div>;
 
 
     async function handelMutate() {
         await mutate();
     }
-
 
 
     const deleteImage = (id: string) => {
@@ -67,7 +64,12 @@ function App() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({name: route.name, dateTime: route.dateTime, coords: route.coords, members: route.members}),
+            body: JSON.stringify({
+                name: route.name,
+                dateTime: route.dateTime,
+                coords: route.coords,
+                members: route.members
+            }),
         });
         if (response.ok) {
             alert(
@@ -77,15 +79,21 @@ function App() {
     }
 
     return (
-        <><NavBar logInUser={userOnLogin} logout={logout}/>
+        <><NavBar logInUser={userOnLogin} logout={logout}/> //|null
             <StyledDiv>
                 <Routes>
+                    <Route element={<ProtectedRoutes user={userOnLogin}/>}>
+                        <Route path={"/routes"}
+                               element={<RoutesList routesData={data} routImages={images} logInUser={userOnLogin}/>}/>
+                        <Route path={"/user"}
+                               element={<ProfilPage userName={userOnLogin?.name} userEmail={userOnLogin?.email}/>}/>
+                        <Route path={"/routes/:id"}
+                               element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin}
+                                                      onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>
+                        <Route path={"/routes/add"}
+                               element={<NewRoute logInUser={userOnLogin} onSubmit={handleSubmit}/>}/>
+                    </Route>
                     <Route index element={<Home routeData={data}/>}/>
-                    <Route path={"/routes"} element={<RoutesList routesData={data} routImages={images} logInUser={userOnLogin}/>}/>
-                    <Route path={"/user"} element={<ProfilPage userName={userOnLogin?.name} userEmail={userOnLogin?.email}/>}/>
-                    <Route path={"/routes/:id"} element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin}
-                                                                       onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>
-                    <Route path={"/routes/add"} element={<NewRoute logInUser={userOnLogin} onSubmit={handleSubmit}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
                 </Routes>
             </StyledDiv>

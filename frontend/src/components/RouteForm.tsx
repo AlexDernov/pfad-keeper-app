@@ -36,7 +36,7 @@ export default function RouteForm(props: PropsForm) {
     const navigate = useNavigate()
     const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUsersDto[]>([])
 
-
+if(props.logInUser === null || undefined) return <div>Loading...</div>
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
         //@ts-expect-error Library
@@ -247,7 +247,7 @@ const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
     width: 100vw !important;
-    height: 60vh !important;
+    height: 70vh !important;
 `;
 const StyledButton = styled.button`
     color: #ffffff;

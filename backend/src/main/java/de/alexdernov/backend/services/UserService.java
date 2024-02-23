@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-
-
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +28,6 @@ public class UserService {
         }
         return new UserDto(user.get().email(), user.get().name());
     }
-
 
     public UserDto updateUserName(String email, String userName) {
         Optional<User> optionalUser = userRepo.getUserByEmail(email);

@@ -1,6 +1,8 @@
 package de.alexdernov.backend;
 
 import com.cloudinary.Cloudinary;
+import de.alexdernov.backend.security.SecurityConfig;
+import de.alexdernov.backend.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,4 +17,5 @@ public class BackendApplication {
     public Cloudinary cloudinaryBean(){
         return new Cloudinary();
     }
+
 }

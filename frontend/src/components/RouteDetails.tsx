@@ -21,7 +21,7 @@ type Props = {
     onSubmit: (route: MyRouteDto) => void,
     dataImages: MyImages[],
     handleImgDelete: (id: string) => void
-    logInUser: MyUsersDto;
+    logInUser: MyUsersDto
 }
 export default function RouteDetails(props: Readonly<Props>) {
     const [file, setFile] = useState<File | null>(null);

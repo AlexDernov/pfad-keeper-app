@@ -10,17 +10,11 @@ public record User(
         String id,
         String email,
         @With
-        List<String> routeIds,
-        @With
-        String name,
-        AuthProvider authProvider
+        String name
 
 ) {
     public User(String email, String name) {
-        this(UUID.randomUUID().toString(), email, Collections.emptyList(), name, AuthProvider.GOOGLE);
+        this(UUID.randomUUID().toString(), email, name);
     }
 
-    public User withRouteIds(List<String> updatedRouteIds) {
-        return new User(this.id(), this.email(), updatedRouteIds, this.name(), this.authProvider());
-    }
 }

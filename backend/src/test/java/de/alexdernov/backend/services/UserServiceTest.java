@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +26,70 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userService = new UserService(userRepo);
+    }
+
+    @Test
+    void getAllUsers_WhenRepoEmpty_ReturnsEmptyList() {
+        // GIVEN
+        UserRepo userRepoMock = mock(UserRepo.class);
+        when(userRepoMock.findAll()).thenReturn(new ArrayList<>());
+        UserService userService = new UserService(userRepoMock);
+
+        // WHEN
+        List<User> result = userService.getAllUsers();
+
+        // THEN
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getAllUsers_WhenRepoHasData_ReturnsListOfUsers() {
+        // GIVEN
+        UserRepo userRepoMock = mock(UserRepo.class);
+        List<User> mockUsers = new ArrayList<>();
+        mockUsers.add(new User("user1", "email1@example.com"));
+        mockUsers.add(new User("user2", "email2@example.com"));
+        when(userRepoMock.findAll()).thenReturn(mockUsers);
+        UserService userService = new UserService(userRepoMock);
+
+        // WHEN
+        List<User> result = userService.getAllUsers();
+
+        // THEN
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+    }
+    @Test
+    void updateUserName_WhenUserExists_ReturnsUpdatedUserDto() {
+        // GIVEN
+        UserRepo userRepoMock = mock(UserRepo.class);
+        User existingUser = new User("test@example.com", "OldName");
+        when(userRepoMock.getUserByEmail("test@example.com")).thenReturn(Optional.of(existingUser));
+        when(userRepoMock.save(any(User.class))).thenReturn(existingUser.withName("NewName"));
+        UserService userService = new UserService(userRepoMock);
+
+        // WHEN
+        UserDto result = userService.updateUserName("test@example.com", "NewName");
+
+        // THEN
+        assertNotNull(result);
+        assertEquals("test@example.com", result.email());
+        assertEquals("NewName", result.name());
+    }
+
+    @Test
+    void updateUserName_WhenUserDoesNotExist_ThrowsResponseStatusException() {
+        // GIVEN
+        UserRepo userRepoMock = mock(UserRepo.class);
+        when(userRepoMock.getUserByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
+        UserService userService = new UserService(userRepoMock);
+
+        // WHEN and THEN
+        assertThrows(ResponseStatusException.class, () -> {
+            userService.updateUserName("nonexistent@example.com", "NewName");
+        });
     }
 
     @Test
@@ -90,15 +156,15 @@ class UserServiceTest {
 
     @Test
     void saveNewUserTest_whenOAuthUserHasNoEmail_thenReturnFalse() {
-        // ARRANGE
+        // GIVEN
         String emptyUserEmail = "";
         OAuth2User oauth2User = mock(OAuth2User.class);
         when(oauth2User.getAttribute("email")).thenReturn(emptyUserEmail);
 
-        // ACT
+        // WHEN
         boolean actual = userService.saveNewUser(oauth2User);
 
-        // ASSERT
+        // THEN
         assertFalse(actual);
     }
 }

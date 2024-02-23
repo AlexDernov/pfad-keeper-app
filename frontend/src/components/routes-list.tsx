@@ -7,7 +7,7 @@ import {MyImages} from "../types/MyImages.tsx";
 
 type DataProps = {
     routesData: MyRoute[],
-    logInUser: MyUsersDto,
+    logInUser: MyUsersDto|undefined|null,
     routImages: MyImages[],
 }
 export default function RoutesList(props: Readonly<DataProps>) {
