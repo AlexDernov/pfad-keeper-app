@@ -108,6 +108,7 @@ export default function RouteDetails(props: Readonly<Props>) {
             return;
         } else {
             setFile(event.target.files[0])
+            console.log(`FIle: ${file}`);
         }
     }
 
@@ -148,18 +149,19 @@ export default function RouteDetails(props: Readonly<Props>) {
                             />
                             <Routing setter={undefined} coords={data.coords} planOn={false}/>
                         </StyledMapContainer>
-                        <StyledInfoBlock><div>
+                        <StyledInfoBlock>
+                            <div>
                                 <StyledH2>{data.name}</StyledH2>
                                 <StyledP>Teilnehmer: </StyledP>
-                        </div>
+                            </div>
                             <div><StyledP2>{new Date(data.dateTime).toLocaleDateString()}</StyledP2>
                                 <StyledUl>
-                                {data?.members.map((userSaved:MyUsersDto) => (<StyledLiDiv>
-                                        <StyledLi
-                                            key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
-                                    </StyledLiDiv>
-                                ))}
-                            </StyledUl></div>
+                                    {data?.members.map((userSaved: MyUsersDto) => (<StyledLiDiv>
+                                            <StyledLi
+                                                key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
+                                        </StyledLiDiv>
+                                    ))}
+                                </StyledUl></div>
                         </StyledInfoBlock>
                     </>)
             }
@@ -191,14 +193,18 @@ export default function RouteDetails(props: Readonly<Props>) {
                     </StyledButton>
                 )}
                 {isEditMode ? <>
-                    <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
-                    <div>
-                        <input type="file" onChange={handleChangeFile}/>
+                    <ImageUploadDiv>
+                        <ButtonImgDiv>
+                            <StyledImageInput type="file" onChange={handleChangeFile}/>
+                            {file && !imgSaved ?
+                                <StyledButtonSaveImage type="button" onClick={handleSaveImg}>Save
+                                    Img</StyledButtonSaveImage> : null}
+                        </ButtonImgDiv>
                         {file && !imgSaved ?
                             <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
-                        {file && !imgSaved ?
-                            <StyledButton type="button" onClick={handleSaveImg}>Save Img</StyledButton> : null}
-                    </div>
+                    </ImageUploadDiv>
+                    <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
+
                 </> : null}
             </StyledDiv>
 
@@ -207,27 +213,67 @@ export default function RouteDetails(props: Readonly<Props>) {
     )
 }
 
+const ButtonImgDiv= styled.div`
+display: flex;
+    flex-direction: column;
+`;
+const StyledButtonSaveImage = styled.button`
+    color: #ffffff;
+    background-color: #1c859c;
+    border-radius: 0.975rem;
+    padding: 1vw 1.5vw;
+    font-size: 1.7vw;
+    max-height: 70px;
+    font-weight: 500;
+    cursor: pointer;
+    height: auto;
+
+    &:hover {
+        padding: 0.5vw 1vw;
+        font-size: 2vw;
+        margin: 0.55vw 0.5vw;
+    }
+`;
+const ImageUploadDiv = styled.div`
+    margin:20px 0;
+    display: flex;
+    justify-content: center;
+    gap:20px;
+`;
+const StyledImageInput = styled.input`
+    
+    &::file-selector-button {
+        color: #ffffff;
+        background-color: #1c859c;
+        border-radius: 0.975rem;
+        padding: 1vw 1.5vw;
+        font-size: 1.7vw;
+        font-weight: 500;
+        margin: 0.5vw 1vw;
+        cursor: pointer;
+    }
+`;
 const StyledInfoBlock = styled.div`
     display: flex;
-    gap:20vw;
+    gap: 20vw;
     flex-direction: row;
     align-content: space-between;
     margin: 0 0 2vw 15vw;
 `;
 const StyledH2 = styled.h2`
     font-size: 3vw;
-    padding:0.5vw;
+    padding: 0.5vw;
     margin: 2vw 0 1vw 0;
 `;
 const StyledP = styled.p`
     font-size: 3vw;
-    margin:0;
-    padding:0.5vw
+    margin: 0;
+    padding: 0.5vw
 `;
 const StyledP2 = styled.p`
     font-size: 2.5vw;
     margin: 2.6vw 0 1vw 0;
-    padding:0.5vw
+    padding: 0.5vw
 `;
 const StyledLiDiv = styled.div`
     width: 100%;
@@ -264,7 +310,7 @@ const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
     width: 100vw !important;
-    height: 30vh !important;
+    height: 50vh !important;
 `;
 const StyledButton = styled.button`
     color: #ffffff;

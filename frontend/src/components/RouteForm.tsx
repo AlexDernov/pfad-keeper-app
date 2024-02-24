@@ -125,8 +125,6 @@ if(props.logInUser === null || undefined) return <div>Loading...</div>
                             name: searchResult?.name
                         }]):null}>✚
                         </StyledAddButton></InputDiv></StyledLabel>
-
-
                     <datalist id="searchSuggestions">
                         {usersNotInRoute.map(result => (
                             <option key={result?.email} value={result?.name}/>
@@ -247,7 +245,7 @@ const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
     width: 100vw !important;
-    height: 70vh !important;
+    height: 50vh !important;
 `;
 const StyledButton = styled.button`
     color: #ffffff;
