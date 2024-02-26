@@ -3,19 +3,20 @@ import React, {useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
-type Props={
-    userName:string | undefined,
-    userEmail:string | undefined;
+type Props = {
+    userName: string | undefined,
+    userEmail: string | undefined;
 
 }
-export default function ProfilPage(props:Props){
+export default function ProfilPage(props: Props) {
 
-    const [name, setName]= useState<string | undefined>(props.userName);
+    const [name, setName] = useState<string | undefined>(props.userName);
     const navigate = useNavigate()
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>){
+
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        axios.post(`/api/users/me`, name, {headers: {"Content-Type": "text/plain"}} )
+        axios.post(`/api/users/me`, name, {headers: {"Content-Type": "text/plain"}})
             .then((response) => {
                 setName(response.data.name)
                 navigate("/routes")
@@ -25,14 +26,17 @@ export default function ProfilPage(props:Props){
             });
     }
 
-    return(
+    return (
         <StyledDiv> <StyledForm onSubmit={handleSubmit}>
             <StyledLegend>Profil von {name} bearbeiten:</StyledLegend>
-            <p>Bitte bearbeiten Sie Ihren Namen. Der Name soll klar und eindeutig sein, damit Sie einer Route zugefügt werden können. Falls kein Name vergeben wurde steht in der Liste von Teilnehmern Ihres E-mail {props.userEmail}. </p>
+            <p>Bitte bearbeiten Sie Ihren Namen. Der Name soll klar und eindeutig sein, damit Sie einer Route zugefügt
+                werden können. Falls kein Name vergeben wurde steht in der Liste von Teilnehmern Ihres
+                E-mail {props.userEmail}. </p>
             <StyledLabel htmlFor={"name"}>Name:
-            <StyledInput type={"text"} id={"name"}  defaultValue={props.userName} onChange={(e) => setName(e.target.value)}
+                <StyledInput type={"text"} id={"name"} defaultValue={props.userName}
+                             onChange={(e) => setName(e.target.value)}
 
-            /></StyledLabel>
+                /></StyledLabel>
             <StyledButton type="submit">Speichern</StyledButton>
         </StyledForm>
             <StyledButton>Delete Profil</StyledButton>
@@ -42,7 +46,7 @@ export default function ProfilPage(props:Props){
 const StyledDiv = styled.div`
     display: flex;
     flex-direction: column;
-align-items: center`;
+    align-items: center`;
 
 const StyledButton = styled.button`
     color: #ffffff;

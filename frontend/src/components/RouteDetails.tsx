@@ -108,7 +108,6 @@ export default function RouteDetails(props: Readonly<Props>) {
             return;
         } else {
             setFile(event.target.files[0])
-            console.log(`FIle: ${file}`);
         }
     }
 

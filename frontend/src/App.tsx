@@ -80,7 +80,7 @@ console.log(userOnLogin);
     }
 
     return (
-        <><NavBar logInUser={userOnLogin} logout={logout}/> //|null
+        <><NavBar logInUser={userOnLogin} logout={logout}/>
             <StyledDiv>
                 <Routes>
                     <Route element={<ProtectedRoutes user={userOnLogin}/>}>

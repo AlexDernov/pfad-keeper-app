@@ -64,13 +64,13 @@ export default function Home(props: Props) {
                             <PopHead>
                                 <strong>{route?.name}</strong>
                             </PopHead>
-                                <PopLink>Click für mehr Infos</PopLink>
+                            <PopLink>Click für mehr Infos</PopLink>
                         </Popup>
                     </Link>
 
 
                     </Marker>
-                    )}
+                )}
             </MapContainer>
 
         </StyledDiv>
