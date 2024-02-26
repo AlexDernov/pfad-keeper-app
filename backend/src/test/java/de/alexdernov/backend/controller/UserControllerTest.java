@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
@@ -21,23 +22,21 @@ class UserControllerTest {
     @Autowired
     private UserRepo userRepo;
 
-   /* @Test
+    @Test
     void updateMyName_AuthenticatedUser_ReturnsUserDto() throws Exception {
         userRepo.save(new User("1", "Email", "Name"));
         // Perform the request
         mockMvc.perform(post("/api/users/me")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                "name":"Name2"
-                                }""")
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("Name")
                         .with(oidcLogin()
                                 .userInfoToken(token ->
                                         token.claim("email", "Email"))))
 
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Name2"));
-    }*/
+                .andExpect(jsonPath("$.name").value("Name"))
+                .andExpect(jsonPath("$.email").value("Email"));
+    }
 
     @Test
     void updateMyName_UnauthenticatedUser_ReturnsUnauthorized() throws Exception {

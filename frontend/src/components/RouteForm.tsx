@@ -12,7 +12,6 @@ import {MyUsersDto} from "../types/MyUsersDto.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
 
 
-
 type PropsForm = {
     name: string;
     date: string;
@@ -23,20 +22,21 @@ type PropsForm = {
     isEdit: boolean;
     allUsers: MyUser[];
     onSubmit: (route: MyRouteDto) => void;
-    onDeleteMembers:(userToDelete:MyUsersDto)=>void;
+    onDeleteMembers: (userToDelete: MyUsersDto) => void;
 }
 export default function RouteForm(props: PropsForm) {
     const [name, setName] = useState<string>(props.name);
     const [dateTime, setDateTime] = useState<Date>(new Date(props.date));
     const [control, setControl] = useState<L.Routing.Control>()
     const [searchTerm, setSearchTerm] = useState('');
-    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>( []);
+    const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>([]);
     const [searchResult, setSearchResult] = useState<MyUsersDto>();
     const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
     const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUsersDto[]>([])
 
-if(props.logInUser === null || undefined) return <div>Loading...</div>
+    if (props.logInUser === null || undefined) return <div>Loading...</div>
+
     function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
         //@ts-expect-error Library
@@ -52,7 +52,7 @@ if(props.logInUser === null || undefined) return <div>Loading...</div>
                         name,
                         dateTime,
                         coords: extractedCoords,
-                        members: [...usersOfRoute,{email: props.logInUser.email, name: props.logInUser?.name}]
+                        members: [...usersOfRoute, {email: props.logInUser.email, name: props.logInUser?.name}]
                     }) :
                     props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});
             }
@@ -109,42 +109,48 @@ if(props.logInUser === null || undefined) return <div>Loading...</div>
                                      defaultValue={props.name}
                         /></StyledLabel>
                     <StyledLabel htmlFor={"dateTime"}>Wann:
-                       <InputDiv> <StyledInput2 type={"datetime-local"} name="date" id={"dateTime"}
-                                      onChange={(e) => setDateTime(new Date(e.target.value))} defaultValue={props.date}
-                                      required
-                                      pattern="\d{4}-\d{2}-\d{2}" min="2023-01-01"
-                                      max="2080-01-01"/>
-                        <span className="validity"/></InputDiv></StyledLabel>
+                        <InputDiv> <StyledInput2 type={"datetime-local"} name="date" id={"dateTime"}
+                                                 onChange={(e) => setDateTime(new Date(e.target.value))}
+                                                 defaultValue={props.date}
+                                                 required
+                                                 pattern="\d{4}-\d{2}-\d{2}" min="2023-01-01"
+                                                 max="2080-01-01"/>
+                            <span className="validity"/></InputDiv></StyledLabel>
                     <StyledMemberDiv> <StyledLabel htmlFor={"members"}>Teilnehmer:
                         <InputDiv>
-                        <StyledInput2 type="text" placeholder="Search by Google-email or name"
-                                     value={searchTerm}
-                                     onChange={handleSearch} list="searchSuggestions"
-                        /> <StyledAddButton type="button" title="ADD" onClick={() => searchResult ? setUsersOfRoute([...usersOfRoute, {
-                            email: searchResult.email,
-                            name: searchResult?.name
-                        }]):null}>✚
-                        </StyledAddButton></InputDiv></StyledLabel>
-                    <datalist id="searchSuggestions">
-                        {usersNotInRoute.map(result => (
-                            <option key={result?.email} value={result?.name}/>
-                        ))}
-                    </datalist>
-                        </StyledMemberDiv>
+                            <StyledInput2 list="searchSuggestions" type="text"
+                                          placeholder="Search by Google-email or name"
+                                          value={searchTerm}
+                                          onChange={handleSearch}
+                            />
+                            <StyledDatalist id="searchSuggestions">
+                                {usersNotInRoute.map(result => (
+                                    <StyledOption key={result?.email} value={result?.name}/>
+                                ))}
+                            </StyledDatalist>
+                            <StyledAddButton type="button" title="ADD"
+                                             onClick={() => searchResult ? setUsersOfRoute([...usersOfRoute, {
+                                                 email: searchResult.email,
+                                                 name: searchResult?.name
+                                             }]) : null}>✚
+                            </StyledAddButton></InputDiv></StyledLabel>
+
+                    </StyledMemberDiv>
                     <StyledUl>
                         {usersOfRoute?.map(user => (<StyledLiDiv>
                             <StyledLi key={user?.email}>{user?.name ? user?.name : user?.email}</StyledLi>
                             <StyledDeleteButton type="button" title="DELETE"
-                                    onClick={() => setUsersOfRoute([...usersOfRoute.filter(userToStayInList => userToStayInList?.email !== user?.email)])}> ✘
+                                                onClick={() => setUsersOfRoute([...usersOfRoute.filter(userToStayInList => userToStayInList?.email !== user?.email)])}> ✘
                             </StyledDeleteButton>
                         </StyledLiDiv>))}
                     </StyledUl>
                     <StyledUl>
                         {props.usersOfRoute?.map(userSaved => (<StyledLiDiv>
-                            <StyledLi key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
-                            <StyledDeleteButton type="button" title="DELETE"
-                                    onClick={() => props.onDeleteMembers(userSaved)}> ✘
-                            </StyledDeleteButton></StyledLiDiv>
+                                <StyledLi
+                                    key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
+                                <StyledDeleteButton type="button" title="DELETE"
+                                                    onClick={() => props.onDeleteMembers(userSaved)}> ✘
+                                </StyledDeleteButton></StyledLiDiv>
                         ))}
                     </StyledUl>
                 </StyledSection>
@@ -154,28 +160,59 @@ if(props.logInUser === null || undefined) return <div>Loading...</div>
         </StyledDiv>
     )
 }
-const InputDiv =styled.div`
-width:100%`;
+const StyledDatalist = styled.datalist`
+    position: absolute;
+    max-height: 20em;
+    border: 0 none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-size: 0.8em;
+    padding: 0.3em 1em;
+    background-color: #ccc;
+    cursor: pointer;
+
+    &:hover &:focus {
+        color: #fff;
+        background-color: #036;
+        outline: 0 none;
+    }
+`;
+const StyledOption = styled.option`
+    font-size: 0.8em;
+    padding: 0.3em 1em;
+    background-color: #ccc;
+    cursor: pointer;
+
+    &:hover &:focus {
+        color: #fff;
+        background-color: #036;
+        outline: 0 none;
+    }
+`;
+const InputDiv = styled.div`
+    width: 100%`;
 const StyledMemberDiv = styled.div`
     width: 100%;
     display: flex`;
 
-const StyledUl =styled.ul`
-    margin:0 0 0 -0.5vw;
-    width:40vw;
+const StyledUl = styled.ul`
+    margin: 0 0 0 -0.5vw;
+    width: 40vw;
 `;
-const StyledLiDiv =styled.div`
+const StyledLiDiv = styled.div`
     width: 100%;
     display: flex;
 `;
-const StyledLi =styled.li`
+const StyledLi = styled.li`
     list-style-type: disc;
     list-style-position: inherit;
     width: 60%;
     font-size: 2vw;
     padding: 1vw;
-    &::marker{
-        color: #1c859c;}
+
+    &::marker {
+        color: #1c859c;
+    }
 `;
 
 const StyledDeleteButton = styled.button`
@@ -185,7 +222,7 @@ const StyledDeleteButton = styled.button`
     font-size: 2.5vw;
     background-color: transparent`;
 
-const StyledAddButton =styled.button`
+const StyledAddButton = styled.button`
     color: #1c859c;
     margin: 0.5vw;
     border: transparent none;

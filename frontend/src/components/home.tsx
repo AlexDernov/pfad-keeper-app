@@ -95,6 +95,7 @@ const PopHead = styled.p`
 
 const PopLink = styled.p`
     color: purple;
+    cursor: pointer;
     padding: 0;
     margin: 0;
     letter-spacing: 1.5px;

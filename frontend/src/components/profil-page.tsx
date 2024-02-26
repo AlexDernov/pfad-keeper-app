@@ -14,8 +14,8 @@ export default function ProfilPage(props:Props){
     const navigate = useNavigate()
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault();
-        const encodedName = encodeURIComponent(name!);
-        axios.post(`/api/users/me`, encodedName)
+
+        axios.post(`/api/users/me`, name, {headers: {"Content-Type": "text/plain"}} )
             .then((response) => {
                 setName(response.data.name)
                 navigate("/routes")

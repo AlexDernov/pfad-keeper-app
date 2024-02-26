@@ -3,7 +3,7 @@ import {NavLink} from "react-router-dom";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
 
 type NavBarProps = {
-    logInUser: MyUsersDto | null;
+    logInUser: MyUsersDto | null | undefined;
     logout: () => void;
 };
 

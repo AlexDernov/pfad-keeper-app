@@ -195,7 +195,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                 {isEditMode ? <>
                     <ImageUploadDiv>
                         <ButtonImgDiv>
-                            <StyledImageInput type="file" onChange={handleChangeFile}/>
+                          <label> Bild hochladen <StyledImageInput type="file" onChange={handleChangeFile}/></label>
                             {file && !imgSaved ?
                                 <StyledButtonSaveImage type="button" onClick={handleSaveImg}>Save
                                     Img</StyledButtonSaveImage> : null}

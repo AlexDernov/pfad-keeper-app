@@ -20,7 +20,7 @@ import ProtectedRoutes from "./ProtectedRoutes.tsx";
 function App() {
     const [userOnLogin, setUserOnLogin] = useState<MyUsersDto | undefined | null>(undefined);
     const [images, setImages] = useState<MyImages[]>([])
-
+console.log(userOnLogin);
     useEffect(() => {
         axios.get("/api/images").then(response =>
             setImages(response.data))
@@ -28,7 +28,10 @@ function App() {
 
     const getCurrentUser = () => {
         axios.get<MyUsersDto>("/api/users/me").then((response) => {
-            setUserOnLogin(response.data);
+           if(response.data){
+               setUserOnLogin(response.data);
+           }
+
         });
     };
     useEffect(() => {
@@ -43,8 +46,6 @@ function App() {
     const {data, error, mutate} = useSWR("/api/routes", fetcher)
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
-    if (userOnLogin === undefined || null) return <div>Loading data...</div>;
-
 
     async function handelMutate() {
         await mutate();
@@ -88,10 +89,10 @@ function App() {
                         <Route path={"/user"}
                                element={<ProfilPage userName={userOnLogin?.name} userEmail={userOnLogin?.email}/>}/>
                         <Route path={"/routes/:id"}
-                               element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin}
+                               element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin!}
                                                       onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>
                         <Route path={"/routes/add"}
-                               element={<NewRoute logInUser={userOnLogin} onSubmit={handleSubmit}/>}/>
+                               element={<NewRoute logInUser={userOnLogin!} onSubmit={handleSubmit}/>}/>
                     </Route>
                     <Route index element={<Home routeData={data}/>}/>
                     <Route path={"/*"} element={<NoPage/>}/>
