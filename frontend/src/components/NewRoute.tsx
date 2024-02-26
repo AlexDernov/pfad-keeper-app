@@ -9,6 +9,6 @@ type PropsNewRoute = {
 }
 export default function NewRoute(props: Readonly<PropsNewRoute>) {
     return (
-            <RouteForm onSubmit={props.onSubmit} name={""} date={""} isEdit={false} coords={[]} logInUser={props.logInUser} routeId={""} usersOfRoute={[]} allUsers={[]}/>
+            <RouteForm onSubmit={props.onSubmit} name={""} date={""} isEdit={false} coords={[]} logInUser={props.logInUser} routeId={""} onDeleteMembers={() => {}} usersOfRoute={[]} allUsers={[]}/>
     )
 }

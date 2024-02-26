@@ -16,7 +16,7 @@ export default function RouteItem(props: Readonly<DataRoute>) {
             <StyledDiv>
                 <StyledH>{props.route.name}</StyledH>
                 <StylesDate>Datum: <i>{new Date(props.route.dateTime).toLocaleDateString()}</i></StylesDate>
-                <StyledImg src={randomImage || map} alt={"Placeholder Map"}/>
+                <StyledImg src={randomImage ?? map} alt={"Placeholder Map"}/>
             </StyledDiv>
         </StyledLink>
     )

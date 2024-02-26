@@ -8,7 +8,7 @@ type Props = {
     userEmail: string | undefined;
 
 }
-export default function ProfilPage(props: Props) {
+export default function ProfilPage(props: Readonly<Props>) {
 
     const [name, setName] = useState<string | undefined>(props.userName);
     const navigate = useNavigate()

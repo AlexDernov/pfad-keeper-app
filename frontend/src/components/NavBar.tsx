@@ -7,7 +7,7 @@ type NavBarProps = {
     logout: () => void;
 };
 
-export default function NavBar(props: NavBarProps) {
+export default function NavBar(props: Readonly <NavBarProps>) {
 
     function login() {
         const host =

@@ -52,7 +52,7 @@ export default function RouteForm(props: PropsForm) {
                         name,
                         dateTime,
                         coords: extractedCoords,
-                        members: [...usersOfRoute, {email: props.logInUser.email, name: props.logInUser?.name}]
+                        members: [...usersOfRoute, {email: props.logInUser.email, name: props.logInUser.name}]
                     }) :
                     props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});
             }
@@ -66,11 +66,9 @@ export default function RouteForm(props: PropsForm) {
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const search = event.target.value.toLowerCase();
         setSearchTerm(search);
-        //axios.get("/api/routes/" + props.routeId).then(r => setRoute(r.data))
-        //const membersInRoute = route?.members
-        SetUsersNotInRoute(props.allUsers.filter(user => !usersOfRoute?.some(
-            member => user?.email === member?.email)).filter(user => !props.usersOfRoute?.some(
-            member => user?.email === member?.email)))
+        SetUsersNotInRoute(props.allUsers.filter(user => !usersOfRoute.some(
+            member => user.email === member.email)).filter(user => !props.usersOfRoute.some(
+            member => user.email === member?.email)))
 
         const result = usersNotInRoute.find(item =>
             item?.email?.toLowerCase().includes(searchTerm) ||
@@ -123,11 +121,11 @@ export default function RouteForm(props: PropsForm) {
                                           value={searchTerm}
                                           onChange={handleSearch}
                             />
-                            <StyledDatalist id="searchSuggestions">
+                            {usersNotInRoute && <StyledDatalist id="searchSuggestions">
                                 {usersNotInRoute.map(result => (
-                                    <StyledOption key={result?.email} value={result?.name}/>
+                                    <StyledOption key={result.email} value={result.name}/>
                                 ))}
-                            </StyledDatalist>
+                            </StyledDatalist>}
                             <StyledAddButton type="button" title="ADD"
                                              onClick={() => searchResult ? setUsersOfRoute([...usersOfRoute, {
                                                  email: searchResult.email,
@@ -136,23 +134,25 @@ export default function RouteForm(props: PropsForm) {
                             </StyledAddButton></InputDiv></StyledLabel>
 
                     </StyledMemberDiv>
+                    {usersOfRoute &&
                     <StyledUl>
-                        {usersOfRoute?.map(user => (<StyledLiDiv>
-                            <StyledLi key={user?.email}>{user?.name ? user?.name : user?.email}</StyledLi>
+                        {usersOfRoute.map(user => (<StyledLiDiv>
+                            <StyledLi key={user.email}>{user.name ? user.name : user.email}</StyledLi>
                             <StyledDeleteButton type="button" title="DELETE"
-                                                onClick={() => setUsersOfRoute([...usersOfRoute.filter(userToStayInList => userToStayInList?.email !== user?.email)])}> ✘
+                                                onClick={() => setUsersOfRoute([...usersOfRoute.filter(userToStayInList => userToStayInList.email !== user.email)])}> ✘
                             </StyledDeleteButton>
                         </StyledLiDiv>))}
-                    </StyledUl>
+                    </StyledUl>}
+                    {props.usersOfRoute &&
                     <StyledUl>
-                        {props.usersOfRoute?.map(userSaved => (<StyledLiDiv>
+                        {props.usersOfRoute.map(userSaved => (<StyledLiDiv>
                                 <StyledLi
-                                    key={userSaved?.email}>{userSaved?.name ? userSaved?.name : userSaved?.email}</StyledLi>
+                                    key={userSaved.email}>{userSaved.name ? userSaved.name : userSaved.email}</StyledLi>
                                 <StyledDeleteButton type="button" title="DELETE"
                                                     onClick={() => props.onDeleteMembers(userSaved)}> ✘
                                 </StyledDeleteButton></StyledLiDiv>
                         ))}
-                    </StyledUl>
+                    </StyledUl>}
                 </StyledSection>
 
                 <StyledButton type={"submit"}>Route speichern</StyledButton>
