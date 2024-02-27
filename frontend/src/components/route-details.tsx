@@ -5,10 +5,7 @@ import "leaflet/dist/leaflet.css";
 import RouteForm from "./route-form.tsx";
 import {ChangeEvent, useEffect, useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
-//import {MapContainer/*, TileLayer*/} from "react-leaflet";
-//import {LatLngExpression} from "leaflet";
 import styled from "styled-components";
-//import Routing from "../Routing.tsx";
 import axios from "axios";
 import Carousel from "./carousel.tsx";
 import {MyImages} from "../types/MyImages.tsx";
@@ -27,7 +24,6 @@ type Props = {
 }
 export default function RouteDetails(props: Readonly<Props>) {
     const [file, setFile] = useState<File | null>(null);
-    //const position: LatLngExpression | undefined = [51.09, 10.27];
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const [imgSaved, setImgSaved] = useState(false);
@@ -43,7 +39,7 @@ export default function RouteDetails(props: Readonly<Props>) {
     const {id} = useParams<string>();
     const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
     const [membersOfRoute, setMembersOfRoute] = useState<MyUsersDto[]>(data?.members)
-    const [dataOfOneRoute, setDataOfOneRoute]= useState<MyRoute>(data)
+    const [dataOfOneRoute, setDataOfOneRoute] = useState<MyRoute>(data)
     useEffect(() => {
         setMembersOfRoute(data?.members);
         setDataOfOneRoute(data);
@@ -139,21 +135,22 @@ export default function RouteDetails(props: Readonly<Props>) {
                            coords={data.coords} routeData={dataOfOneRoute}/>
                 : (
                     <>
-                        <Map routesData={undefined} oneRouteData={dataOfOneRoute} setter={undefined} planOn={false} isHome={false}/>
+                        <Map routesData={undefined} oneRouteData={dataOfOneRoute} setter={undefined} planOn={false}
+                             isHome={false}/>
                         <StyledInfoBlock>
                             <div>
                                 <StyledH2>{data.name}</StyledH2>
                                 <StyledP>Teilnehmer: </StyledP>
                             </div>
                             <div><StyledP2>{new Date(data.dateTime).toLocaleDateString()}</StyledP2>
-                                {data ?<StyledUl>
+                                {data ? <StyledUl>
 
                                     {data?.members.map((userSaved: MyUsersDto) => (<StyledLiDiv>
                                             <StyledLi
                                                 key={userSaved.email}>{userSaved.name ? userSaved.name : userSaved.email}</StyledLi>
                                         </StyledLiDiv>
                                     ))}
-                                </StyledUl>: null}</div>
+                                </StyledUl> : null}</div>
                         </StyledInfoBlock>
                     </>)
             }
@@ -187,7 +184,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                 {isEditMode ? <>
                     <ImageUploadDiv>
                         <ButtonImgDiv>
-                          <label> Bild hochladen <StyledImageInput type="file" onChange={handleChangeFile}/></label>
+                            <label> Bild hochladen <StyledImageInput type="file" onChange={handleChangeFile}/></label>
                             {file && !imgSaved ?
                                 <StyledButtonSaveImage type="button" onClick={handleSaveImg}>Save
                                     Img</StyledButtonSaveImage> : null}
@@ -205,8 +202,8 @@ export default function RouteDetails(props: Readonly<Props>) {
     )
 }
 
-const ButtonImgDiv= styled.div`
-display: flex;
+const ButtonImgDiv = styled.div`
+    display: flex;
     flex-direction: column;
 `;
 const StyledButtonSaveImage = styled.button`
@@ -227,13 +224,13 @@ const StyledButtonSaveImage = styled.button`
     }
 `;
 const ImageUploadDiv = styled.div`
-    margin:20px 0;
+    margin: 20px 0;
     display: flex;
     justify-content: center;
-    gap:20px;
+    gap: 20px;
 `;
 const StyledImageInput = styled.input`
-    
+
     &::file-selector-button {
         color: #ffffff;
         background-color: #1c859c;
@@ -298,12 +295,7 @@ const StyledUl = styled.ul`
     padding-inline-start: 0;
     width: 40vw;
 `;
-/*const StyledMapContainer = styled(MapContainer)`
-    position: relative;
-    margin: 0;
-    width: 100vw !important;
-    height: 50vh !important;
-`;*/
+
 const StyledButton = styled.button`
     color: #ffffff;
     background-color: #1c859c;
