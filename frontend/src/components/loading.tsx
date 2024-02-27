@@ -12,5 +12,5 @@ const StyledDiv = styled.div`
   flex-direction: column;
   margin: 190px 20px 10px 70px;
   padding: 20px;
-  align-item: center;
+  align-items: center;
 `;

@@ -61,11 +61,11 @@ export default function InteractiveMap(props: Readonly<Props>) {
                     </Popup>
                 </Link>
                 </Marker>
-            ):props.oneRouteData?
-                <StyledRouting setter={props.setter} coords={props.oneRouteData.coords} planOn={props.planOn}/>:
-                <StyledRouting setter={props.setter} coords={[]} planOn={props.planOn}/>}
+            ):
+                <StyledRouting setter={props.setter} coords={props.oneRouteData?.coords ?? []} planOn={props.planOn}/>}
         </StyledMapContainer>)
 }
+
 const StyledMapContainer = styled(MapContainer)`
     height: 50vh;
     color: black;

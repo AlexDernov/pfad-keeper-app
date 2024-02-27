@@ -160,7 +160,7 @@ export default function RouteDetails(props: Readonly<Props>) {
 
             {isEditMode ? null : <Carousel dataImages={props.dataImages} routeId={id}/>}
             <StyledDiv>
-                {!isEditMode ? (
+               {!isEditMode && (
                     <StyledButton
                         type="button"
                         onClick={() => {
@@ -169,7 +169,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                     >
                         Edit
                     </StyledButton>
-                ) : null}
+                )}
                 {!isEditMode ? (
                     <StyledButton type="button" onClick={handleDeleteRoute}>
                         Delete
@@ -188,12 +188,12 @@ export default function RouteDetails(props: Readonly<Props>) {
                     <ImageUploadDiv>
                         <ButtonImgDiv>
                             <label> Bild hochladen <StyledImageInput type="file" onChange={handleChangeFile}/></label>
-                            {file && !imgSaved ?
-                                <StyledButtonSaveImage type="button" onClick={handleSaveImg}>Save
-                                    Img</StyledButtonSaveImage> : null}
+                            {file && !imgSaved &&
+                                (<StyledButtonSaveImage type="button" onClick={handleSaveImg}>Save
+                                    Img</StyledButtonSaveImage>)}
                         </ButtonImgDiv>
-                        {file && !imgSaved ?
-                            <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/> : null}
+                        {file && !imgSaved &&
+                            ( <img src={URL.createObjectURL(file)} alt={"Bild"} width="auto" height="300vw"/>)}
                     </ImageUploadDiv>
                     <ImagesList imgData={props.dataImages} routeID={id} onDelete={props.handleImgDelete}/>
 

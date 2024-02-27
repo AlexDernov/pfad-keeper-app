@@ -107,13 +107,13 @@ const StyledButton = styled.button`
     color: white;
 
     &:hover {
-        color: #01a3c6; /* Textfarbe beim Hover-Zustand ändern */
+        color: #01a3c6;
     }
 
     &:focus-visible {
         outline: none;
         outline-offset: 2px;
-        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Hervorhebungsfarbe ändern */
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); 
     }
 `;
 
