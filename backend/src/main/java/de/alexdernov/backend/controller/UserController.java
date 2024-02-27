@@ -34,8 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/me")
-    public UserDto updateMyName(@AuthenticationPrincipal OAuth2User oAuth2User, @RequestBody String encodedName) {
-        String name = URLDecoder.decode(encodedName, StandardCharsets.UTF_8);
+    public UserDto updateMyName(@AuthenticationPrincipal OAuth2User oAuth2User, @RequestBody String name) {
         if (oAuth2User == null) {
             return null;
         }

@@ -92,7 +92,7 @@ function App() {
                         <Route path={"/routes"}
                                element={<RoutesList routesData={data} routImages={images} logInUser={userOnLogin}/>}/>
                         <Route path={"/user"}
-                               element={<ProfilPage userName={userOnLogin?.name} userEmail={userOnLogin?.email}/>}/>
+                               element={<ProfilPage logInUser={userOnLogin!}/>}/>
                         <Route path={"/routes/:id"}
                                element={<RouteDetails mutateF={handelMutate} dataImages={images} logInUser={userOnLogin!}
                                                       onSubmit={handleSubmit} handleImgDelete={deleteImage}/>}/>

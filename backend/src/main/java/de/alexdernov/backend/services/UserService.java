@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -22,19 +23,16 @@ public class UserService {
     }
 
     public UserDto getUserByEmail(String userEmail) {
-        Optional<User> user = userRepo.getUserByEmail(userEmail);
-        if (user.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!");
-        }
-        return new UserDto(user.get().email(), user.get().name());
+        return userRepo.getUserByEmail(userEmail)
+                .map(user -> new UserDto(user.email(), user.name()))
+                .orElseThrow(() -> new NoSuchElementException("No user with such email!"));
     }
 
     public UserDto updateUserName(String email, String userName) {
         Optional<User> optionalUser = userRepo.getUserByEmail(email);
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            User user1 = userRepo.save(user.withName(userName));
-            return new UserDto(user1.email(),user1.name());
+            User userSaved = userRepo.save(optionalUser.get().withName(userName));
+            return new UserDto(userSaved.email(),userSaved.name());
         }
         throw (new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with such email!"));
     }

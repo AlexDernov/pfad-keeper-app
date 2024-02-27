@@ -119,8 +119,7 @@ export default function RouteDetails(props: Readonly<Props>) {
             return;
         }
         uploadFile(file)
-            .then(response => {
-                console.log(response);
+            .then(() => {
                 setImgSaved(true);
             })
             .catch(error => {
@@ -138,7 +137,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                             routeData={dataOfOneRoute}/>
                 : (
                     <>
-                        <InteractiveMap routesData={undefined} oneRouteData={dataOfOneRoute} setter={undefined} planOn={false}
+                        <InteractiveMap oneRouteData={dataOfOneRoute} planOn={false}
                                         isHome={false}/>
                         <StyledInfoBlock>
                             <div>
@@ -158,7 +157,7 @@ export default function RouteDetails(props: Readonly<Props>) {
                     </>)
             }
 
-            {isEditMode ? null : <Carousel dataImages={props.dataImages} routeId={id}/>}
+            {isEditMode && id ? null : <Carousel dataImages={props.dataImages} routeId={id}/>}
             <StyledDiv>
                {!isEditMode && (
                     <StyledButton

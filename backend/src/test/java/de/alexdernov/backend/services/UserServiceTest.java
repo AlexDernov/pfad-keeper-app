@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,13 +109,13 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByEmailTest_whenIdNotFound_thenThrowResponseStatusException() {
+    void getUserByEmailTest_whenIdNotFound_thenThrowNoSuchElementException() {
         // GIVEN
         String expectedEmail = "nonExistentEmail";
         Mockito.when(userRepo.getUserByEmail(expectedEmail)).thenReturn(Optional.empty());
 
         // WHEN & THEN
-        assertThrows(ResponseStatusException.class, () -> userService.getUserByEmail(expectedEmail));
+        assertThrows(NoSuchElementException.class, () -> userService.getUserByEmail(expectedEmail));
     }
 
 

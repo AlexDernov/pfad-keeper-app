@@ -15,13 +15,13 @@ type PropsForm = {
     name: string;
     date: string;
     logInUser: MyUsersDto;
-    routeId: string | undefined;
+    routeId?: string;
     usersOfRoute: MyUsersDto[] | [];
     isEdit: boolean;
     allUsers: MyUser[];
     onSubmit: (route: MyRouteDto) => void;
     onDeleteMembers: (userToDelete: MyUsersDto) => void;
-    routeData:MyRoute| undefined;
+    routeData?:MyRoute;
 }
 export default function RouteForm(props: Readonly<PropsForm>) {
     const [name, setName] = useState<string>(props.name);
@@ -52,7 +52,7 @@ export default function RouteForm(props: Readonly<PropsForm>) {
                         coords: extractedCoords,
                         members: [...usersOfRoute, {email: props.logInUser.email, name: props.logInUser.name}]
                     }) :
-                    props.onSubmit({name, dateTime, coords: extractedCoords, members: usersOfRoute});
+                    props.onSubmit({name, dateTime, coords: extractedCoords, members: [...(props.usersOfRoute || []), ...usersOfRoute]})
             }
             {
                 props.isEdit ? navigate(`/routes/${props.routeId}`) : navigate("/routes")
@@ -77,7 +77,7 @@ export default function RouteForm(props: Readonly<PropsForm>) {
 
     return (
         <StyledDiv>
-<InteractiveMap routesData={undefined} oneRouteData={props.routeData} setter={setControl} planOn={true} isHome={false}/>
+<InteractiveMap oneRouteData={props.routeData} setter={setControl} planOn={true} isHome={false}/>
             <StyledForm onSubmit={handleSubmit}>
                 <StyledLegend>{props.isEdit ? "Edit die Route" : "Neue Route"}</StyledLegend>
                 <StyledP>{props.isEdit ? null : "Wählen Sie bitte die Start- und Endpunkte Ihre Route aus. Sie können auch die zwischen Stops addieren, verändern und löschen."}</StyledP>

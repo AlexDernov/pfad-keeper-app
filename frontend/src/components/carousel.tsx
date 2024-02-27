@@ -7,7 +7,7 @@ import {MyImages} from "../types/MyImages.tsx";
 
 type Props = {
     dataImages: MyImages[],
-    routeId: string | undefined,
+    routeId: string,
 }
 export default function Carousel(props: Readonly<Props>) {
     const [currentIndex, setCurrentIndex] = useState(0);

@@ -18,7 +18,7 @@ export default function Home(props: Readonly<Props>) {
                 zusätzliche Informationen und Bilder zu jeder Route hinzufügen. Egal, ob du alleine unterwegs bist oder
                 deine Abenteuer mit Freunden teilst, wir helfen dir dabei, deine Erlebnisse zu dokumentieren.
             </i></p>
-            <InteractiveMap routesData={props.routesData} oneRouteData={undefined} setter={undefined} planOn={false} isHome={true}/>
+            <InteractiveMap routesData={props.routesData} planOn={false} isHome={true}/>
         </StyledDiv>
     )
 }

@@ -8,9 +8,9 @@ import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import React from "react";
 
 type Props = {
-    routesData: MyRoute[] |undefined,
-    oneRouteData: MyRoute | undefined,
-    setter:  React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>> | undefined,
+    routesData?: MyRoute[],
+    oneRouteData?: MyRoute,
+    setter?:  React.Dispatch<React.SetStateAction<L.Routing.Control | undefined>>,
     planOn:boolean,
     isHome:boolean
 }

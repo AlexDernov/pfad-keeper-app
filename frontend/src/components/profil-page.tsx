@@ -2,15 +2,14 @@ import styled from "styled-components";
 import React, {useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {MyUsersDto} from "../types/MyUsersDto.tsx";
 
 type Props = {
-    userName: string | undefined,
-    userEmail: string | undefined;
-
+    logInUser:MyUsersDto;
 }
 export default function ProfilPage(props: Readonly<Props>) {
 
-    const [name, setName] = useState<string | undefined>(props.userName);
+    const [name, setName] = useState<string | undefined>(props.logInUser.name);
     const navigate = useNavigate()
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -31,9 +30,9 @@ export default function ProfilPage(props: Readonly<Props>) {
             <StyledLegend>Profil von {name} bearbeiten:</StyledLegend>
             <p>Bitte bearbeiten Sie Ihren Namen. Der Name soll klar und eindeutig sein, damit Sie einer Route zugefügt
                 werden können. Falls kein Name vergeben wurde steht in der Liste von Teilnehmern Ihres
-                E-mail {props.userEmail}. </p>
+                E-mail {props.logInUser.email}. </p>
             <StyledLabel htmlFor={"name"}>Name:
-                <StyledInput type={"text"} id={"name"} defaultValue={props.userName}
+                <StyledInput type={"text"} id={"name"} defaultValue={props.logInUser.name}
                              onChange={(e) => setName(e.target.value)}
 
                 /></StyledLabel>
