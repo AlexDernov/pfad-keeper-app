@@ -2,13 +2,13 @@ import './App.css'
 import useSWR from "swr";
 import {Routes, Route} from "react-router-dom";
 import RoutesList from "./components/routes-list.tsx";
-import NavBar from "./components/NavBar.tsx";
+import NavBar from "./components/nav-bar.tsx";
 import styled from "styled-components";
 import Home from "./components/home.tsx";
-import NoPage from "./components/NoPage.tsx";
-import NewRoute from "./components/NewRoute.tsx";
+import NoPagePage from "./components/no-page-page.tsx";
+import NewRoute from "./components/new-route.tsx";
 import {fetcher} from "./components/fetcher.tsx";
-import RouteDetails from "./components/RouteDetails.tsx";
+import RouteDetails from "./components/route-details.tsx";
 import {MyRouteDto} from "./types/MyRouteDto.tsx";
 import {useEffect, useState} from "react";
 import {MyImages} from "./types/MyImages.tsx";
@@ -20,7 +20,7 @@ import ProtectedRoutes from "./ProtectedRoutes.tsx";
 function App() {
     const [userOnLogin, setUserOnLogin] = useState<MyUsersDto | undefined | null>(undefined);
     const [images, setImages] = useState<MyImages[]>([])
-console.log(userOnLogin);
+
     useEffect(() => {
         axios.get("/api/images").then(response =>
             setImages(response.data))
@@ -94,8 +94,8 @@ console.log(userOnLogin);
                         <Route path={"/routes/add"}
                                element={<NewRoute logInUser={userOnLogin!} onSubmit={handleSubmit}/>}/>
                     </Route>
-                    <Route index element={<Home routeData={data}/>}/>
-                    <Route path={"/*"} element={<NoPage/>}/>
+                    <Route index element={<Home routesData={data}/>}/>
+                    <Route path={"/*"} element={<NoPagePage/>}/>
                 </Routes>
             </StyledDiv>
         </>

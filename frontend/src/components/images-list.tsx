@@ -1,5 +1,5 @@
 import {MyImages} from "../types/MyImages.tsx";
-import ImageItem from "./ImageItem.tsx";
+import ImageItem from "./image-item.tsx";
 import styled from "styled-components";
 
 type Props={

@@ -3,13 +3,15 @@ import styled from "styled-components";
 import {ChangeEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
-import L, {LatLngExpression} from "leaflet";
+import L/*, {LatLngExpression}*/ from "leaflet";
 import "leaflet/dist/leaflet.css";
-import {MapContainer, TileLayer} from "react-leaflet";
-import Routing from "../Routing.tsx";
+//import {MapContainer, TileLayer} from "react-leaflet";
+//import Routing from "../Routing.tsx";
 import {MyCoords} from "../types/MyCoords.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
+import Map from "./map.tsx";
+import {MyRoute} from "../types/MyRoute.tsx";
 
 
 type PropsForm = {
@@ -23,6 +25,7 @@ type PropsForm = {
     allUsers: MyUser[];
     onSubmit: (route: MyRouteDto) => void;
     onDeleteMembers: (userToDelete: MyUsersDto) => void;
+    routeData:MyRoute| undefined;
 }
 export default function RouteForm(props: PropsForm) {
     const [name, setName] = useState<string>(props.name);
@@ -31,7 +34,7 @@ export default function RouteForm(props: PropsForm) {
     const [searchTerm, setSearchTerm] = useState('');
     const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>([]);
     const [searchResult, setSearchResult] = useState<MyUsersDto>();
-    const position: LatLngExpression | undefined = [51.09, 10.27];
+   // const position: LatLngExpression | undefined = [51.09, 10.27];
     const navigate = useNavigate()
     const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUsersDto[]>([])
 
@@ -79,14 +82,12 @@ export default function RouteForm(props: PropsForm) {
 
     return (
         <StyledDiv>
-
-            <StyledMapContainer center={position} zoom={5} contextmenu={true}
+<Map routesData={undefined} oneRouteData={props.routeData} setter={setControl} planOn={true} isHome={false}/>
+           {/* <StyledMapContainer center={position} zoom={5} contextmenu={true}
                                 contextmenuItems={[{
                                     text: "Start from here",
-                                    //callback: startHere
                                 }, {
                                     text: `Go to here`,
-                                    // callback: goHere
                                 }]}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
@@ -95,7 +96,7 @@ export default function RouteForm(props: PropsForm) {
                 />
                 <StyledRouting setter={setControl} coords={props.coords} planOn={true}/>
 
-            </StyledMapContainer>
+            </StyledMapContainer>*/}
 
             <StyledForm onSubmit={handleSubmit}>
                 <StyledLegend>{props.isEdit ? "Edit die Route" : "Neue Route"}</StyledLegend>
@@ -278,12 +279,12 @@ const StyledSection = styled.section`
     width: 100%;
 `;
 
-const StyledMapContainer = styled(MapContainer)`
+/*const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
     width: 100vw !important;
     height: 50vh !important;
-`;
+`;*/
 const StyledButton = styled.button`
     color: #ffffff;
     background-color: #1c859c;
@@ -300,7 +301,8 @@ const StyledButton = styled.button`
         margin: 0.55vw 0.5vw;
     }
 `;
+/*
 const StyledRouting = styled(Routing)`
     width: 30vw !important;
     height: 90% !important;
-`;
+`;*/

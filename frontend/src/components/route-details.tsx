@@ -2,19 +2,21 @@ import {fetcher} from "./fetcher.tsx";
 import useSWR from "swr";
 import {useNavigate, useParams} from "react-router-dom";
 import "leaflet/dist/leaflet.css";
-import RouteForm from "./RouteForm.tsx";
+import RouteForm from "./route-form.tsx";
 import {ChangeEvent, useEffect, useState} from "react";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
-import {MapContainer, TileLayer} from "react-leaflet";
-import {LatLngExpression} from "leaflet";
+//import {MapContainer/*, TileLayer*/} from "react-leaflet";
+//import {LatLngExpression} from "leaflet";
 import styled from "styled-components";
-import Routing from "../Routing.tsx";
+//import Routing from "../Routing.tsx";
 import axios from "axios";
-import Carousel from "./Carousel.tsx";
+import Carousel from "./carousel.tsx";
 import {MyImages} from "../types/MyImages.tsx";
 import ImagesList from "./images-list.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
+import Map from "./map.tsx";
+import {MyRoute} from "../types/MyRoute.tsx";
 
 type Props = {
     mutateF: () => void,
@@ -25,7 +27,7 @@ type Props = {
 }
 export default function RouteDetails(props: Readonly<Props>) {
     const [file, setFile] = useState<File | null>(null);
-    const position: LatLngExpression | undefined = [51.09, 10.27];
+    //const position: LatLngExpression | undefined = [51.09, 10.27];
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate()
     const [imgSaved, setImgSaved] = useState(false);
@@ -41,8 +43,10 @@ export default function RouteDetails(props: Readonly<Props>) {
     const {id} = useParams<string>();
     const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
     const [membersOfRoute, setMembersOfRoute] = useState<MyUsersDto[]>(data?.members)
+    const [dataOfOneRoute, setDataOfOneRoute]= useState<MyRoute>(data)
     useEffect(() => {
         setMembersOfRoute(data?.members);
+        setDataOfOneRoute(data);
     }, [data]);
 
     if (error) return <div>Error loading data</div>;
@@ -132,22 +136,10 @@ export default function RouteDetails(props: Readonly<Props>) {
                 <RouteForm name={data.name} usersOfRoute={membersOfRoute} routeId={id} allUsers={usersAll}
                            date={data.dateTime} logInUser={props.logInUser} isEdit={isEditMode}
                            onSubmit={handleEditRoute} onDeleteMembers={deleteMemberFromTheRouteList}
-                           coords={data.coords}/>
+                           coords={data.coords} routeData={dataOfOneRoute}/>
                 : (
                     <>
-                        <StyledMapContainer center={position} zoom={5} contextmenu={true}
-                                            contextmenuItems={[{
-                                                text: "Start from here",
-                                            }, {
-                                                text: `Go to here`,
-                                            }]}>
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright"> OpenStreetMap
-          </a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            <Routing setter={undefined} coords={data.coords} planOn={false}/>
-                        </StyledMapContainer>
+                        <Map routesData={undefined} oneRouteData={dataOfOneRoute} setter={undefined} planOn={false} isHome={false}/>
                         <StyledInfoBlock>
                             <div>
                                 <StyledH2>{data.name}</StyledH2>
@@ -306,12 +298,12 @@ const StyledUl = styled.ul`
     padding-inline-start: 0;
     width: 40vw;
 `;
-const StyledMapContainer = styled(MapContainer)`
+/*const StyledMapContainer = styled(MapContainer)`
     position: relative;
     margin: 0;
     width: 100vw !important;
     height: 50vh !important;
-`;
+`;*/
 const StyledButton = styled.button`
     color: #ffffff;
     background-color: #1c859c;
