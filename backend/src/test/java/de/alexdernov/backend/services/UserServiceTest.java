@@ -22,7 +22,7 @@ class UserServiceTest {
     private final UserRepo userRepo = mock(UserRepo.class);
     private UserService userService;
     private final String userEmail = "user@example.com";
-    private final String userName = "";
+
 
     @BeforeEach
     void setUp() {
@@ -62,6 +62,7 @@ class UserServiceTest {
         assertEquals(2, result.size());
 
     }
+
     @Test
     void updateUserName_WhenUserExists_ReturnsUpdatedUserDto() {
         // GIVEN
@@ -88,9 +89,9 @@ class UserServiceTest {
         UserService userService = new UserService(userRepoMock);
 
         // WHEN and THEN
-        assertThrows(ResponseStatusException.class, () -> {
-            userService.updateUserName("nonexistent@example.com", "NewName");
-        });
+        assertThrows(ResponseStatusException.class, () ->
+                userService.updateUserName("nonexistent@example.com", "NewName")
+        );
     }
 
     @Test
@@ -122,6 +123,7 @@ class UserServiceTest {
     @Test
     void saveNewUserTest_whenUserNotExists_thenSaveNewUser() {
         // GIVEN
+        String userName = "";
         OAuth2User oauth2User = mock(OAuth2User.class);
         when(oauth2User.getAttribute("email")).thenReturn(userEmail);
         when(userRepo.existsByEmail(userEmail)).thenReturn(false);

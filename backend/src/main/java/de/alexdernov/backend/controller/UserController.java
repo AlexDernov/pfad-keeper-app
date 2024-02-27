@@ -1,6 +1,5 @@
 package de.alexdernov.backend.controller;
 
-
 import de.alexdernov.backend.models.User;
 import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.services.UserService;
@@ -10,8 +9,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
