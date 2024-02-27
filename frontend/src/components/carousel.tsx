@@ -9,7 +9,7 @@ type Props = {
     dataImages: MyImages[],
     routeId: string | undefined,
 }
-export default function Carousel(props: Props) {
+export default function Carousel(props: Readonly<Props>) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState("");
     const [imgUrls, setImgUrls] = useState<string[]>([]);

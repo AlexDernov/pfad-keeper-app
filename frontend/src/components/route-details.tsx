@@ -12,7 +12,7 @@ import {MyImages} from "../types/MyImages.tsx";
 import ImagesList from "./images-list.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
-import Map from "./map.tsx";
+import InteractiveMap from "./interactiveMap.tsx";
 import {MyRoute} from "../types/MyRoute.tsx";
 
 type Props = {
@@ -132,11 +132,11 @@ export default function RouteDetails(props: Readonly<Props>) {
                 <RouteForm name={data.name} usersOfRoute={membersOfRoute} routeId={id} allUsers={usersAll}
                            date={data.dateTime} logInUser={props.logInUser} isEdit={isEditMode}
                            onSubmit={handleEditRoute} onDeleteMembers={deleteMemberFromTheRouteList}
-                           coords={data.coords} routeData={dataOfOneRoute}/>
+                            routeData={dataOfOneRoute}/>
                 : (
                     <>
-                        <Map routesData={undefined} oneRouteData={dataOfOneRoute} setter={undefined} planOn={false}
-                             isHome={false}/>
+                        <InteractiveMap routesData={undefined} oneRouteData={dataOfOneRoute} setter={undefined} planOn={false}
+                                        isHome={false}/>
                         <StyledInfoBlock>
                             <div>
                                 <StyledH2>{data.name}</StyledH2>

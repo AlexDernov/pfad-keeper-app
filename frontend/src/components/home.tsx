@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import "leaflet/dist/leaflet.css";
 import {MyRoute} from "../types/MyRoute.tsx";
-import Map from "./map.tsx";
+import InteractiveMap from "./interactiveMap.tsx";
 
 
 type Props = {
     routesData: MyRoute[],
 }
-export default function Home(props: Props) {
+export default function Home(props: Readonly<Props>) {
 
     return (
         <StyledDiv>
@@ -18,7 +18,7 @@ export default function Home(props: Props) {
                 zusätzliche Informationen und Bilder zu jeder Route hinzufügen. Egal, ob du alleine unterwegs bist oder
                 deine Abenteuer mit Freunden teilst, wir helfen dir dabei, deine Erlebnisse zu dokumentieren.
             </i></p>
-            <Map routesData={props.routesData} oneRouteData={undefined} setter={undefined} planOn={false} isHome={true}/>
+            <InteractiveMap routesData={props.routesData} oneRouteData={undefined} setter={undefined} planOn={false} isHome={true}/>
         </StyledDiv>
     )
 }

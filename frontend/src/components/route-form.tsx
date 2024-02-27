@@ -5,10 +5,9 @@ import {useNavigate} from "react-router-dom";
 import {MyRouteDto} from "../types/MyRouteDto.tsx";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import {MyCoords} from "../types/MyCoords.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
 import {MyUser} from "../types/MyUsers.tsx";
-import Map from "./map.tsx";
+import InteractiveMap from "./interactiveMap.tsx";
 import {MyRoute} from "../types/MyRoute.tsx";
 
 
@@ -18,14 +17,13 @@ type PropsForm = {
     logInUser: MyUsersDto;
     routeId: string | undefined;
     usersOfRoute: MyUsersDto[] | [];
-    coords: MyCoords[];
     isEdit: boolean;
     allUsers: MyUser[];
     onSubmit: (route: MyRouteDto) => void;
     onDeleteMembers: (userToDelete: MyUsersDto) => void;
     routeData:MyRoute| undefined;
 }
-export default function RouteForm(props: PropsForm) {
+export default function RouteForm(props: Readonly<PropsForm>) {
     const [name, setName] = useState<string>(props.name);
     const [dateTime, setDateTime] = useState<Date>(new Date(props.date));
     const [control, setControl] = useState<L.Routing.Control>()
@@ -33,7 +31,7 @@ export default function RouteForm(props: PropsForm) {
     const [usersOfRoute, setUsersOfRoute] = useState<MyUsersDto[]>([]);
     const [searchResult, setSearchResult] = useState<MyUsersDto>();
     const navigate = useNavigate()
-    const [usersNotInRoute, SetUsersNotInRoute] = useState<MyUsersDto[]>([])
+    const [usersNotInRoute, setUsersNotInRoute] = useState<MyUsersDto[]>([])
 
     if (props.logInUser === null || undefined) return <div>Loading...</div>
 
@@ -66,7 +64,7 @@ export default function RouteForm(props: PropsForm) {
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const search = event.target.value.toLowerCase();
         setSearchTerm(search);
-        SetUsersNotInRoute(props.allUsers.filter(user => !usersOfRoute.some(
+        setUsersNotInRoute(props.allUsers.filter(user => !usersOfRoute.some(
             member => user.email === member.email)).filter(user => !props.usersOfRoute.some(
             member => user.email === member?.email)))
 
@@ -79,7 +77,7 @@ export default function RouteForm(props: PropsForm) {
 
     return (
         <StyledDiv>
-<Map routesData={undefined} oneRouteData={props.routeData} setter={setControl} planOn={true} isHome={false}/>
+<InteractiveMap routesData={undefined} oneRouteData={props.routeData} setter={setControl} planOn={true} isHome={false}/>
             <StyledForm onSubmit={handleSubmit}>
                 <StyledLegend>{props.isEdit ? "Edit die Route" : "Neue Route"}</StyledLegend>
                 <StyledP>{props.isEdit ? null : "Wählen Sie bitte die Start- und Endpunkte Ihre Route aus. Sie können auch die zwischen Stops addieren, verändern und löschen."}</StyledP>

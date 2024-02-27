@@ -14,7 +14,7 @@ type Props = {
     planOn:boolean,
     isHome:boolean
 }
-export default function Map(props: Props) {
+export default function InteractiveMap(props: Readonly<Props>) {
     const position: LatLngExpression | undefined = [51.09, 10.27];
 
     const iconStart = L.divIcon({

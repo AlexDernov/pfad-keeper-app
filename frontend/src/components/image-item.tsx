@@ -5,7 +5,7 @@ type DataImage = {
     imgData: MyImages,
     onDelete: (id: string) => void
 }
-export default function ImageItem(props: DataImage) {
+export default function ImageItem(props: Readonly<DataImage>) {
     function handleImageDelete() {
         props.onDelete(props.imgData.id)
     }
