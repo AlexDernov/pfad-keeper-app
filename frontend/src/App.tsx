@@ -16,11 +16,11 @@ import axios from "axios";
 import ProfilPage from "./components/profil-page.tsx";
 import {MyUsersDto} from "./types/MyUsersDto.tsx";
 import ProtectedRoutes from "./ProtectedRoutes.tsx";
+import Loading from "./components/loading.tsx";
 
 function App() {
     const [userOnLogin, setUserOnLogin] = useState<MyUsersDto | undefined | null>(undefined);
     const [images, setImages] = useState<MyImages[]>([])
-
     useEffect(() => {
         axios.get("/api/images").then(response =>
             setImages(response.data))
@@ -30,6 +30,8 @@ function App() {
         axios.get<MyUsersDto>("/api/users/me").then((response) => {
            if(response.data){
                setUserOnLogin(response.data);
+           }else {
+               setUserOnLogin(null);
            }
 
         });
@@ -43,7 +45,10 @@ function App() {
     const logout = () => {
         axios.post("/api/users/logout").then(() => getCurrentUser());
     };
-    const {data, error, mutate} = useSWR("/api/routes", fetcher)
+    const {data, isLoading, error, mutate} = useSWR("/api/routes", fetcher)
+    if (isLoading) {
+        return <Loading />;
+    }
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
 

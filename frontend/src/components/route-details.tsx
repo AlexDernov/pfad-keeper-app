@@ -14,6 +14,7 @@ import {MyUser} from "../types/MyUsers.tsx";
 import {MyUsersDto} from "../types/MyUsersDto.tsx";
 import InteractiveMap from "./interactiveMap.tsx";
 import {MyRoute} from "../types/MyRoute.tsx";
+import Loading from "./loading.tsx";
 
 type Props = {
     mutateF: () => void,
@@ -37,14 +38,16 @@ export default function RouteDetails(props: Readonly<Props>) {
 
 
     const {id} = useParams<string>();
-    const {data, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
+    const {data, isLoading, error, mutate} = useSWR(`/api/routes/${id}`, fetcher)
     const [membersOfRoute, setMembersOfRoute] = useState<MyUsersDto[]>(data?.members)
     const [dataOfOneRoute, setDataOfOneRoute] = useState<MyRoute>(data)
     useEffect(() => {
         setMembersOfRoute(data?.members);
         setDataOfOneRoute(data);
     }, [data]);
-
+    if (isLoading) {
+        return <Loading />;
+    }
     if (error) return <div>Error loading data</div>;
     if (!data) return <div>Loading data...</div>;
     if (!id) return <div>Loading</div>;

@@ -30,14 +30,13 @@ export default function NavBar(props: Readonly <NavBarProps>) {
 
                 </FlexContainer>
 <LogInDiv>
-                {!props.logInUser && (
+                {!props.logInUser ?
                     <StyledButton
                         onClick={login}
                     >
                         Login
                     </StyledButton>
-                )}
-                {!!props.logInUser && (<>
+                : (<>
                     <StyledButton
                         onClick={props.logout}
                     >
@@ -88,8 +87,8 @@ const NavLinkProfil = styled(NavLink)`
     background-color: transparent;
     width:100%;
     position: relative;
-    top: 1rem;
-    right: 0;
+    top: 1.5rem;
+    right: 0.3rem;
     display: flex;
     justify-content: center;
     text-decoration: none;
@@ -97,13 +96,13 @@ const NavLinkProfil = styled(NavLink)`
 `;
 const StyledButton = styled.button`
     position: fixed;
-    top: 2px;
+    top: 4px;
     right: 2vw;
     width: auto;
     border: transparent none;
     background-color: transparent;
     padding: 8px 16px;
-    font-size: 1vw;
+    font-size: 1.6vw;
     font-weight: 300;
     color: white;
 
@@ -119,7 +118,7 @@ const StyledButton = styled.button`
 `;
 
 const NavLinkHeading = styled(NavLink)`
-    font-size: 1.3rem;
+    font-size: 2.5rem;
     color: #FFF;
     font-family: Copperplate;
     font-style: normal;
@@ -132,13 +131,33 @@ const NavLinkHeading = styled(NavLink)`
     margin-right: 9vw;
     padding: 0.5vw;
     cursor: pointer;
+    
 
     &:hover {
         padding: 0;
-        font-size: 1.4rem;
+        font-size: 2.1rem;
         margin-right: 8.5vw;
     }
-
+    @media only screen and (max-width: 600px) {
+        font-size: 1.3rem;
+        color: #FFF;
+        font-family: Copperplate;
+        font-style: normal;
+        text-align: left;
+        font-weight: 200;
+        line-height: normal;
+        background-color: transparent;
+        text-decoration: none;
+        border-radius: 0.375rem;
+        margin-right: 9vw;
+        padding: 0.5vw;
+        cursor: pointer;
+        &:hover {
+            padding: 0;
+            font-size: 1.4rem;
+            margin-right: 8.5vw;
+        }
+    }
 `;
 
 const StyledNav = styled.nav`
@@ -180,14 +199,14 @@ const NavLinks = styled(NavLink)`
     text-decoration: none;
     border-radius: 0.375rem;
     padding: 0.5vw 1.5vw;
-    font-size: 1.7vw;
+    font-size: 2.2vw;
     font-weight: 500;
     margin: 0.5vw;
     cursor: pointer;
 
     &:hover {
         padding: 0 1.10vw;
-        font-size: 2vw;
+        font-size: 2.3vw;
         margin: 0.5vw 0 0.5vw 0;
     }
 `;
@@ -196,14 +215,14 @@ const NavLinkAdd = styled(NavLinks)`
     background-color: #1c859c;
     border-radius: 0.975rem;
     padding: 0.5vw 1.5vw;
-    font-size: 1.7vw;
+    font-size: 2.2vw;
     font-weight: 500;
     margin: 0.5vw 1vw;
     cursor: pointer;
 
     &:hover {
         padding: 0 1.25vw;
-        font-size: 2vw;
+        font-size: 2.3vw;
         margin: 0.55vw 0.5vw;
     }
 `;

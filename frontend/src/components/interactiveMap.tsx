@@ -34,8 +34,7 @@ export default function InteractiveMap(props: Readonly<Props>) {
         iconAnchor: [0, 25],
     });
     return (
-        <MapContainer center={position} zoom={5} style={{height: "50vh", color: "black", position: "relative", width: "100vw",
-             }} contextmenu={true}
+        <StyledMapContainer center={position} zoom={5}  contextmenu={true}
                       contextmenuItems={[{
                           text: "Start from here",
                       }, {
@@ -65,9 +64,17 @@ export default function InteractiveMap(props: Readonly<Props>) {
             ):props.oneRouteData?
                 <StyledRouting setter={props.setter} coords={props.oneRouteData.coords} planOn={props.planOn}/>:
                 <StyledRouting setter={props.setter} coords={[]} planOn={props.planOn}/>}
-        </MapContainer>)
+        </StyledMapContainer>)
 }
-
+const StyledMapContainer = styled(MapContainer)`
+    height: 50vh;
+    color: black;
+    position: relative;
+    width: 100vw;
+    @media only screen and (max-width: 600px) {
+        height: 40vh;
+    }
+`;
 const StyledRouting = styled(Routing)`
     width: 30vw !important;
     height: 90% !important;
