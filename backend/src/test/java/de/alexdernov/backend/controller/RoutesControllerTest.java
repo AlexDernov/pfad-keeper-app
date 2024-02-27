@@ -2,22 +2,28 @@ package de.alexdernov.backend.controller;
 
 import de.alexdernov.backend.models.Coords;
 import de.alexdernov.backend.models.Route;
+import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.repos.RouteRepo;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -29,6 +35,75 @@ class RoutesControllerTest {
     @Autowired
     private RouteRepo routeRepo;
 
+    @Test
+    void updateRoutesMembers_Success() throws Exception {
+        // GIVEN
+
+        UserDto userToDelete = new UserDto("emailToDelete", "NameToDelete");
+        LocalDateTime dateTime1 = LocalDateTime.of(2014, Month.JANUARY, 1, 8, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.MARCH, 30, 4, 24);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, Month.APRIL, 4, 10, 30);
+
+        Coords coords1 = new Coords("9", dateTime1, "284857", "325325");
+        Coords coords2 = new Coords("8", dateTime2, "19842798", "2343587");
+        List<Coords> coordsList = new ArrayList<>();
+        coordsList.add(coords1);
+        coordsList.add(coords2);
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+
+        routeRepo.save(new Route("test-id", coordsList, new ArrayList<>(List.of(userDto1, userDto2, userToDelete)), "Berlin", dateTime3));
+
+        // WHEN
+        mvc.perform(put("/api/routes/membersList/test-id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                               {
+                             "email":"emailToDelete",
+                             "name":"NameToDelete"
+                                }
+                                                  
+                                     """)
+                .with(oidcLogin()
+                        .userInfoToken(token ->
+                                token.claim("email", "Email")))
+                )
+        // THEN
+
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                           "id": "test-id",
+                           "coords": [
+                                                      {
+                                                          "id": "8",
+                                                          "dateTime": "2024-03-30T04:24:00",
+                                                          "longitude": "19842798",
+                                                          "latitude": "2343587"
+                                                      },
+                                                      {
+                                                          "id": "9",
+                                                          "dateTime": "2014-01-01T08:30:00",
+                                                          "longitude": "284857",
+                                                          "latitude": "325325"
+                                                      }
+                                                  ],
+                                                  "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
+                                                  "name": "Berlin",
+                                                  "dateTime": "2024-04-04T10:30:00"
+                                              }
+                        """))
+                .andReturn();
+    }
     @DirtiesContext
     @Test
     void getRoutesTest_shouldReturnListWithOneObject_whenOneObjectWasSavedInRepository() throws Exception {
@@ -42,7 +117,12 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        routeRepo.save(new Route("test-id", coordsList, userIds,"Berlin", dateTime3));
 
         // WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/routes"))
@@ -66,6 +146,16 @@ class RoutesControllerTest {
                                                           "latitude": "325325"
                                                       }
                                                   ],
+                                                  "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
                                                   "name": "Berlin",
                                                   "dateTime": "2024-04-04T10:30:00"
                                               }]
@@ -86,7 +176,12 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        Route route = routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        Route route = routeRepo.save(new Route("test-id", coordsList, userIds,"Berlin", dateTime3));
         String id = route.id();
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/routes/{id}", id))
@@ -109,6 +204,16 @@ class RoutesControllerTest {
                                                           "latitude": "325325"
                                                       }
                                                   ],
+                                                  "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
                                                   "name": "Berlin",
                                                   "dateTime": "2024-04-04T10:30:00"
                                               }
@@ -129,7 +234,12 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        routeRepo.save(new Route("test-id", coordsList, userIds,"Berlin", dateTime3));
         String nonExistingId = "nonExistingId";
         //WHEN
         mvc.perform(MockMvcRequestBuilders.get("/api/routes/{id}", nonExistingId))
@@ -151,7 +261,12 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        routeRepo.save(new Route("test-id", coordsList, userIds,"Berlin", dateTime3));
         // WHEN
         mvc.perform(MockMvcRequestBuilders.post("/api/routes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -171,10 +286,23 @@ class RoutesControllerTest {
                                                                "latitude": "325325"
                                                            }
                                                        ],
+                                                       "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
                                                        "name": "Berlin",
                                                        "dateTime": "2024-04-04T10:30:00"
                                                    }
                                      """)
+                        .with(oidcLogin()
+                                .userInfoToken(token ->
+                                        token.claim("email", "Email")))
                 )
                 // THEN
                 .andExpect(status().isOk())
@@ -194,6 +322,16 @@ class RoutesControllerTest {
                                                           "longitude": "284857",
                                                           "latitude": "325325"
                                                       }
+                                                  ],
+                                                  "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
                                                   ],
                                                   "name": "Berlin",
                                                   "dateTime": "2024-04-04T10:30:00"
@@ -216,10 +354,15 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        routeRepo.save(new Route("test-id", coordsList, userIds,"Berlin", dateTime3));
 
         //WHEN
-        mvc.perform(MockMvcRequestBuilders.put("/api/routes/test-id")
+        mvc.perform(put("/api/routes/test-id")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                                                             
@@ -239,6 +382,16 @@ class RoutesControllerTest {
                                                                "latitude": "325325"
                                                            }
                                                        ],
+                                                       "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
                                                        "name": "München",
                                                        "dateTime": "2020-05-04T10:00:00"
                                                    }
@@ -263,6 +416,16 @@ class RoutesControllerTest {
                                                            "latitude": "325325"
                                                        }
                                                    ],
+                                                   "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
                                                    "name": "München",
                                                    "dateTime": "2020-05-04T10:00:00"
                                                }
@@ -283,7 +446,12 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        routeRepo.save(new Route("test-id", coordsList,userIds, "Berlin", dateTime3));
 
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/api/routes/test-id"))
@@ -307,6 +475,16 @@ class RoutesControllerTest {
                                                        "latitude": "325325"
                                                    }
                                                ],
+                                               "members": [
+                                                  {
+                                                  "email":"Email",
+                                                  "name":"Name"
+                                                  },
+                                                  {
+                                                  "email":"Email2",
+                                                  "name":"Name2"
+                                                  }
+                                                  ],
                                                "name": "Berlin",
                                                "dateTime": "2024-04-04T10:30:00"
                                            }
@@ -325,7 +503,12 @@ class RoutesControllerTest {
         List<Coords> coordsList = new ArrayList<>();
         coordsList.add(coords1);
         coordsList.add(coords2);
-        routeRepo.save(new Route("test-id", coordsList, "Berlin", dateTime3));
+        UserDto userDto1 = new UserDto("Email", "Name");
+        UserDto userDto2 = new UserDto("Email2", "Name2");
+        List<UserDto> userIds = new ArrayList<>();
+        userIds.add(userDto1);
+        userIds.add(userDto2);
+        routeRepo.save(new Route("test-id", coordsList, userIds,"Berlin", dateTime3));
         String nonExistingId = "nonExistingId";
         //WHEN
         mvc.perform(MockMvcRequestBuilders.delete("/api/routes/{id}", nonExistingId))

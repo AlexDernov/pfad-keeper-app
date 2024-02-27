@@ -5,11 +5,11 @@ import styled from "styled-components";
 import {MyImages} from "../types/MyImages.tsx";
 
 
-type Props={
-    dataImages:MyImages[],
-    routeId:string | undefined,
+type Props = {
+    dataImages: MyImages[],
+    routeId: string,
 }
-export default function Carousel(props:Props) {
+export default function Carousel(props: Readonly<Props>) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState("");
     const [imgUrls, setImgUrls] = useState<string[]>([]);
@@ -81,7 +81,7 @@ export default function Carousel(props:Props) {
         );
     };
 
-    const handleDotClick = (index:number) => {
+    const handleDotClick = (index: number) => {
         setDirection(index > currentIndex ? "right" : "left");
         setCurrentIndex(index);
     };
@@ -112,7 +112,7 @@ export default function Carousel(props:Props) {
                             viewBox="0 96 960 960"
                             width="20"
                         >
-                            <path d="M400 976 0 576l400-400 56 57-343 343 343 343-56 57Z" />
+                            <path d="M400 976 0 576l400-400 56 57-343 343 343 343-56 57Z"/>
                         </svg>
                     </motion.div>
                     <motion.div
@@ -127,7 +127,7 @@ export default function Carousel(props:Props) {
                             viewBox="0 96 960 960"
                             width="20"
                         >
-                            <path d="m304 974-56-57 343-343-343-343 56-57 400 400-400 400Z" />
+                            <path d="m304 974-56-57 343-343-343-343 56-57 400 400-400 400Z"/>
                         </svg>
                     </motion.div>
                 </div>
@@ -150,11 +150,6 @@ export default function Carousel(props:Props) {
 
 }
 
-
-/*
-const StyledCarousel = styled.div`
-    display: ${( imgUrls) => (!imgUrls ? "none" : "block")} !important;
-`;*/
 const StyledCarousel = styled.div<{ imgUrls: string[] }>`
-    display: ${({ imgUrls }) => (imgUrls.length === 0 ? "none" : "block")} !important;
+    display: ${({imgUrls}) => (imgUrls.length === 0 ? "none" : "block")} !important;
 `;

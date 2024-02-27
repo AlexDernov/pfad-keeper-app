@@ -1,5 +1,5 @@
 import {MyImages} from "../types/MyImages.tsx";
-import ImageItem from "./ImageItem.tsx";
+import ImageItem from "./image-item.tsx";
 import styled from "styled-components";
 
 type Props={
@@ -7,7 +7,7 @@ type Props={
     onDelete:(id:string)=>void,
     routeID:string | undefined,
 }
-export default function ImagesList(props:Props){
+export default function ImagesList(props: Readonly<Props>){
 return(<StyledDiv>
     <StyledDivList>
     {props.imgData.filter((imgRouteData)=>(imgRouteData.routeId === props.routeID)).map((img)=><ImageItem key={img.id} imgData={img} onDelete={props.onDelete}/>)}

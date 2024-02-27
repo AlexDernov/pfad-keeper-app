@@ -15,4 +15,5 @@ public class BackendApplication {
     public Cloudinary cloudinaryBean(){
         return new Cloudinary();
     }
+
 }

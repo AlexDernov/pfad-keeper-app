@@ -25,6 +25,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -176,6 +177,9 @@ class ImageControllerTest {
         mvc.perform(MockMvcRequestBuilders.multipart("/api/images")
                         .file(file2)
                         .file(file)
+                        .with(oidcLogin()
+                                .userInfoToken(token ->
+                                        token.claim("email", "Email")))
                 )
                 // THEN
                 .andExpect(MockMvcResultMatchers.status().isCreated())

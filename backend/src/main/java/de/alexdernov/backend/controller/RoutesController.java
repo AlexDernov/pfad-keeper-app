@@ -2,6 +2,7 @@ package de.alexdernov.backend.controller;
 
 import de.alexdernov.backend.models.Route;
 import de.alexdernov.backend.models.RouteDto;
+import de.alexdernov.backend.models.UserDto;
 import de.alexdernov.backend.services.RouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -39,4 +40,11 @@ public class RoutesController {
     public Route deleteRouteById(@PathVariable String id) {
         return routeService.deleteRouteById(id);
     }
+
+
+    @PutMapping("/membersList/{id}")
+    public Route updateRoutesMembers(@PathVariable String id, @RequestBody UserDto userToDelete) {
+        return routeService.deleteUserDtoFromMembersList(id, userToDelete);
+    }
+
 }
