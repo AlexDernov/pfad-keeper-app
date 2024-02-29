@@ -70,7 +70,7 @@ const StyledMapContainer = styled(MapContainer)`
     height: 50vh;
     color: black;
     position: relative;
-    width: 100vw;
+    width: 99vw;
     @media only screen and (max-width: 600px) {
         height: 40vh;
     }

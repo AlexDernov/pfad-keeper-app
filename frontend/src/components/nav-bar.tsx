@@ -135,8 +135,8 @@ const NavLinkHeading = styled(NavLink)`
 
     &:hover {
         padding: 0;
-        font-size: 2.1rem;
-        margin-right: 8.5vw;
+        font-size: 2.7rem;
+        margin-right: 7.4vw;
     }
     @media only screen and (max-width: 600px) {
         font-size: 1.3rem;
@@ -207,7 +207,7 @@ const NavLinks = styled(NavLink)`
     &:hover {
         padding: 0 1.10vw;
         font-size: 2.3vw;
-        margin: 0.5vw 0 0.5vw 0;
+        margin: 0.5vw 0 0.5vw 1.3vw;
     }
 `;
 const NavLinkAdd = styled(NavLinks)`
@@ -223,6 +223,6 @@ const NavLinkAdd = styled(NavLinks)`
     &:hover {
         padding: 0 1.25vw;
         font-size: 2.3vw;
-        margin: 0.55vw 0.5vw;
+        margin: 0.55vw 1vw;
     }
 `;
