@@ -17,15 +17,15 @@ type Props = {
 export default function InteractiveMap(props: Readonly<Props>) {
     const position: LatLngExpression | undefined = [51.09, 10.27];
 
-    const iconStart = L.divIcon({
+    const iconOnStart = L.divIcon({
         html: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6.66675 24.9999C6.66675 24.9999 8.33341 23.3333 13.3334 23.3333C18.3334 23.3333 21.6667 26.6666 26.6667 26.6666C31.6667 26.6666 33.3334 24.9999 33.3334 24.9999V4.99992C33.3334 4.99992 31.6667 6.66659 26.6667 6.66659C21.6667 6.66659 18.3334 3.33325 13.3334 3.33325C8.33341 3.33325 6.66675 4.99992 6.66675 4.99992V24.9999Z" fill="url(#paint0_linear_115_19)" stroke="#3D874D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M6.66675 36.6667V25" stroke="#3D874D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M6.66675 24.9999C6.66675 24.9999 8.33341 23.3333 13.3334 23.3333C18.3334 23.3333 21.6667 26.6666 26.6667 26.6666C31.6667 26.6666 33.3334 24.9999 33.3334 24.9999V4.99992C33.3334 4.99992 31.6667 6.66659 26.6667 6.66659C21.6667 6.66659 18.3334 3.33325 13.3334 3.33325C8.33341 3.33325 6.66675 4.99992 6.66675 4.99992V24.9999Z" fill="url(#paint0_linear_115_22)" stroke="#3D874D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M6.66675 36.6667V25" stroke="#3D874D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <defs>
-    <linearGradient id="paint0_linear_115_19" x1="7" y1="4.5" x2="34.5" y2="28.5" gradientUnits="userSpaceOnUse">
-    <stop offset="0.00286713" stop-color="#EAFB2C"/>
-    <stop offset="0.49767" stop-color="#14C2F9"/>
-    <stop offset="0.987264" stop-color="#02B109"/>
+    <linearGradient id="paint0_linear_115_22" x1="9" y1="7.5" x2="33" y2="24.5" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FBC332"/>
+    <stop offset="0.421574" stop-color="#FB326E"/>
+    <stop offset="1" stop-color="#7821CF" stop-opacity="0.85"/>
     </linearGradient>
     </defs>
     </svg>`,
@@ -49,7 +49,7 @@ export default function InteractiveMap(props: Readonly<Props>) {
                 <Marker
                     key={route.id}
                     position={[parseFloat(route.coords[0].latitude), parseFloat(route.coords[0].longitude)]}
-                    icon={iconStart}
+                    icon={iconOnStart}
                     contextmenu={false}
                     contextmenuItems={[]}
                 > <Link to={`/routes/${route?.id}`}>
